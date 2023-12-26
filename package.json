@@ -12,7 +12,8 @@
   "main": "lib/index.js",
   "types": "lib",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "build:watch": "tsc -p . --watch"
   },
   "repository": {
     "type": "git",
