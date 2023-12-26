@@ -51,7 +51,6 @@ export class Engine implements IIndexExport {
 
 	// Listening express application.
 	async listen(): Promise<void> {
-
 		const aaaa = this.initDialog();
 
 		const bbbb = await this.catchDialog(aaaa[0]);
