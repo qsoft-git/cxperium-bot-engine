@@ -24,7 +24,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'prettier/prettier': [
       'error',
-      { 'endOfLine': 'crlf', 'tabWidth': 4, 'useTabs': true }
+      { 'endOfLine': 'auto', 'tabWidth': 4, 'useTabs': true }
     ],
   },
 };
