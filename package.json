@@ -1,6 +1,6 @@
 {
-  "name": "@qsoft-informatics/cxperium-bot-engine",
-  "version": "1.0.0",
+  "name": "cxperium-bot-engine",
+  "version": "1.0.10",
   "description": "Cxperium Bot Engine",
   "author": "QSoft Bilişim",
   "license": "MIT",
@@ -64,6 +64,6 @@
     "package.json",
     "README.md",
     "LICENSE",
-    "src"
+    "lib"
   ]
 }
