@@ -3,15 +3,27 @@ import express from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Utils.
+import generalMiddlewares from './utils/general-middlewares';
+
+// Routes.
+import routes from './routes';
+
+// Middlewares.
+import middlewareErrorHandler from './middlewares/error-handler';
+import middlewareNotFound from './middlewares/not-found';
+
 // Interfaces.
 import { IIndexExport } from './interfaces/index-export';
 
+// Config interface.
 interface Config {
 	mode: string;
 	host: string;
 	port: string;
 	apiKey: string;
 	dialogPath: string;
+	publicPath: string;
 }
 
 // Export default module.
@@ -22,6 +34,7 @@ export class Engine implements IIndexExport {
 	port!: string;
 	apiKey!: string;
 	dialogPath!: string;
+	puclicPath!: string;
 
 	constructor({
 		mode: _mode,
@@ -29,9 +42,18 @@ export class Engine implements IIndexExport {
 		port: _port,
 		apiKey: _apiKey,
 		dialogPath: _dialogPath,
+		publicPath: _publicPath,
 	}: Config) {
 		// Initialize express application.
 		this.app = express();
+
+		// Set general middlewares.
+		generalMiddlewares(this.app, _publicPath);
+
+		// Set routes and middlewares.
+		this.app.use(routes);
+		this.app.use(middlewareNotFound);
+		this.app.use(middlewareErrorHandler);
 
 		// Set properties.
 		this.port = _port;
