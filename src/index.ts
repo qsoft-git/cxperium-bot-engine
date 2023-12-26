@@ -1,3 +1,6 @@
+// Environment.
+const { NODE_ENV } = process.env;
+
 // Node modules.
 import express from 'express';
 import * as fs from 'fs';
@@ -68,7 +71,18 @@ export class Engine implements IIndexExport {
 	}
 
 	initDialog(): string[] {
-		return fs.readdirSync(this.dialogPath);
+		let filterFindFiles: string[] = [];
+		const findFiles = fs.readdirSync(this.dialogPath);
+		const catchFileExtension = NODE_ENV === 'development' ? '.ts' : '.js';
+
+		if (findFiles.length > 0) {
+			filterFindFiles = findFiles.filter((file) => {
+				const fileExtension = path.extname(file);
+				return fileExtension === catchFileExtension;
+			});
+		}
+
+		return filterFindFiles;
 	}
 
 	// Listening express application.
