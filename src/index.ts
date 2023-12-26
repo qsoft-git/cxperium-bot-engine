@@ -3,9 +3,9 @@ import express from 'express';
 const app = express();
 
 app.get('/', (req, res) => {
-    res.send(`
+  res.send(`
         <div>
-            <h1>Hi theres!</h1>
+            <h1>Hi theress!</h1>
         </div>
     `);
 });
