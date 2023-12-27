@@ -43,4 +43,4 @@ export class Engine {
 	}
 }
 
-applyClassMixins(Engine, [App, Dialog]);
+applyClassMixins.run(Engine, [App, Dialog]);

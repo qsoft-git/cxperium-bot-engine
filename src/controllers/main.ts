@@ -1,6 +1,12 @@
 // Node modules.
 import { Request, Response, NextFunction } from 'express';
 
+// Helpers.
+import getPackageJson from '../helpers/get-package-json';
+
+// Constants.
+const UP_TIME = new Date();
+
 export default class {
 	public static homePage(
 		_req: Request,
@@ -8,20 +14,14 @@ export default class {
 		next: NextFunction,
 	): void {
 		try {
-			const aaaa = res.app.listDialog;
-
-			res.send('Hello World!');
-
-			// 	const busyMode = !!res.app.locals.busy ? "ACTIVE" : "PASSIVE";
-
-			// return res.render('home-page', {
-			//     title: 'Destek Patent - Newsletter Extractor - API',
-			//     version: packageJson.version,
-			//     license: packageJson.license,
-			//     author: packageJson.author,
-			//     uptime: UPTIME,
-			//     busyMode
-			// });
+			const packageJson = getPackageJson.getJsonParse();
+			return res.render('home-page', {
+				description: packageJson.description,
+				version: packageJson.version,
+				license: packageJson.license,
+				author: packageJson?.author,
+				uptime: UP_TIME,
+			});
 		} catch (error) {
 			next(error);
 		}
