@@ -12,8 +12,8 @@
   "main": "lib/index.js",
   "types": "lib",
   "scripts": {
-    "build": "tsc -p .",
-    "build:watch": "tsc -p . --watch"
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch"
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,6 @@
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.1",
@@ -61,6 +60,7 @@
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
+    "tsc-hooks": "^1.1.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
   },

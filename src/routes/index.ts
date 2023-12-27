@@ -5,12 +5,10 @@ import express from 'express';
 const router = express.Router();
 
 // Controllers.
-import errorTest from '../controllers/error-test';
+import mainController from '../controllers/main';
 
-router.get('/', (req, res) => {
-	res.send('Hello World!');
-});
-
-router.get('/error-test', errorTest);
+// Routes.
+router.get('/error-test', mainController.errorTest);
+router.get('/', mainController.homePage);
 
 export default router;
