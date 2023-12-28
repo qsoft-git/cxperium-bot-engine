@@ -41,12 +41,11 @@ export class Engine {
 		);
 
 		// Test dialog run.
-		const testDialog = this.dialogList[0];
-		this.catchDialog(testDialog).then((Dialog) => {
+		const testDialog: any = this.dialogList.find((dialog:any ) => dialog.name === 'TEST');
+		this.catchDialog(testDialog.path).then((Dialog) => {
 			const dialog = new Dialog.default({ name: "Test Dialog", description: "Test Dialog Description" });
 			dialog.runDialog();
 		});
-		console.log('');
 	}
 }
 

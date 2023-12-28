@@ -23,17 +23,72 @@ export class UtilDialog implements IUtilsDialog {
 	}
 
 	public initDialogList(): void {
-		let filterFindFiles: string[] = [];
-		const findFiles = fs.readdirSync(this.dialogPath);
-		const catchFileExtension = NODE_ENV === 'development' ? '.ts' : '.js';
+		let data: any;
 
-		if (findFiles.length > 0) {
-			filterFindFiles = findFiles.filter((file) => {
-				const fileExtension = path.extname(file);
-				return fileExtension === catchFileExtension;
+		data = listFilesAndFolders(this.dialogPath);
+
+		data = catctFileExtension(data);
+
+		data = replateFullPath(data, this.dialogPath);
+
+		this.dialogList = data;
+
+		function replateFullPath(array: string[], dialogPath: string): any {
+			
+			return array.map((file: string) => {
+				const newFileArray = [];
+				const filePathReplace = file.replace(dialogPath, '');
+				const filePathReplaceArray = filePathReplace.split('\\');
+
+				for (const index in filePathReplaceArray) {
+					const element = filePathReplaceArray[index];
+					const elementExtname = path.extname(element);
+					const elementReplaceDeleteExtname = element.replace(elementExtname, '');
+
+					if (elementReplaceDeleteExtname) {
+						newFileArray.push(elementReplaceDeleteExtname.toLocaleUpperCase("en-US"));
+					}
+				}
+				return {
+					path: filePathReplace.slice(1),
+					name: newFileArray.join('.'),
+				};
 			});
 		}
 
-		this.dialogList = filterFindFiles;
+		function catctFileExtension(array: string[]): string[] {
+			const catchFileExtension = NODE_ENV === 'development' ? '.ts' : '.js';
+			const filterData: string[] = [];
+
+			for (const file of array) {
+				const fileExtension = path.extname(file);
+
+				if (fileExtension === catchFileExtension) {
+					filterData.push(file);
+				}
+			}
+
+			return filterData;
+		}
+
+		function listFilesAndFolders(dirPath: string): string[] {
+			let results: string[] = [];
+		
+			const list = fs.readdirSync(dirPath);
+		
+			list.forEach(function (file) {
+				file = path.join(dirPath, file);
+		
+				const stat = fs.statSync(file);
+		
+				if (stat && stat.isDirectory()) {
+					results = results.concat(listFilesAndFolders(file));
+				} else {
+					results.push(file);
+				}
+			});
+		
+			return results;
+		}
 	}
 }
