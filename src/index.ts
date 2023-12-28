@@ -4,7 +4,7 @@ import { UtilDialog } from './utils/dialog';
 import { UtilCxperium } from './utils/cxperium';
 
 // Interfaces.
-import { SrcIndexConfig } from './interfaces/src-index';
+import { ISrcIndexConfig } from './interfaces/src-index';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
@@ -12,7 +12,7 @@ import applyClassMixins from './helpers/apply-class-mixins';
 export interface Engine extends UtilApp, UtilDialog, UtilCxperium {}
 
 export class Engine {
-	constructor(data: SrcIndexConfig) {
+	constructor(data: ISrcIndexConfig) {
 		// Initialize express application.
 		this.initExpress();
 

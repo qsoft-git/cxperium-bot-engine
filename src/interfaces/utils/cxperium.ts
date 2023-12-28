@@ -1,8 +1,8 @@
 // Interfaces.
-import { SrcIndexConfig } from '../src-index';
+import { ISrcIndexConfig } from '../src-index';
 
 export interface IUtilsCxperium {
 	apiKey: string;
 	callbackUrl: string;
-	initCxperiumProperties: (data: SrcIndexConfig) => void;
+	initCxperiumProperties: (data: ISrcIndexConfig) => void;
 }

@@ -1,6 +1,6 @@
 // Node modules.
 import { Application } from 'express';
-import { SrcIndexConfig } from '../src-index';
+import { ISrcIndexConfig } from '../src-index';
 
 export interface IUtilsApp {
 	app: Application;
@@ -8,7 +8,7 @@ export interface IUtilsApp {
 	port: string;
 	publicPath: string;
 	execute(): void;
-	initAppProperties(data: SrcIndexConfig): void;
+	initAppProperties(data: ISrcIndexConfig): void;
 	initExpress(): void;
 	initMiddlewares(): void;
 }

@@ -7,13 +7,13 @@ import * as path from 'path';
 
 // Interfaces.
 import { IUtilsDialog } from '../interfaces/utils/dialog';
-import { SrcIndexConfig } from '../interfaces/src-index';
+import { ISrcIndexConfig } from '../interfaces/src-index';
 
 // Export default module.
 export class UtilDialog implements IUtilsDialog {
 	dialogPath!: string;
 
-	public initDialogProperties(data: SrcIndexConfig): void {
+	public initDialogProperties(data: ISrcIndexConfig): void {
 		this.dialogPath = path.join(data.srcPath, '/', 'dialog');
 	}
 

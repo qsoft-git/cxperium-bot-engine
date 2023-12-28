@@ -20,7 +20,7 @@ import middlewareMain from '../middlewares/main';
 
 // Interfaces.
 import { IUtilsApp } from '../interfaces/utils/app';
-import { SrcIndexConfig } from '../interfaces/src-index';
+import { ISrcIndexConfig } from '../interfaces/src-index';
 
 export class UtilApp implements IUtilsApp {
 	app!: Application;
@@ -36,7 +36,7 @@ export class UtilApp implements IUtilsApp {
 		host: _host,
 		port: _port,
 		srcPath: _srcPath,
-	}: SrcIndexConfig): void {
+	}: ISrcIndexConfig): void {
 		this.port = _port || '3978';
 		this.host = _host || 'localhost';
 		this.publicPath = path.join(_srcPath, '/', 'public');
