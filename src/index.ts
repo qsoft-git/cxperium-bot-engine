@@ -38,12 +38,21 @@ export class Engine {
 			this.serviceCxperiumMain,
 			this.serviceCxperiumContact,
 			this.serviceCxperiumUser,
+			this.serviceCxperiumIntent,
+			this.serviceCxperiumReport,
+			this.serviceCxperiumTicket,
+			this.serviceCxperiumSession,
 		);
 
 		// Test dialog run.
-		const testDialog: any = this.dialogList.find((dialog:any ) => dialog.name === 'TEST');
+		const testDialog: any = this.dialogList.find(
+			(dialog: any) => dialog.name === 'TEST',
+		);
 		this.catchDialog(testDialog.path).then((Dialog) => {
-			const dialog = new Dialog.default({ name: "Test Dialog", description: "Test Dialog Description" });
+			const dialog = new Dialog.default({
+				name: 'Test Dialog',
+				description: 'Test Dialog Description',
+			});
 			dialog.runDialog();
 		});
 	}

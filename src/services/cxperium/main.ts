@@ -2,7 +2,7 @@
 import fetch from 'node-fetch';
 
 // Services.
-import ServiceCxperium from './';
+import ServiceCxperium from '.';
 import ServiceCxperiumContact from './contact';
 
 // Interfaces.

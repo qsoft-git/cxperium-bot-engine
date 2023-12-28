@@ -34,19 +34,30 @@ export class UtilDialog implements IUtilsDialog {
 		this.dialogList = data;
 
 		function replateFullPath(array: string[], dialogPath: string): any {
-			
 			return array.map((file: string) => {
 				const newFileArray = [];
 				const filePathReplace = file.replace(dialogPath, '');
-				const filePathReplaceArray = filePathReplace.split('\\');
+				const pathDirection = String(process.platform).startsWith('win')
+					? '\\'
+					: '/';
+
+				const filePathReplaceArray =
+					filePathReplace.split(pathDirection);
 
 				for (const index in filePathReplaceArray) {
 					const element = filePathReplaceArray[index];
 					const elementExtname = path.extname(element);
-					const elementReplaceDeleteExtname = element.replace(elementExtname, '');
+					const elementReplaceDeleteExtname = element.replace(
+						elementExtname,
+						'',
+					);
 
 					if (elementReplaceDeleteExtname) {
-						newFileArray.push(elementReplaceDeleteExtname.toLocaleUpperCase("en-US"));
+						newFileArray.push(
+							elementReplaceDeleteExtname.toLocaleUpperCase(
+								'en-US',
+							),
+						);
 					}
 				}
 				return {
@@ -57,7 +68,8 @@ export class UtilDialog implements IUtilsDialog {
 		}
 
 		function catctFileExtension(array: string[]): string[] {
-			const catchFileExtension = NODE_ENV === 'development' ? '.ts' : '.js';
+			const catchFileExtension =
+				NODE_ENV === 'development' ? '.ts' : '.js';
 			const filterData: string[] = [];
 
 			for (const file of array) {
@@ -73,21 +85,21 @@ export class UtilDialog implements IUtilsDialog {
 
 		function listFilesAndFolders(dirPath: string): string[] {
 			let results: string[] = [];
-		
+
 			const list = fs.readdirSync(dirPath);
-		
+
 			list.forEach(function (file) {
 				file = path.join(dirPath, file);
-		
+
 				const stat = fs.statSync(file);
-		
+
 				if (stat && stat.isDirectory()) {
 					results = results.concat(listFilesAndFolders(file));
 				} else {
 					results.push(file);
 				}
 			});
-		
+
 			return results;
 		}
 	}

@@ -1,5 +1,5 @@
 // Services.
-import ServiceCxperium from './';
+import ServiceCxperium from '.';
 
 // Interfaces.
 import { ICxperiumParams } from '../../interfaces/services/cxperium';

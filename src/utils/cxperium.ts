@@ -10,6 +10,10 @@ import { ICxperiumParams } from '../interfaces/services/cxperium';
 import ServiceCxperiumMain from '../services/cxperium/main';
 import ServiceCxperiumContact from '../services/cxperium/contact';
 import ServiceCxperiumUser from '../services/cxperium/user';
+import ServiceCxperiumIntent from '../services/cxperium/intent';
+import ServiceCxperiumReport from '../services/cxperium/report';
+import ServiceCxperiumTicket from '../services/cxperium/ticket';
+import ServiceCxperiumSession from '../services/cxperium/session';
 
 // Export default module.
 export class UtilCxperium implements IUtilsCxperium {
@@ -18,6 +22,10 @@ export class UtilCxperium implements IUtilsCxperium {
 	serviceCxperiumMain!: ServiceCxperiumMain;
 	serviceCxperiumContact!: ServiceCxperiumContact;
 	serviceCxperiumUser!: ServiceCxperiumUser;
+	serviceCxperiumIntent!: ServiceCxperiumIntent;
+	serviceCxperiumReport!: ServiceCxperiumReport;
+	serviceCxperiumTicket!: ServiceCxperiumTicket;
+	serviceCxperiumSession!: ServiceCxperiumSession;
 
 	public initCxperiumProperties({
 		apiKey: _apiKey,
@@ -40,5 +48,9 @@ export class UtilCxperium implements IUtilsCxperium {
 		this.serviceCxperiumMain = new ServiceCxperiumMain(params);
 		this.serviceCxperiumContact = new ServiceCxperiumContact(params);
 		this.serviceCxperiumUser = new ServiceCxperiumUser(params);
+		this.serviceCxperiumIntent = new ServiceCxperiumIntent(params);
+		this.serviceCxperiumReport = new ServiceCxperiumReport(params);
+		this.serviceCxperiumTicket = new ServiceCxperiumTicket(params);
+		this.serviceCxperiumSession = new ServiceCxperiumSession(params);
 	}
 }

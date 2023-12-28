@@ -26,6 +26,10 @@ import { ISrcIndexConfig } from '../interfaces/src-index';
 import ServiceCxperiumMain from '../services/cxperium/main';
 import ServiceCxperiumContact from '../services/cxperium/contact';
 import ServiceCxperiumUser from '../services/cxperium/user';
+import ServiceCxperiumIntent from '../services/cxperium/intent';
+import ServiceCxperiumReport from '../services/cxperium/report';
+import ServiceCxperiumTicket from '../services/cxperium/ticket';
+import ServiceCxperiumSession from '../services/cxperium/session';
 
 export class UtilApp implements IUtilsApp {
 	app!: Application;
@@ -91,10 +95,18 @@ export class UtilApp implements IUtilsApp {
 		serviceCxperiumMain: ServiceCxperiumMain,
 		serviceCxperiumContact: ServiceCxperiumContact,
 		serviceCxperiumUser: ServiceCxperiumUser,
+		serviceCxperiumIntent: ServiceCxperiumIntent,
+		serviceCxperiumReport: ServiceCxperiumReport,
+		serviceCxperiumTicket: ServiceCxperiumTicket,
+		serviceCxperiumSession: ServiceCxperiumSession,
 	): void {
 		this.app.locals.service.cxperium.main = serviceCxperiumMain;
 		this.app.locals.service.cxperium.contact = serviceCxperiumContact;
 		this.app.locals.service.cxperium.user = serviceCxperiumUser;
+		this.app.locals.service.cxperium.intent = serviceCxperiumIntent;
+		this.app.locals.service.cxperium.report = serviceCxperiumReport;
+		this.app.locals.service.cxperium.ticket = serviceCxperiumTicket;
+		this.app.locals.service.cxperium.session = serviceCxperiumSession;
 	}
 
 	public execute(): void {

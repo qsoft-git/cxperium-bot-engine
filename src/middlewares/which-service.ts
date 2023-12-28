@@ -2,21 +2,13 @@
 import { Request, Response, NextFunction } from 'express';
 
 // Services.
-import ServiceCxperiumMain from '../services/cxperium/main';
-
 export default class {
-	public static execute(
+	public static async execute(
 		req: Request,
 		res: Response,
 		next: NextFunction,
-	): void {
+	): Promise<void> {
 		const service = req.url;
-
-		const serviceCxperiumMain: ServiceCxperiumMain =
-			res.app.locals.service.cxperium.main;
-
-		const baseUrl = serviceCxperiumMain.selam();
-		const contact = serviceCxperiumMain.contact;
 
 		if (service.startsWith('/whatsapp')) {
 			res.locals.service = 'WHATSAPP';
