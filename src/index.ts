@@ -1,10 +1,7 @@
-// Node modules.
-import express from 'express';
-import * as path from 'path';
-
 // Utils.
-import { App } from './utils/app';
-import { Dialog } from './utils/dialog';
+import { UtilApp } from './utils/app';
+import { UtilDialog } from './utils/dialog';
+import { UtilCxperium } from './utils/cxperium';
 
 // Interfaces.
 import { SrcIndexConfig } from './interfaces/src-index';
@@ -12,35 +9,28 @@ import { SrcIndexConfig } from './interfaces/src-index';
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
 
-export interface Engine extends App, Dialog {}
+export interface Engine extends UtilApp, UtilDialog, UtilCxperium {}
 
 export class Engine {
-	constructor({
-		host: _host,
-		port: _port,
-		apiKey: _apiKey,
-		srcPath: _srcPath,
-	}: SrcIndexConfig) {
+	constructor(data: SrcIndexConfig) {
 		// Initialize express application.
-		this.app = express();
+		this.initExpress();
 
-		// Set properties.
-		this.port = _port || '3978';
-		this.host = _host || 'localhost';
-		this.apiKey = _apiKey;
-		this.dialogPath = path.join(_srcPath, '/', 'dialog');
-		this.publicPath = path.join(_srcPath, '/', 'public');
-
-		if (!this.apiKey) {
-			throw new Error('API_KEY is not set.');
-		}
+		// Set App properties.
+		this.initAppProperties(data);
 
 		// Initialize middlewares.
 		this.initMiddlewares();
 
+		// Initialize dialog.
+		this.initDialogProperties(data);
+
 		this.app.listDialog = this.initDialog();
 		this.app.getDialog = this.catchDialog;
+
+		// Initialize cxperium.
+		this.initCxperiumProperties(data);
 	}
 }
 
-applyClassMixins.run(Engine, [App, Dialog]);
+applyClassMixins.run(Engine, [UtilApp, UtilDialog, UtilCxperium]);

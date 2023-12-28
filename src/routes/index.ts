@@ -7,9 +7,10 @@ const router = express.Router();
 // Controllers.
 import mainController from '../controllers/main';
 
-// Routes.
+// Import routes.
 import routerApi from './api';
 
+// Routes.
 router.use('/api', routerApi);
 router.get('/error-test', mainController.errorTest);
 router.get('/', mainController.homePage);

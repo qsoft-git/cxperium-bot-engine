@@ -7,10 +7,15 @@ import * as path from 'path';
 
 // Interfaces.
 import { IUtilsDialog } from '../interfaces/utils/dialog';
+import { SrcIndexConfig } from '../interfaces/src-index';
 
 // Export default module.
-export class Dialog implements IUtilsDialog {
+export class UtilDialog implements IUtilsDialog {
 	dialogPath!: string;
+
+	public initDialogProperties(data: SrcIndexConfig): void {
+		this.dialogPath = path.join(data.srcPath, '/', 'dialog');
+	}
 
 	public async catchDialog(file: string): Promise<any> {
 		return await import(path.join(this.dialogPath, file));

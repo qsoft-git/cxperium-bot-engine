@@ -1,4 +1,7 @@
+// Node modules.
 import { Request, Response, NextFunction } from 'express';
+
+// Types.
 type TextMessage = {
 	from: string;
 	type: 'text';

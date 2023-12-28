@@ -3,4 +3,5 @@ export interface SrcIndexConfig {
 	port: string;
 	apiKey: string;
 	srcPath: string;
+	callbackUrl: string;
 }
