@@ -7,6 +7,9 @@ import { UtilCxperium } from './utils/cxperium';
 import { ISrcIndexConfig } from './interfaces/src-index';
 import { IDialog } from './interfaces/dialog';
 
+// Services.
+import ServiceBaseDialog from './services/base-dialog';
+
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
 
@@ -39,8 +42,8 @@ export class Engine {
 
 		// Test dialog run.
 		const testDialog = this.dialogList[0];
-		this.catchDialog(testDialog).then((result) => {
-			const dialog = new result.default();
+		this.catchDialog(testDialog).then((Dialog) => {
+			const dialog = new Dialog.default({ name: "Test Dialog", description: "Test Dialog Description" });
 			dialog.runDialog();
 		});
 		console.log('');
@@ -49,4 +52,4 @@ export class Engine {
 
 applyClassMixins.run(Engine, [UtilApp, UtilDialog, UtilCxperium]);
 
-export { IDialog };
+export { ServiceBaseDialog ,IDialog };
