@@ -1,12 +1,13 @@
 // Services.
-import ServiceCxperium from '../services/cxperium';
+import ServiceCxperium from '../services/cxperium/cxperium';
 
 // Interfaces.
 import { IUtilsCxperium } from '../interfaces/utils/cxperium';
 import { ISrcIndexConfig } from '../interfaces/src-index';
+import General from '../../data/general';
 
 // Export default module.
-export class UtilCxperium extends ServiceCxperium implements IUtilsCxperium {
+export class UtilCxperium implements IUtilsCxperium {
 	apiKey!: string;
 	callbackUrl!: string;
 
