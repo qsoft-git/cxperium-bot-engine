@@ -43,7 +43,10 @@ export class Engine {
 		// Test dialog run.
 		const testDialog = this.dialogList[0];
 		this.catchDialog(testDialog).then((Dialog) => {
-			const dialog = new Dialog.default({ name: "Test Dialog", description: "Test Dialog Description" });
+			const dialog = new Dialog.default({
+				name: 'Test Dialog',
+				description: 'Test Dialog Description',
+			});
 			dialog.runDialog();
 		});
 		console.log('');
@@ -52,4 +55,4 @@ export class Engine {
 
 applyClassMixins.run(Engine, [UtilApp, UtilDialog, UtilCxperium]);
 
-export { ServiceBaseDialog ,IDialog };
+export { ServiceBaseDialog, IDialog };
