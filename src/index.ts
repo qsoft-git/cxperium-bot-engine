@@ -30,6 +30,12 @@ export class Engine {
 
 		// Initialize cxperium.
 		this.initCxperiumProperties(data);
+		this.initServiceMain();
+		this.initCxperiumService(
+			this.serviceCxperiumMain,
+			this.serviceCxperiumContact,
+			this.serviceCxperiumUser,
+		);
 	}
 }
 

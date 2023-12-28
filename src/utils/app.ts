@@ -22,6 +22,11 @@ import middlewareMain from '../middlewares/main';
 import { IUtilsApp } from '../interfaces/utils/app';
 import { ISrcIndexConfig } from '../interfaces/src-index';
 
+// Services.
+import ServiceCxperiumMain from '../services/cxperium/main';
+import ServiceCxperiumContact from '../services/cxperium/contact';
+import ServiceCxperiumUser from '../services/cxperium/user';
+
 export class UtilApp implements IUtilsApp {
 	app!: Application;
 	host!: string;
@@ -74,10 +79,22 @@ export class UtilApp implements IUtilsApp {
 		);
 		this.app.set('views', path.join(__dirname, '../', 'views'));
 		this.app.set('view engine', 'ejs');
+		this.app.locals.service = {};
+		this.app.locals.service.cxperium = {};
 
 		if (this.publicPath) {
 			this.app.use(express.static(this.publicPath));
 		}
+	}
+
+	initCxperiumService(
+		serviceCxperiumMain: ServiceCxperiumMain,
+		serviceCxperiumContact: ServiceCxperiumContact,
+		serviceCxperiumUser: ServiceCxperiumUser,
+	): void {
+		this.app.locals.service.cxperium.main = serviceCxperiumMain;
+		this.app.locals.service.cxperium.contact = serviceCxperiumContact;
+		this.app.locals.service.cxperium.user = serviceCxperiumUser;
 	}
 
 	public execute(): void {
