@@ -12,6 +12,7 @@ import { ISrcIndexConfig } from '../interfaces/src-index';
 // Export default module.
 export class UtilDialog implements IUtilsDialog {
 	dialogPath!: string;
+	dialogList!: string[];
 
 	public initDialogProperties(data: ISrcIndexConfig): void {
 		this.dialogPath = path.join(data.srcPath, '/', 'dialog');
@@ -21,7 +22,7 @@ export class UtilDialog implements IUtilsDialog {
 		return await import(path.join(this.dialogPath, file));
 	}
 
-	public initDialog(): string[] {
+	public initDialogList(): void {
 		let filterFindFiles: string[] = [];
 		const findFiles = fs.readdirSync(this.dialogPath);
 		const catchFileExtension = NODE_ENV === 'development' ? '.ts' : '.js';
@@ -33,6 +34,6 @@ export class UtilDialog implements IUtilsDialog {
 			});
 		}
 
-		return filterFindFiles;
+		this.dialogList = filterFindFiles;
 	}
 }

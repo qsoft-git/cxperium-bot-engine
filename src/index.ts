@@ -5,10 +5,12 @@ import { UtilCxperium } from './utils/cxperium';
 
 // Interfaces.
 import { ISrcIndexConfig } from './interfaces/src-index';
+import { IDialog } from './interfaces/dialog';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
 
+// Mixins.
 export interface Engine extends UtilApp, UtilDialog, UtilCxperium {}
 
 export class Engine {
@@ -24,9 +26,7 @@ export class Engine {
 
 		// Initialize dialog.
 		this.initDialogProperties(data);
-
-		this.app.listDialog = this.initDialog();
-		this.app.getDialog = this.catchDialog;
+		this.initDialogList();
 
 		// Initialize cxperium.
 		this.initCxperiumProperties(data);
@@ -36,7 +36,17 @@ export class Engine {
 			this.serviceCxperiumContact,
 			this.serviceCxperiumUser,
 		);
+
+		// Test dialog run.
+		const testDialog = this.dialogList[0];
+		this.catchDialog(testDialog).then((result) => {
+			const dialog = new result.default();
+			dialog.runDialog();
+		});
+		console.log('');
 	}
 }
 
 applyClassMixins.run(Engine, [UtilApp, UtilDialog, UtilCxperium]);
+
+export { IDialog };
