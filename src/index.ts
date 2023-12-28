@@ -51,4 +51,4 @@ export class Engine {
 
 applyClassMixins.run(Engine, [UtilApp, UtilDialog, UtilCxperium]);
 
-export { ServiceBaseDialog ,IDialog };
+export { ServiceBaseDialog, IDialog };
