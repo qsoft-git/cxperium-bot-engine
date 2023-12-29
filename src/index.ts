@@ -29,34 +29,49 @@ export class Engine {
 
 		// Initialize dialog.
 		this.initDialogProperties(data);
-		this.initDialogList();
+		// this.initDialogList();
 
 		// Initialize cxperium.
 		this.initCxperiumProperties(data);
-		this.initServiceMain();
-		this.initCxperiumService(
-			this.serviceCxperiumMain,
-			this.serviceCxperiumContact,
-			this.serviceCxperiumUser,
-			this.serviceCxperiumIntent,
-			this.serviceCxperiumReport,
-			this.serviceCxperiumTicket,
-			this.serviceCxperiumSession,
-			this.serviceCxperiumConversation,
-			this.serviceCxperiumLanguage,
-		);
+		// this.initServiceMain();
+		// this.initCxperiumService(
+		// 	this.serviceCxperiumMain,
+		// 	this.serviceCxperiumContact,
+		// 	this.serviceCxperiumUser,
+		// 	this.serviceCxperiumIntent,
+		// 	this.serviceCxperiumReport,
+		// 	this.serviceCxperiumTicket,
+		// 	this.serviceCxperiumSession,
+		// 	this.serviceCxperiumConversation,
+		// 	this.serviceCxperiumLanguage,
+		// );
+		// this.initCxperiumService();
+		// this.initCxperiumService(
+		// 	this.serviceCxperiumMain,
+		// 	this.serviceCxperiumContact,
+		// 	this.serviceCxperiumUser,
+		// 	this.serviceCxperiumIntent,
+		// 	this.serviceCxperiumReport,
+		// 	this.serviceCxperiumTicket,
+		// 	this.serviceCxperiumSession,
+		// );
+
+		// Initialize other service.
+		// this.initDialogService(this.dialogList, this.runDialog);
 
 		// Test dialog run.
-		const testDialog: any = this.dialogList.find(
-			(dialog: any) => dialog.name === 'TEST',
-		);
-		this.catchDialog(testDialog.path).then((Dialog) => {
-			const dialog = new Dialog.default({
-				name: 'Test Dialog',
-				description: 'Test Dialog Description',
-			});
-			dialog.runDialog();
-		});
+		// const testDialog: any = this.dialogList.find(
+		// 	(dialog: any) => dialog.name === 'TEST',
+		// );
+
+		// console.log(testDialog.path);
+		// this.catchDialog(testDialog.path).then((Dialog) => {
+		// 	const dialog = new Dialog.default({
+		// 		name: 'Test Dialog',
+		// 		description: 'Test Dialog Description',
+		// 	});
+		// 	dialog.runDialog();
+		// });
 	}
 }
 

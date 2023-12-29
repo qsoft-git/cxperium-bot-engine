@@ -10,7 +10,8 @@ export default class {
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		const service = req.url;
+		try {
+			const service = req.url;
 
 		const sss: ServiceCxperiumLanguage =
 			res.app.locals.service.cxperium.language;
