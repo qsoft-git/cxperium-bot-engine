@@ -8,18 +8,23 @@ export default class {
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		const service = req.url;
+		try {
+			const service = req.url;
 
-		if (service.startsWith('/whatsapp')) {
-			res.locals.service = 'WHATSAPP';
-			next();
-		} else if (service.startsWith('/teams')) {
-			res.locals.service = 'TEAMS';
-			next();
-		} else if (service.startsWith('/webchat')) {
-			res.locals.service = 'WEBCHAT';
-			next();
-		} else {
+			if (service.startsWith('/whatsapp')) {
+				res.locals.service = 'WHATSAPP';
+				next();
+			} else if (service.startsWith('/teams')) {
+				res.locals.service = 'TEAMS';
+				next();
+			} else if (service.startsWith('/webchat')) {
+				res.locals.service = 'WEBCHAT';
+				next();
+			} else {
+				res.send();
+			}
+		} catch (error) {
+			console.error(error);
 			res.send();
 		}
 	}

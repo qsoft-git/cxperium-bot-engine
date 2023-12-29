@@ -15,6 +15,7 @@ export default class extends ServiceCxperium {
 	private cache = UtilConfig.getInstance().cache;
 	constructor(data: ICxperiumParams) {
 		super(data);
+		this.getAllIntents();
 	}
 
 	async getAllIntents(): Promise<Intent[]> {
@@ -32,7 +33,7 @@ export default class extends ServiceCxperium {
 
 		const intents: Intent[] = [];
 
-		for (const intent of response.data.data.data) {
+		for (const intent of response.data.data) {
 			const int: Intent = {
 				name: intent.intentName,
 				regexValue: intent.regexValue,

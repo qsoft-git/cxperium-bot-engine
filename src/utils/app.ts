@@ -85,6 +85,7 @@ export class UtilApp implements IUtilsApp {
 		this.app.set('view engine', 'ejs');
 		this.app.locals.service = {};
 		this.app.locals.service.cxperium = {};
+		this.app.locals.service.dialog = {};
 
 		if (this.publicPath) {
 			this.app.use(express.static(this.publicPath));
@@ -107,6 +108,11 @@ export class UtilApp implements IUtilsApp {
 		this.app.locals.service.cxperium.report = serviceCxperiumReport;
 		this.app.locals.service.cxperium.ticket = serviceCxperiumTicket;
 		this.app.locals.service.cxperium.session = serviceCxperiumSession;
+	}
+
+	initDialogService(listAll: any, run: any): void {
+		this.app.locals.service.dialog.listAll = listAll;
+		this.app.locals.service.dialog.run = run;
 	}
 
 	public execute(): void {

@@ -39,7 +39,7 @@ export class UtilCxperium implements IUtilsCxperium {
 		}
 	}
 
-	public initServiceMain() {
+	public initCxperiumService() {
 		const params: ICxperiumParams = {
 			apikey: this.apiKey,
 			callbackUrl: this.callbackUrl,
