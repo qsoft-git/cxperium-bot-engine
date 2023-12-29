@@ -4,14 +4,12 @@ import fetch from 'node-fetch';
 // Services.
 import ServiceCxperium from '.';
 
-// Interfaces.
-import { ICxperiumParams } from '../../interfaces/services/cxperium';
-
 // Types.
 import { TCxperiumContact } from '../../types/cxperium/contact';
+import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
 export default class extends ServiceCxperium {
-	constructor(data: ICxperiumParams) {
+	constructor(data: TCxperiumServiceParams) {
 		super(data);
 	}
 

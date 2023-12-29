@@ -1,5 +1,5 @@
-// Interfaces.
-import { ICxperiumParams } from '../../interfaces/services/cxperium';
+// Types.
+import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
 export default class {
 	private BASE_URL: string;
@@ -10,7 +10,7 @@ export default class {
 		apikey: _apikey,
 		baseUrl: _baseUrl,
 		callbackUrl: _callbackUrl,
-	}: ICxperiumParams) {
+	}: TCxperiumServiceParams) {
 		this.API_KEY = _apikey;
 		this.CALLBACK_URL = _callbackUrl;
 		this.BASE_URL = _baseUrl;

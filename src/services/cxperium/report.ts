@@ -4,15 +4,16 @@ import fetch from 'node-fetch';
 // Services.
 import ServiceCxperium from '.';
 
-// Interfaces.
-import { ICxperiumParams } from '../../interfaces/services/cxperium';
+// Types.
+import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
 // Utils.
 import UtilConfig from '../../utils/config';
 
 export default class extends ServiceCxperium {
 	private cache = UtilConfig.getInstance().cache;
-	constructor(data: ICxperiumParams) {
+
+	constructor(data: TCxperiumServiceParams) {
 		super(data);
 	}
 

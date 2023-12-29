@@ -6,13 +6,14 @@ import ServiceCxperium from '.';
 import ServiceCxperiumContact from './contact';
 import ServiceCxperiumConversation from './conversation';
 
-// Interfaces.
-import { ICxperiumParams } from '../../interfaces/services/cxperium';
+// Types.
+import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
 export default class extends ServiceCxperium {
 	serviceCxperiumContact!: ServiceCxperiumContact;
 	serviceCxperiumConversation!: ServiceCxperiumConversation;
-	constructor(data: ICxperiumParams) {
+
+	constructor(data: TCxperiumServiceParams) {
 		super(data);
 		this.serviceCxperiumContact = new ServiceCxperiumContact(data);
 		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
