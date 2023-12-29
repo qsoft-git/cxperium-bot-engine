@@ -8,33 +8,41 @@ import * as path from 'path';
 // Types.
 import { TBaseDialogCtor } from '../types/base-dialog';
 
+// Constants.
+const listAll: { name: string; path: string }[] = [];
+
 export default class {
-	private folderPath!: string;
-	public listAll!: string[];
+	private folderPathExternal!: string;
+	private folderPathInternal!: string;
 
 	constructor(_dialogPath: string) {
-		this.folderPath = _dialogPath;
-		this.initList();
+		this.folderPathExternal = _dialogPath;
+		this.folderPathInternal = path.join(__dirname, '../dialogs');
+		this.initList(this.folderPathExternal, 'EXTERNAL');
+		this.initList(this.folderPathInternal, 'INTERNAL');
+	}
+
+	public get getListAll() {
+		return listAll;
 	}
 
 	public async run(data: TBaseDialogCtor): Promise<any> {
-		const filePath = path.join(this.folderPath, data.dialogPath);
-		const dialogImport = await import(filePath);
+		const dialogImport = await import(data.dialogPath);
 
 		const dialog = new dialogImport.default(data);
 		dialog.runDialog();
 	}
 
-	public initList(): void {
+	public initList(folderPath: string, type: string): void {
 		let data: any;
 
-		data = listFilesAndFolders(this.folderPath);
+		data = listFilesAndFolders(folderPath);
 
 		data = catchFileExtension(data);
 
-		data = replaceFullPath(data, this.folderPath);
+		data = replaceFullPath(data, folderPath);
 
-		this.listAll = data;
+		listAll.push(...data);
 
 		function replaceFullPath(array: string[], dialogPath: string): any {
 			return array.map((file: string) => {
@@ -60,7 +68,7 @@ export default class {
 					}
 				}
 				return {
-					path: filePathReplace.slice(1),
+					path: file,
 					name: newFileArray.join('.'),
 				};
 			});
@@ -68,13 +76,20 @@ export default class {
 
 		function catchFileExtension(array: string[]): string[] {
 			const catchFileExtension =
-				NODE_ENV === 'development' ? '.ts' : '.js';
+				NODE_ENV === 'development' && type == 'EXTERNAL'
+					? '.ts'
+					: '.js';
 			const filterData: string[] = [];
 
 			for (const file of array) {
-				const fileExtension = path.extname(file);
+				const fileBase = path.basename(file);
+				const fileExtension = path.extname(fileBase);
+				const fileExtensionDotControl = fileBase.split('.').length;
 
-				if (fileExtension === catchFileExtension) {
+				if (
+					fileExtension === catchFileExtension &&
+					fileExtensionDotControl === 2
+				) {
 					filterData.push(file);
 				}
 			}

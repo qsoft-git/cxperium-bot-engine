@@ -26,8 +26,10 @@ export default class {
 		if (intent) {
 			const intentName = intent.name;
 
-			const findOneDialog = serviceDialog.listAll.find(
-				(item: any) => intentName === item.name,
+			const findAllDialogs = await serviceDialog.getListAll;
+
+			const findOneDialog = findAllDialogs.find(
+				(item: any) => intentName === item?.name,
 			);
 
 			const runParams: TBaseDialogCtor = {

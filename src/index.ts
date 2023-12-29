@@ -38,6 +38,7 @@ export class Engine {
 		this.initCxperiumService();
 		this.initDialogService();
 
+		// Initialize app services.
 		this.initAppService(
 			this.serviceCxperiumMain,
 			this.serviceCxperiumContact,

@@ -15,7 +15,7 @@ export class UtilDialog implements IUtilsDialog {
 	serviceDialog!: ServiceDialog;
 
 	public initDialogProperties(data: TSrcIndexConfig): void {
-		this.dialogPath = path.join(data.srcPath, '/', 'dialog');
+		this.dialogPath = path.join(data.srcPath, '/', 'dialogs');
 	}
 
 	public initDialogService() {
