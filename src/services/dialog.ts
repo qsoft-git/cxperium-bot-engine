@@ -5,6 +5,9 @@ const { NODE_ENV } = process.env;
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Types.
+import { TBaseDialogCtor } from '../types/base-dialog';
+
 export default class {
 	private folderPath!: string;
 	public listAll!: string[];
@@ -14,25 +17,11 @@ export default class {
 		this.initList();
 	}
 
-	public async run({
-		dialogPath,
-		appServices,
-		reqServices,
-	}: {
-		dialogPath: string;
-		activity: any;
-		appServices: any;
-		reqServices: any;
-	}): Promise<any> {
-		const filePath = path.join(this.folderPath, dialogPath);
+	public async run(data: TBaseDialogCtor): Promise<any> {
+		const filePath = path.join(this.folderPath, data.dialogPath);
 		const dialogImport = await import(filePath);
 
-		const dialog = new dialogImport.default({
-			dialogPath,
-			appServices,
-			reqServices,
-		});
-
+		const dialog = new dialogImport.default(data);
 		dialog.runDialog();
 	}
 

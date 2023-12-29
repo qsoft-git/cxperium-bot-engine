@@ -15,5 +15,7 @@ export default class {
 		this.activity = data.activity;
 		this.contact = data.contact;
 		this.conversation = data.conversation;
+
+		console.log('data', data);
 	}
 }

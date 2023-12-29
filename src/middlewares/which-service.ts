@@ -22,13 +22,13 @@ export default class {
 			// return;
 
 			if (service.startsWith('/whatsapp')) {
-				res.locals.service = 'WHATSAPP';
+				res.locals.whichService = 'WHATSAPP';
 				next();
 			} else if (service.startsWith('/teams')) {
-				res.locals.service = 'TEAMS';
+				res.locals.whichService = 'TEAMS';
 				next();
 			} else if (service.startsWith('/webchat')) {
-				res.locals.service = 'WEBCHAT';
+				res.locals.whichService = 'WEBCHAT';
 				next();
 			} else {
 				res.send();
