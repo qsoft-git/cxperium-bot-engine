@@ -27,13 +27,12 @@ export default class extends ServiceCxperium {
 		);
 	}
 
-	async getAllLanguage(): Promise<void> {
+	async getAllLanguage(): Promise<TCxperiumLanguage[]> {
 		const cached: TCxperiumLanguage[] | undefined =
 			this.cache.get('GET_ALL_LANGUAGE');
 
-		// if (cached) return cached;
+		if (cached) return cached;
 
-		// const languages: Language[];
 		const response = (await fetch(
 			`${this.baseUrl}/api/assistant/localization`,
 			{
@@ -45,11 +44,8 @@ export default class extends ServiceCxperium {
 			},
 		).then((response) => response.json())) as any;
 
-		const res = response;
-
-		for (const [key, value] of Object.entries(response.data.data) as any) {
-			console.log();
-
+		let languages!: TCxperiumLanguage[];
+		for (const [, value] of Object.entries(response.data.data) as any) {
 			const language: TCxperiumLanguage = {
 				id: value.languageId,
 				cultureCode: value.cultureCode,
@@ -57,40 +53,49 @@ export default class extends ServiceCxperium {
 				isDefault: Boolean(value.isDefault),
 				data: value.data,
 			};
+
+			languages.push(language);
 		}
 
-		// this.cache.set('ALL_LANGUAGES', languages);
+		this.cache.set('ALL_LANGUAGES', languages);
 
-		// return languages;
+		return languages;
 	}
 
-	// public static void ClearCache()
-	// {
-	//     CacheManager.Clear(CacheKeys.GET_ALL_LANGUAGE);
-	// }
+	async ClearCache() {
+		this.cache.flushAll();
+	}
 
-	// public static Language GetLanguageById(int languageId)
-	// {
-	//     return GetAllLanguage().FirstOrDefault(x => x.Id == languageId);
-	// }
+	async getLanguageById(languageId: number) {
+		const languages = await this.getAllLanguage();
 
-	// public static string GetLanguageByKey(int languageId, string key)
-	// {
-	//     var languages = GetAllLanguage().Where(x => x.Id == languageId).ToList();
+		for (const language of languages) {
+			if (language.id == languageId) return language;
+		}
+	}
 
-	//     foreach (var language in languages)
-	//     {
-	//         if (language.Data.ContainsKey(key))
-	//         {
-	//             return language.Data[key];
-	//         }
-	//     }
+	async getLanguageByKey(languageId: number, key: string) {
+		const languages = await this.getAllLanguage();
 
-	//     return null;
-	// }
+		for (const language of languages) {
+			if (language.id == languageId) {
+				for (const [k, v] of Object.entries(language.data) as any) {
+					if (k === key) {
+						return v;
+					}
+				}
+			}
+		}
 
-	// public static Language GetDefaultLanguge()
-	// {
-	//     return GetAllLanguage().Find(x => x.IsDefault == true);
-	// }
+		return null;
+	}
+
+	async getDefaultLanguage() {
+		let defaultLanguages!: TCxperiumLanguage[];
+		const languages = await this.getAllLanguage();
+
+		for (const language of languages) {
+			if (Boolean(language.isDefault)) defaultLanguages.push(language);
+		}
+	}
 }
