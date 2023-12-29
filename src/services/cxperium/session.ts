@@ -6,10 +6,18 @@ import ServiceCxperium from '.';
 
 // Interfaces.
 import { ICxperiumParams } from '../../interfaces/services/cxperium';
+import ServiceCxperiumContact from './contact';
+import ServiceCxperiumConversation from './conversation';
 
 export default class extends ServiceCxperium {
+	serviceCxperiumContact!: ServiceCxperiumContact;
+	serviceCxperiumConversation!: ServiceCxperiumConversation;
 	constructor(data: ICxperiumParams) {
 		super(data);
+		this.serviceCxperiumContact = new ServiceCxperiumContact(data);
+		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
+			data,
+		);
 	}
 
 	async createOrUpdateSession(
@@ -39,19 +47,28 @@ export default class extends ServiceCxperium {
 			},
 		});
 
-		// await updateConversationSessionTime(phone);
+		await this.updateConversationSessionTime(phone);
 	}
 
-	// async updateConversationSessionTime(phone: string) {
-	// 	const contact = await getContactByPhone(phone);
+	async updateConversationSessionTime(phone: string) {
+		const contact =
+			await this.serviceCxperiumContact.getContactByPhone(phone);
 
-	// 	if (contact)
-	// 		await updateContactConversationDateByContactId(contact._id);
-	// }
+		if (contact)
+			await this.serviceCxperiumContact.updateContactConversationDateByContactId(
+				contact._id,
+			);
+	}
 
-	// async getAllActiveSessions() {
-	// 	const client = await axios();
-	// 	const response = client.get('/api/assistant/session');
-	// 	return response;
-	// }
+	async getAllActiveSessions() {
+		const response = (await fetch(this.baseUrl + '/api/assistant/session', {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apiKey: this.apiKey,
+			},
+		}).then((response) => response.json())) as any;
+
+		return response;
+	}
 }

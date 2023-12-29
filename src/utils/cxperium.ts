@@ -14,6 +14,8 @@ import ServiceCxperiumIntent from '../services/cxperium/intent';
 import ServiceCxperiumReport from '../services/cxperium/report';
 import ServiceCxperiumTicket from '../services/cxperium/ticket';
 import ServiceCxperiumSession from '../services/cxperium/session';
+import ServiceCxperiumConversation from '../services/cxperium/conversation';
+import ServiceCxperiumLanguage from '../services/cxperium/language';
 
 // Export default module.
 export class UtilCxperium implements IUtilsCxperium {
@@ -26,6 +28,8 @@ export class UtilCxperium implements IUtilsCxperium {
 	serviceCxperiumReport!: ServiceCxperiumReport;
 	serviceCxperiumTicket!: ServiceCxperiumTicket;
 	serviceCxperiumSession!: ServiceCxperiumSession;
+	serviceCxperiumConversation!: ServiceCxperiumConversation;
+	serviceCxperiumLanguage!: ServiceCxperiumLanguage;
 
 	public initCxperiumProperties({
 		apiKey: _apiKey,
@@ -52,5 +56,9 @@ export class UtilCxperium implements IUtilsCxperium {
 		this.serviceCxperiumReport = new ServiceCxperiumReport(params);
 		this.serviceCxperiumTicket = new ServiceCxperiumTicket(params);
 		this.serviceCxperiumSession = new ServiceCxperiumSession(params);
+		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
+			params,
+		);
+		this.serviceCxperiumLanguage = new ServiceCxperiumLanguage(params);
 	}
 }

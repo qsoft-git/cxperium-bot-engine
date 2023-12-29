@@ -139,7 +139,7 @@ export default class extends ServiceCxperium {
 		});
 	}
 
-	async getContactByPhone(phone: string): Promise<unknown> {
+	async getContactByPhone(phone: string): Promise<Contact> {
 		const response = (await fetch(
 			`${this.baseUrl}/api/contacts/phone/${phone}`,
 			{

@@ -30,6 +30,8 @@ import ServiceCxperiumIntent from '../services/cxperium/intent';
 import ServiceCxperiumReport from '../services/cxperium/report';
 import ServiceCxperiumTicket from '../services/cxperium/ticket';
 import ServiceCxperiumSession from '../services/cxperium/session';
+import ServiceCxperiumConversation from '../services/cxperium/conversation';
+import ServiceCxperiumLanguage from '../services/cxperium/language';
 
 export class UtilApp implements IUtilsApp {
 	app!: Application;
@@ -99,6 +101,8 @@ export class UtilApp implements IUtilsApp {
 		serviceCxperiumReport: ServiceCxperiumReport,
 		serviceCxperiumTicket: ServiceCxperiumTicket,
 		serviceCxperiumSession: ServiceCxperiumSession,
+		serviceCxperiumConversation: ServiceCxperiumConversation,
+		serviceCxperiumLanguage: ServiceCxperiumLanguage,
 	): void {
 		this.app.locals.service.cxperium.main = serviceCxperiumMain;
 		this.app.locals.service.cxperium.contact = serviceCxperiumContact;
@@ -107,6 +111,9 @@ export class UtilApp implements IUtilsApp {
 		this.app.locals.service.cxperium.report = serviceCxperiumReport;
 		this.app.locals.service.cxperium.ticket = serviceCxperiumTicket;
 		this.app.locals.service.cxperium.session = serviceCxperiumSession;
+		this.app.locals.service.cxperium.conversation =
+			serviceCxperiumConversation;
+		this.app.locals.service.cxperium.language = serviceCxperiumLanguage;
 	}
 
 	public execute(): void {

@@ -42,6 +42,8 @@ export class Engine {
 			this.serviceCxperiumReport,
 			this.serviceCxperiumTicket,
 			this.serviceCxperiumSession,
+			this.serviceCxperiumConversation,
+			this.serviceCxperiumLanguage,
 		);
 
 		// Test dialog run.

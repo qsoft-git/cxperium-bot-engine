@@ -26,7 +26,7 @@ export default class extends ServiceCxperium {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
-				apiKey: this.apiKey,
+				apikey: this.apiKey,
 			},
 		}).then((response) => response.json())) as any;
 
