@@ -1,11 +1,11 @@
-type TCxperiumContactResponse = {
+export type TCxperiumContactResponse = {
 	status: number;
 	success: boolean;
 	message: string;
 	data: TCxperiumData;
 };
 
-type TCxperiumContact = {
+export type TCxperiumContact = {
 	_id: string;
 	delete: boolean;
 	phone: string;
@@ -31,5 +31,3 @@ type TCxperiumTag = {
 	createdAt: Date;
 	updatedAt: Date;
 };
-
-export { TCxperiumContactResponse, TCxperiumContact };

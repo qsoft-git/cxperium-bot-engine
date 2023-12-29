@@ -1,5 +1,7 @@
 // Node modules.
 import { Request, Response, NextFunction } from 'express';
+
+// Types.
 import {
 	TActivity,
 	TTextMessage,

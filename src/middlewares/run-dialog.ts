@@ -1,13 +1,9 @@
 // Node modules.
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
 // Services.
 export default class {
-	public static async execute(
-		req: Request,
-		res: Response,
-		next: NextFunction,
-	): Promise<void> {
+	public static async execute(req: Request, res: Response): Promise<void> {
 		const activity = res.locals.activity;
 		const serviceCxperiumIntent = res.app.locals.service.cxperium.intent;
 		const serviceDialog = res.app.locals.service.dialog;

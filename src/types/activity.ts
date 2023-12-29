@@ -1,4 +1,3 @@
-// Types.
 export type TTextMessage = {
 	from: string;
 	type: 'text';

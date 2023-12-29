@@ -2,7 +2,7 @@
 import { TActivity } from '../types/activity';
 import { TCxperiumContact } from '../types/cxperium/contact';
 
-// Service.
+// Services.
 import BaseConversation from './conversation';
 
 export default class {

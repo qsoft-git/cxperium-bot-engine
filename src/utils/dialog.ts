@@ -8,7 +8,6 @@ import ServiceDialog from '../services/dialog';
 import { IUtilsDialog } from '../interfaces/utils/dialog';
 import { ISrcIndexConfig } from '../interfaces/src-index';
 
-// Export default module.
 export class UtilDialog implements IUtilsDialog {
 	dialogPath!: string;
 	serviceDialog!: ServiceDialog;

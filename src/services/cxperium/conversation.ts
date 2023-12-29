@@ -1,4 +1,4 @@
-// Modules.
+// Node modules.
 import fetch from 'node-fetch';
 
 // Services.

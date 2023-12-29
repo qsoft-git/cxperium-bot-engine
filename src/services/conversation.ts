@@ -1,3 +1,4 @@
+// Types.
 import { TConversation } from '../types/conversation';
 
 export default class BaseConversation {
