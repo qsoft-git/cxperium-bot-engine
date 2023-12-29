@@ -19,8 +19,4 @@ export default class {
 		this.contact = _contact;
 		this.conversation = _conversation;
 	}
-
-	ssss() {
-		this.conversation;
-	}
 }
