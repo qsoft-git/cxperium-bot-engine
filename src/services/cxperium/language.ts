@@ -1,13 +1,18 @@
+// Node modules.
 import fetch from 'node-fetch';
 
 // Services.
 import ServiceCxperium from '.';
-
-// Interfaces.
-import { ICxperiumParams } from '../../interfaces/services/cxperium';
 import ServiceCxperiumContact from './contact';
 import ServiceCxperiumConversation from './conversation';
-import { Language } from '../../types/cxperium/language';
+
+// Intefaces.
+import { ICxperiumParams } from '../../interfaces/services/cxperium';
+
+// Types.
+import { TCxperiumLanguage } from '../../types/cxperium/language';
+
+// Utils.
 import UtilConfig from '../../utils/config';
 
 export default class extends ServiceCxperium {
@@ -23,14 +28,14 @@ export default class extends ServiceCxperium {
 	}
 
 	async getAllLanguage(): Promise<void> {
-		const cached: Language[] | undefined =
+		const cached: TCxperiumLanguage[] | undefined =
 			this.cache.get('GET_ALL_LANGUAGE');
 
 		// if (cached) return cached;
 
 		// const languages: Language[];
 		const response = (await fetch(
-			this.baseUrl + 'api/assistant/localization',
+			`${this.baseUrl}/api/assistant/localization`,
 			{
 				method: 'GET',
 				headers: {

@@ -1,4 +1,4 @@
-type User = {
+type TCxperiumUser = {
 	_id: string;
 	firstname: string;
 	lastname: string;
@@ -7,6 +7,6 @@ type User = {
 	status: boolean;
 };
 
-export type UserResponse = {
-	data: User[];
+export type TCxperiumUserResponse = {
+	data: TCxperiumUser[];
 };

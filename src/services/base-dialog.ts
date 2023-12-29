@@ -1,23 +1,26 @@
+// Types.
+import { TActivity } from '../types/activity';
+import { TCxperiumContact } from '../types/cxperium/contact';
+
+// Service.
+import BaseConversation from './conversation';
+
 export default class {
-	private name: string;
-	private description: string;
+	contact: TCxperiumContact;
+	activity: TActivity;
+	conversation: BaseConversation;
 
-	constructor({
-		name: _name,
-		description: _description,
-	}: {
-		name: string;
-		description: string;
-	}) {
-		this.name = _name;
-		this.description = _description;
+	constructor(
+		_contact: TCxperiumContact,
+		_activity: TActivity,
+		_conversation: BaseConversation,
+	) {
+		this.activity = _activity;
+		this.contact = _contact;
+		this.conversation = _conversation;
 	}
 
-	public get getName(): string {
-		return this.name;
-	}
-
-	public get getDescription(): string {
-		return this.description;
+	ssss() {
+		this.conversation;
 	}
 }

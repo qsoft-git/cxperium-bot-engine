@@ -3,11 +3,11 @@ import fetch from 'node-fetch';
 
 // Services.
 import ServiceCxperium from '.';
+import ServiceCxperiumContact from './contact';
+import ServiceCxperiumConversation from './conversation';
 
 // Interfaces.
 import { ICxperiumParams } from '../../interfaces/services/cxperium';
-import ServiceCxperiumContact from './contact';
-import ServiceCxperiumConversation from './conversation';
 
 export default class extends ServiceCxperium {
 	serviceCxperiumContact!: ServiceCxperiumContact;

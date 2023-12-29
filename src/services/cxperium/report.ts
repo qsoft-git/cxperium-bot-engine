@@ -7,7 +7,7 @@ import ServiceCxperium from '.';
 // Interfaces.
 import { ICxperiumParams } from '../../interfaces/services/cxperium';
 
-// Config.
+// Utils.
 import UtilConfig from '../../utils/config';
 
 export default class extends ServiceCxperium {

@@ -1,4 +1,4 @@
-export type Language = {
+export type TCxperiumLanguage = {
 	id: number;
 	name: string;
 	value: string;

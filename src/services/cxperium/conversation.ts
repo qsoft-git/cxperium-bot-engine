@@ -15,7 +15,7 @@ export default class extends ServiceCxperium {
 		this.serviceContactService = new ServiceCxperiumContact(data);
 	}
 
-	async ChatExists(contactId: string) {
+	async chatExists(contactId: string) {
 		const response = (await fetch(`${this.baseUrl}/api/chat`, {
 			method: 'GET',
 			headers: {
@@ -32,7 +32,7 @@ export default class extends ServiceCxperium {
 		return null;
 	}
 
-	async GetContactIdByChatId(chatId: string) {
+	async getContactIdByChatId(chatId: string) {
 		const response = (await fetch(`${this.baseUrl}/api/chat`, {
 			method: 'POST',
 			headers: {
@@ -49,7 +49,7 @@ export default class extends ServiceCxperium {
 		return null;
 	}
 
-	async Create(contactId: string) {
+	async create(contactId: string) {
 		const body = { contactId: contactId };
 		const response = (await fetch(`${this.baseUrl}/api/chat`, {
 			method: 'GET',

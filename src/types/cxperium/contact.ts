@@ -1,28 +1,28 @@
-type CxperiumContact = {
+type TCxperiumContactResponse = {
 	status: number;
 	success: boolean;
 	message: string;
-	data: Data;
+	data: TCxperiumData;
 };
 
-type Contact = {
+type TCxperiumContact = {
 	_id: string;
 	delete: boolean;
 	phone: string;
 	user_id: string;
 	email: string;
-	tags: Tag[];
+	tags: TCxperiumTag[];
 	userProfileName: string;
 	custom: object;
 	createdAt: Date;
 	updatedAt: Date;
 };
 
-type Data = {
-	data: Contact[];
+type TCxperiumData = {
+	data: TCxperiumContact[];
 };
 
-type Tag = {
+type TCxperiumTag = {
 	_id: string;
 	user_id: string;
 	name: string;
@@ -32,4 +32,4 @@ type Tag = {
 	updatedAt: Date;
 };
 
-export { CxperiumContact, Contact };
+export { TCxperiumContactResponse, TCxperiumContact };

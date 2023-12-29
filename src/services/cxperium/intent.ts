@@ -6,9 +6,11 @@ import ServiceCxperium from '.';
 
 // Interfaces.
 import { ICxperiumParams } from '../../interfaces/services/cxperium';
-import { Intent } from '../../types/cxperium/intent';
 
-// Config.
+// Types.
+import { TCxperiumIntent } from '../../types/cxperium/intent';
+
+// Utils.
 import UtilConfig from '../../utils/config';
 
 export default class extends ServiceCxperium {
@@ -18,8 +20,9 @@ export default class extends ServiceCxperium {
 		this.getAllIntents();
 	}
 
-	async getAllIntents(): Promise<Intent[]> {
-		const cached: Intent[] | undefined = this.cache.get('all-intents');
+	async getAllIntents(): Promise<TCxperiumIntent[]> {
+		const cached: TCxperiumIntent[] | undefined =
+			this.cache.get('all-intents');
 
 		if (cached) return cached;
 
@@ -31,10 +34,10 @@ export default class extends ServiceCxperium {
 			},
 		}).then((response) => response.json())) as any;
 
-		const intents: Intent[] = [];
+		const intents: TCxperiumIntent[] = [];
 
 		for (const intent of response.data.data) {
-			const int: Intent = {
+			const int: TCxperiumIntent = {
 				name: intent.intentName,
 				regexValue: intent.regexValue,
 				languageId: intent.languageId,

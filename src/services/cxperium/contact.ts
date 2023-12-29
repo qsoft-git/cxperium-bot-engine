@@ -6,7 +6,9 @@ import ServiceCxperium from '.';
 
 // Interfaces.
 import { ICxperiumParams } from '../../interfaces/services/cxperium';
-import { Contact } from '../../types/cxperium/contact';
+
+// Types.
+import { TCxperiumContact } from '../../types/cxperium/contact';
 
 export default class extends ServiceCxperium {
 	constructor(data: ICxperiumParams) {
@@ -42,7 +44,7 @@ export default class extends ServiceCxperium {
 			}).then((response) => response.json())) as any;
 
 			if (response.status == 201) {
-				const contact: Contact = {
+				const contact: TCxperiumContact = {
 					_id: response?.data?._id,
 					phone: response?.data?.phone,
 					email: response?.data?.email,
@@ -108,7 +110,7 @@ export default class extends ServiceCxperium {
 		).then((response) => response.json())) as any;
 
 		if (response.status == 201) {
-			const contact: Contact = {
+			const contact: TCxperiumContact = {
 				_id: response?.data?._id,
 				phone: response?.data?.phone,
 				email: response?.data?.email,
@@ -139,7 +141,7 @@ export default class extends ServiceCxperium {
 		});
 	}
 
-	async getContactByPhone(phone: string): Promise<Contact> {
+	async getContactByPhone(phone: string): Promise<TCxperiumContact> {
 		const response = (await fetch(
 			`${this.baseUrl}/api/contacts/phone/${phone}`,
 			{
@@ -152,7 +154,7 @@ export default class extends ServiceCxperium {
 		).then((response) => response.json())) as any;
 
 		if (response.status == 201) {
-			const contact: Contact = {
+			const contact: TCxperiumContact = {
 				_id: response?.data?._id,
 				phone: response?.data?.phone,
 				email: response?.data?.email,
@@ -187,7 +189,10 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json())) as any;
 	}
 
-	async updateContactByCustomFields(contact: Contact, attributes: object) {
+	async updateContactByCustomFields(
+		contact: TCxperiumContact,
+		attributes: object,
+	) {
 		const body: Record<string, any> = {};
 
 		if (attributes) {
@@ -206,7 +211,7 @@ export default class extends ServiceCxperium {
 		});
 	}
 
-	async updateGdprApprovalStatus(contact: Contact, status: boolean) {
+	async updateGdprApprovalStatus(contact: TCxperiumContact, status: boolean) {
 		const body: Record<string, any> = {};
 
 		body['custom']['isKvkkApproved'] = status;
@@ -221,7 +226,10 @@ export default class extends ServiceCxperium {
 		});
 	}
 
-	async updateSurveyTransferStatus(contact: Contact, status: boolean) {
+	async updateSurveyTransferStatus(
+		contact: TCxperiumContact,
+		status: boolean,
+	) {
 		const body: Record<string, any> = {};
 
 		body['custom']['isSurveyTransfer'] = status;
@@ -236,7 +244,7 @@ export default class extends ServiceCxperium {
 		});
 	}
 
-	async updateLiveTransferStatus(contact: Contact, status: boolean) {
+	async updateLiveTransferStatus(contact: TCxperiumContact, status: boolean) {
 		const body: Record<string, any> = {};
 
 		body['custom']['isLiveTransfer'] = status;

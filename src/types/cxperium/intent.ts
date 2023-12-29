@@ -1,4 +1,4 @@
-export type Intent = {
+export type TCxperiumIntent = {
 	name: string;
 	regexValue: string;
 	languageId: number;

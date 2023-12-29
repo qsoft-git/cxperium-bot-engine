@@ -1,73 +1,12 @@
 // Node modules.
 import { Request, Response, NextFunction } from 'express';
-
-// Types.
-type TextMessage = {
-	from: string;
-	type: 'text';
-	text: {
-		body: string;
-	};
-};
-
-type ImageMessage = {
-	from: string;
-	type: 'image';
-	image: {
-		id: string;
-		mimeType: string;
-		sha256: string;
-		byteContent: Buffer;
-	};
-};
-
-type DocumentMessage = {
-	from: string;
-	type: 'document';
-	document: {
-		id: string;
-		mimeType: string;
-		sha256: string;
-		byteContent: Buffer;
-	};
-};
-
-type InteractiveMessage = {
-	from: string;
-	type: 'interactive';
-	interactive: {
-		list_reply: {
-			id: string;
-			text: string;
-		};
-		button_reply: {
-			id: string;
-			text: string;
-		};
-	};
-};
-
-type Activity = {
-	from: string;
-	type: string;
-	text: string;
-	document: {
-		id: string;
-		byteContent: Buffer;
-		mimeType: string;
-		sha256: string;
-	};
-	image: {
-		id: string;
-		byteContent: Buffer;
-		mimeType: string;
-		sha256: string;
-	};
-	value: {
-		id: string;
-		text: string;
-	};
-};
+import {
+	TActivity,
+	TTextMessage,
+	TImageMessage,
+	TDocumentMessage,
+	TInteractiveMessage,
+} from '../types/activity';
 
 export default class {
 	public static execute(
@@ -80,11 +19,11 @@ export default class {
 			const type = data.type;
 
 			const activity:
-				| Activity
-				| TextMessage
-				| ImageMessage
-				| DocumentMessage
-				| InteractiveMessage = {
+				| TActivity
+				| TTextMessage
+				| TImageMessage
+				| TDocumentMessage
+				| TInteractiveMessage = {
 				from: data.from,
 				type: '',
 				text: '',
