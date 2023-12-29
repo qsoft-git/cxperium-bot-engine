@@ -1,5 +1,7 @@
 // Node modules.
 import { Application } from 'express';
+
+// Interfaces.
 import { ISrcIndexConfig } from '../src-index';
 
 export interface IUtilsApp {
