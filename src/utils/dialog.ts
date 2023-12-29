@@ -27,13 +27,13 @@ export class UtilDialog implements IUtilsDialog {
 
 		data = listFilesAndFolders(this.dialogPath);
 
-		data = catctFileExtension(data);
+		data = catchFileExtension(data);
 
-		data = replateFullPath(data, this.dialogPath);
+		data = replaceFullPath(data, this.dialogPath);
 
 		this.dialogList = data;
 
-		function replateFullPath(array: string[], dialogPath: string): any {
+		function replaceFullPath(array: string[], dialogPath: string): any {
 			return array.map((file: string) => {
 				const newFileArray = [];
 				const filePathReplace = file.replace(dialogPath, '');
@@ -67,7 +67,7 @@ export class UtilDialog implements IUtilsDialog {
 			});
 		}
 
-		function catctFileExtension(array: string[]): string[] {
+		function catchFileExtension(array: string[]): string[] {
 			const catchFileExtension =
 				NODE_ENV === 'development' ? '.ts' : '.js';
 			const filterData: string[] = [];
