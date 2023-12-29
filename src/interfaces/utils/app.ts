@@ -1,8 +1,8 @@
 // Node modules.
 import { Application } from 'express';
 
-// Interfaces.
-import { ISrcIndexConfig } from '../src-index';
+// Types.
+import { TSrcIndexConfig } from '../../types/src-index';
 
 export interface IUtilsApp {
 	app: Application;
@@ -10,7 +10,7 @@ export interface IUtilsApp {
 	port: string;
 	publicPath: string;
 	execute(): void;
-	initAppProperties(data: ISrcIndexConfig): void;
+	initAppProperties(data: TSrcIndexConfig): void;
 	initExpress(): void;
 	initMiddlewares(): void;
 	initGeneralMiddlewares(): void;

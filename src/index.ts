@@ -4,8 +4,11 @@ import { UtilDialog } from './utils/dialog';
 import { UtilCxperium } from './utils/cxperium';
 
 // Interfaces.
-import { ISrcIndexConfig } from './interfaces/src-index';
 import { IDialog } from './interfaces/dialog';
+
+// Types.
+import { TSrcIndexConfig } from './types/src-index';
+import { TBaseDialogCtor } from './types/base-dialog';
 
 // Services.
 import ServiceBaseDialog from './services/base-dialog';
@@ -17,7 +20,7 @@ import applyClassMixins from './helpers/apply-class-mixins';
 export interface Engine extends UtilApp, UtilDialog, UtilCxperium {}
 
 export class Engine {
-	constructor(data: ISrcIndexConfig) {
+	constructor(data: TSrcIndexConfig) {
 		// Initialize express application.
 		this.initExpress();
 
@@ -52,4 +55,4 @@ export class Engine {
 
 applyClassMixins.run(Engine, [UtilApp, UtilDialog, UtilCxperium]);
 
-export { ServiceBaseDialog, IDialog };
+export { ServiceBaseDialog, IDialog, TBaseDialogCtor };

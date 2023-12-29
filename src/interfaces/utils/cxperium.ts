@@ -1,5 +1,5 @@
-// Interfaces.
-import { ISrcIndexConfig } from '../src-index';
+// Types.
+import { TSrcIndexConfig } from '../../types/src-index';
 
 // Services.
 import ServiceCxperiumMain from '../../services/cxperium/main';
@@ -24,6 +24,6 @@ export interface IUtilsCxperium {
 	serviceCxperiumSession: ServiceCxperiumSession;
 	serviceCxperiumConversation: ServiceCxperiumConversation;
 	serviceCxperiumLanguage: ServiceCxperiumLanguage;
-	initCxperiumProperties: (data: ISrcIndexConfig) => void;
+	initCxperiumProperties: (data: TSrcIndexConfig) => void;
 	initCxperiumService: () => void;
 }

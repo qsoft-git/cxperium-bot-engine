@@ -1,5 +1,5 @@
-// Interfaces.
-import { ISrcIndexConfig } from '../src-index';
+// Types.
+import { TSrcIndexConfig } from '../../types/src-index';
 
 // Services.
 import ServiceDialog from '../../services/dialog';
@@ -7,6 +7,6 @@ import ServiceDialog from '../../services/dialog';
 export interface IUtilsDialog {
 	dialogPath: string;
 	serviceDialog: ServiceDialog;
-	initDialogProperties: (data: ISrcIndexConfig) => void;
+	initDialogProperties: (data: TSrcIndexConfig) => void;
 	initDialogService: () => void;
 }

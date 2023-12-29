@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 // Services.
 export default class {
-	public static async execute(req: Request, res: Response): Promise<void> {
+	public static async execute(_req: Request, res: Response): Promise<void> {
 		const activity = res.locals.activity;
 		const serviceCxperiumIntent = res.app.locals.service.cxperium.intent;
 		const serviceDialog = res.app.locals.service.dialog;

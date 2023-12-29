@@ -3,8 +3,10 @@ import DataGeneral from '../data/general';
 
 // Interfaces.
 import { IUtilsCxperium } from '../interfaces/utils/cxperium';
-import { ISrcIndexConfig } from '../interfaces/src-index';
-import { ICxperiumParams } from '../interfaces/services/cxperium';
+import { TCxperiumServiceParams } from '../types/cxperium/service';
+
+// Types.
+import { TSrcIndexConfig } from '../types/src-index';
 
 // Services.
 import ServiceCxperiumMain from '../services/cxperium/main';
@@ -34,7 +36,7 @@ export class UtilCxperium implements IUtilsCxperium {
 	public initCxperiumProperties({
 		apiKey: _apiKey,
 		callbackUrl: _callbackUrl,
-	}: ISrcIndexConfig): void {
+	}: TSrcIndexConfig): void {
 		this.apiKey = _apiKey;
 		this.callbackUrl = _callbackUrl;
 
@@ -44,7 +46,7 @@ export class UtilCxperium implements IUtilsCxperium {
 	}
 
 	public initCxperiumService() {
-		const params: ICxperiumParams = {
+		const params: TCxperiumServiceParams = {
 			apikey: this.apiKey,
 			callbackUrl: this.callbackUrl,
 			baseUrl: DataGeneral.cxperiumBaseUrl,

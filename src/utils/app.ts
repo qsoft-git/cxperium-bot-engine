@@ -20,7 +20,9 @@ import middlewareMain from '../middlewares/main';
 
 // Interfaces.
 import { IUtilsApp } from '../interfaces/utils/app';
-import { ISrcIndexConfig } from '../interfaces/src-index';
+
+// Types.
+import { TSrcIndexConfig } from '../types/src-index';
 
 // Services.
 import ServiceCxperiumMain from '../services/cxperium/main';
@@ -48,7 +50,7 @@ export class UtilApp implements IUtilsApp {
 		host: _host,
 		port: _port,
 		srcPath: _srcPath,
-	}: ISrcIndexConfig): void {
+	}: TSrcIndexConfig): void {
 		this.port = _port || '3978';
 		this.host = _host || 'localhost';
 		this.publicPath = path.join(_srcPath, '/', 'public');
