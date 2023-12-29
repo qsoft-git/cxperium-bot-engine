@@ -47,15 +47,17 @@ export default class extends ServiceCxperium {
 
 		const res = response;
 
-		// for (const lang in response.data.data) {
-		// 	const language: Language = {
-		// 		id: lang.languageId,
-		// 		cultureCode: lang['cultureCode'],
-		// 		name: lang['name'],
-		// 	};
+		for (const [key, value] of Object.entries(response.data.data) as any) {
+			console.log();
 
-		// 	language.data[lang.key] = lang.value;
-		// }
+			const language: TCxperiumLanguage = {
+				id: value.languageId,
+				cultureCode: value.cultureCode,
+				name: value.name,
+				isDefault: Boolean(value.isDefault),
+				data: value.data,
+			};
+		}
 
 		// this.cache.set('ALL_LANGUAGES', languages);
 
