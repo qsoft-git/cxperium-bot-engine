@@ -27,51 +27,26 @@ export class Engine {
 		// Initialize middlewares.
 		this.initMiddlewares();
 
-		// Initialize dialog.
-		this.initDialogProperties(data);
-		// this.initDialogList();
-
-		// Initialize cxperium.
+		// Initialize properties.
 		this.initCxperiumProperties(data);
-		// this.initServiceMain();
-		// this.initCxperiumService(
-		// 	this.serviceCxperiumMain,
-		// 	this.serviceCxperiumContact,
-		// 	this.serviceCxperiumUser,
-		// 	this.serviceCxperiumIntent,
-		// 	this.serviceCxperiumReport,
-		// 	this.serviceCxperiumTicket,
-		// 	this.serviceCxperiumSession,
-		// 	this.serviceCxperiumConversation,
-		// 	this.serviceCxperiumLanguage,
-		// );
-		// this.initCxperiumService();
-		// this.initCxperiumService(
-		// 	this.serviceCxperiumMain,
-		// 	this.serviceCxperiumContact,
-		// 	this.serviceCxperiumUser,
-		// 	this.serviceCxperiumIntent,
-		// 	this.serviceCxperiumReport,
-		// 	this.serviceCxperiumTicket,
-		// 	this.serviceCxperiumSession,
-		// );
+		this.initDialogProperties(data);
 
-		// Initialize other service.
-		// this.initDialogService(this.dialogList, this.runDialog);
+		// Initialize services.
+		this.initCxperiumService();
+		this.initDialogService();
 
-		// Test dialog run.
-		// const testDialog: any = this.dialogList.find(
-		// 	(dialog: any) => dialog.name === 'TEST',
-		// );
-
-		// console.log(testDialog.path);
-		// this.catchDialog(testDialog.path).then((Dialog) => {
-		// 	const dialog = new Dialog.default({
-		// 		name: 'Test Dialog',
-		// 		description: 'Test Dialog Description',
-		// 	});
-		// 	dialog.runDialog();
-		// });
+		this.initAppService(
+			this.serviceCxperiumMain,
+			this.serviceCxperiumContact,
+			this.serviceCxperiumUser,
+			this.serviceCxperiumIntent,
+			this.serviceCxperiumReport,
+			this.serviceCxperiumTicket,
+			this.serviceCxperiumSession,
+			this.serviceCxperiumConversation,
+			this.serviceCxperiumLanguage,
+			this.serviceDialog,
+		);
 	}
 }
 

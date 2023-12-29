@@ -32,6 +32,7 @@ import ServiceCxperiumTicket from '../services/cxperium/ticket';
 import ServiceCxperiumSession from '../services/cxperium/session';
 import ServiceCxperiumConversation from '../services/cxperium/conversation';
 import ServiceCxperiumLanguage from '../services/cxperium/language';
+import ServiceDialog from '../services/dialog';
 
 export class UtilApp implements IUtilsApp {
 	app!: Application;
@@ -94,7 +95,7 @@ export class UtilApp implements IUtilsApp {
 		}
 	}
 
-	initCxperiumService(
+	initAppService(
 		serviceCxperiumMain: ServiceCxperiumMain,
 		serviceCxperiumContact: ServiceCxperiumContact,
 		serviceCxperiumUser: ServiceCxperiumUser,
@@ -104,6 +105,7 @@ export class UtilApp implements IUtilsApp {
 		serviceCxperiumSession: ServiceCxperiumSession,
 		serviceCxperiumConversation: ServiceCxperiumConversation,
 		serviceCxperiumLanguage: ServiceCxperiumLanguage,
+		serviceDialog: ServiceDialog,
 	): void {
 		this.app.locals.service.cxperium.main = serviceCxperiumMain;
 		this.app.locals.service.cxperium.contact = serviceCxperiumContact;
@@ -115,11 +117,7 @@ export class UtilApp implements IUtilsApp {
 		this.app.locals.service.cxperium.conversation =
 			serviceCxperiumConversation;
 		this.app.locals.service.cxperium.language = serviceCxperiumLanguage;
-	}
-
-	initDialogService(listAll: any, run: any): void {
-		this.app.locals.service.dialog.listAll = listAll;
-		this.app.locals.service.dialog.run = run;
+		this.app.locals.service.dialog = serviceDialog;
 	}
 
 	public execute(): void {

@@ -28,13 +28,14 @@ export default class {
 				(item: any) => intentName === item.name,
 			);
 
-			serviceDialog.run(findOneDialog.path).then((Dialog: any) => {
-				const dialog = new Dialog.default({
-					name: 'Test Dialog',
-					description: 'Test Dialog Description',
-				});
-				dialog.runDialog();
-			});
+			serviceDialog
+				.run({
+					dialogPath: findOneDialog.path,
+					appServices: res.app.locals.service,
+					reqServices: res.locals.service,
+				})
+				.then(() => {})
+				.catch((error: any) => console.log(error));
 		}
 
 		res.send();

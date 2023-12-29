@@ -11,4 +11,6 @@ export interface IUtilsApp {
 	initAppProperties(data: ISrcIndexConfig): void;
 	initExpress(): void;
 	initMiddlewares(): void;
+	initGeneralMiddlewares(): void;
+	initAppService(...services: any[]): void;
 }

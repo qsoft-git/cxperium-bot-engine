@@ -6,25 +6,46 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export default class {
-	private dialogPath!: string;
-	private dialogList!: string[];
+	private folderPath!: string;
+	public listAll!: string[];
 
-	public async runDialog(file: string): Promise<any> {
-		const dialogImport = await import(path.join(this.dialogPath, file));
-
-		return new dialogImport.default();
+	constructor(_dialogPath: string) {
+		this.folderPath = _dialogPath;
+		this.initList();
 	}
 
-	public initDialogList(): void {
+	public async run({
+		dialogPath,
+		appServices,
+		reqServices,
+	}: {
+		dialogPath: string;
+		activity: any;
+		appServices: any;
+		reqServices: any;
+	}): Promise<any> {
+		const filePath = path.join(this.folderPath, dialogPath);
+		const dialogImport = await import(filePath);
+
+		const dialog = new dialogImport.default({
+			dialogPath,
+			appServices,
+			reqServices,
+		});
+
+		dialog.runDialog();
+	}
+
+	public initList(): void {
 		let data: any;
 
-		data = listFilesAndFolders(this.dialogPath);
+		data = listFilesAndFolders(this.folderPath);
 
 		data = catchFileExtension(data);
 
-		data = replaceFullPath(data, this.dialogPath);
+		data = replaceFullPath(data, this.folderPath);
 
-		this.dialogList = data;
+		this.listAll = data;
 
 		function replaceFullPath(array: string[], dialogPath: string): any {
 			return array.map((file: string) => {
