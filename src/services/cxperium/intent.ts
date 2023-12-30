@@ -4,15 +4,15 @@ import fetch from 'node-fetch';
 // Services.
 import ServiceCxperium from '.';
 
+// Datas.
+import DataGeneral from '../../data/general';
+
 // Types.
 import { TCxperiumIntent } from '../../types/cxperium/intent';
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
-// Utils.
-import UtilConfig from '../../utils/config';
-
 export default class extends ServiceCxperium {
-	private cache = UtilConfig.getInstance().cache;
+	private cache = DataGeneral.cache;
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
 		this.getAllIntents();

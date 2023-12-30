@@ -50,6 +50,7 @@ export class Engine {
 			this.serviceCxperiumConversation,
 			this.serviceCxperiumLanguage,
 			this.serviceCxperiumMessage,
+			this.serviceCxperiumConfiguration,
 			this.serviceDialog,
 		);
 	}

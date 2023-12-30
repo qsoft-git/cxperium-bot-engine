@@ -1,8 +1,16 @@
+import NodeCache from 'node-cache';
+
 // Variables.
-const data: { name: string; cxperiumBaseUrl: string; version: string } = {
+const data: {
+	name: string;
+	cxperiumBaseUrl: string;
+	version: string;
+	cache: NodeCache;
+} = {
 	name: '',
 	version: '',
 	cxperiumBaseUrl: 'https://api.cxperium.com',
+	cache: new NodeCache(),
 };
 
 export default {
@@ -20,5 +28,9 @@ export default {
 
 	set cxperiumBaseUrl(value: string) {
 		data.cxperiumBaseUrl = value;
+	},
+
+	get cache(): NodeCache {
+		return data.cache;
 	},
 };

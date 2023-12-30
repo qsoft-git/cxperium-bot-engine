@@ -11,6 +11,7 @@ import ServiceCxperiumTicket from '../../services/cxperium/ticket';
 import ServiceCxperiumSession from '../../services/cxperium/session';
 import ServiceCxperiumConversation from '../../services/cxperium/conversation';
 import ServiceCxperiumLanguage from '../../services/cxperium/language';
+import ServiceCxperiumConfiguration from '../../services/cxperium/configuration';
 
 export interface IUtilsCxperium {
 	apiKey: string;
@@ -24,6 +25,8 @@ export interface IUtilsCxperium {
 	serviceCxperiumSession: ServiceCxperiumSession;
 	serviceCxperiumConversation: ServiceCxperiumConversation;
 	serviceCxperiumLanguage: ServiceCxperiumLanguage;
+	serviceCxperiumConfiguration: ServiceCxperiumConfiguration;
+
 	initCxperiumProperties: (data: TSrcIndexConfig) => void;
 	initCxperiumService: () => void;
 }

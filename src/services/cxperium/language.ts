@@ -10,14 +10,14 @@ import ServiceCxperiumConversation from './conversation';
 import { TCxperiumLanguage } from '../../types/cxperium/language';
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
-// Utils.
-import UtilConfig from '../../utils/config';
+// Datas.
+import DataGeneral from '../../data/general';
 
 export default class extends ServiceCxperium {
 	serviceCxperiumContact!: ServiceCxperiumContact;
 	serviceCxperiumConversation!: ServiceCxperiumConversation;
 
-	private cache = UtilConfig.getInstance().cache;
+	private cache = DataGeneral.cache;
 
 	constructor(data: TCxperiumServiceParams) {
 		super(data);

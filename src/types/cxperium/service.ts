@@ -8,6 +8,8 @@ import ServiceCxperiumTicket from '../../services/cxperium/ticket';
 import ServiceCxperiumSession from '../../services/cxperium/session';
 import ServiceCxperiumConversation from '../../services/cxperium/conversation';
 import ServiceCxperiumLanguage from '../../services/cxperium/language';
+import ServiceCxperiumMessage from '../../services/cxperium/message';
+import ServiceCxperiumConfiguration from '../../services/cxperium/configuration';
 
 // Types.
 export type TCxperiumServices = {
@@ -20,6 +22,8 @@ export type TCxperiumServices = {
 	session: ServiceCxperiumSession;
 	conversation: ServiceCxperiumConversation;
 	language: ServiceCxperiumLanguage;
+	message: ServiceCxperiumMessage;
+	configuration: ServiceCxperiumConfiguration;
 };
 
 export type TCxperiumServiceParams = {

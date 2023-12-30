@@ -1,15 +1,17 @@
-// Node modules.
-import NodeCache from 'node-cache';
+// Types.
+import { TCxperiumEnvironment } from '../types/configuration/environment';
+
+// Services.
+import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
 
 export default class UtilConfig {
 	private static instance: UtilConfig;
-	public cache: NodeCache;
+	public environment!: TCxperiumEnvironment;
+	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
 
-	private constructor() {
-		this.cache = new NodeCache();
-	}
+	constructor() {}
 
-	public static getInstance(): UtilConfig {
+	public getInstance(): UtilConfig {
 		if (!UtilConfig.instance) {
 			UtilConfig.instance = new UtilConfig();
 		}
