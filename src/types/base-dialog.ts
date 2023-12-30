@@ -8,7 +8,7 @@ import ServiceDialog from '../services/dialog';
 import BaseConversation from '../services/conversation';
 
 // Types.
-type services = {
+export type TAppLocalsServices = {
 	cxperium: TCxperiumServices;
 	dialog: ServiceDialog;
 };
@@ -18,5 +18,5 @@ export type TBaseDialogCtor = {
 	activity: TActivity;
 	conversation: BaseConversation;
 	dialogPath: string;
-	services: services;
+	services: TAppLocalsServices;
 };

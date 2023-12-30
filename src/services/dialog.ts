@@ -8,12 +8,10 @@ import * as path from 'path';
 // Types.
 import { TBaseDialogCtor } from '../types/base-dialog';
 
-// Constants.
-const listAll: { name: string; path: string }[] = [];
-
 export default class {
 	private folderPathExternal!: string;
 	private folderPathInternal!: string;
+	private listAll: { name: string; path: string }[] = [];
 
 	constructor(_dialogPath: string) {
 		this.folderPathExternal = _dialogPath;
@@ -23,7 +21,7 @@ export default class {
 	}
 
 	public get getListAll() {
-		return listAll;
+		return this.listAll;
 	}
 
 	public async run(data: TBaseDialogCtor): Promise<any> {
@@ -42,7 +40,7 @@ export default class {
 
 		data = replaceFullPath(data, folderPath);
 
-		listAll.push(...data);
+		this.listAll.push(...data);
 
 		function replaceFullPath(array: string[], dialogPath: string): any {
 			return array.map((file: string) => {

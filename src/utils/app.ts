@@ -23,6 +23,7 @@ import { IUtilsApp } from '../interfaces/utils/app';
 
 // Types.
 import { TSrcIndexConfig } from '../types/src-index';
+import { TAppLocalsServices } from '../types/base-dialog';
 
 // Services.
 import ServiceCxperiumMain from '../services/cxperium/main';
@@ -35,6 +36,9 @@ import ServiceCxperiumSession from '../services/cxperium/session';
 import ServiceCxperiumConversation from '../services/cxperium/conversation';
 import ServiceCxperiumLanguage from '../services/cxperium/language';
 import ServiceDialog from '../services/dialog';
+
+// Init services.
+const appLocalsServices: TAppLocalsServices | any = {};
 
 export class UtilApp implements IUtilsApp {
 	app!: Application;
@@ -109,17 +113,19 @@ export class UtilApp implements IUtilsApp {
 		serviceCxperiumLanguage: ServiceCxperiumLanguage,
 		serviceDialog: ServiceDialog,
 	): void {
-		this.app.locals.service.cxperium.main = serviceCxperiumMain;
-		this.app.locals.service.cxperium.contact = serviceCxperiumContact;
-		this.app.locals.service.cxperium.user = serviceCxperiumUser;
-		this.app.locals.service.cxperium.intent = serviceCxperiumIntent;
-		this.app.locals.service.cxperium.report = serviceCxperiumReport;
-		this.app.locals.service.cxperium.ticket = serviceCxperiumTicket;
-		this.app.locals.service.cxperium.session = serviceCxperiumSession;
-		this.app.locals.service.cxperium.conversation =
-			serviceCxperiumConversation;
-		this.app.locals.service.cxperium.language = serviceCxperiumLanguage;
-		this.app.locals.service.dialog = serviceDialog;
+		appLocalsServices.dialog = serviceDialog;
+		appLocalsServices.cxperium = {};
+		appLocalsServices.cxperium.main = serviceCxperiumMain;
+		appLocalsServices.cxperium.contact = serviceCxperiumContact;
+		appLocalsServices.cxperium.user = serviceCxperiumUser;
+		appLocalsServices.cxperium.intent = serviceCxperiumIntent;
+		appLocalsServices.cxperium.report = serviceCxperiumReport;
+		appLocalsServices.cxperium.ticket = serviceCxperiumTicket;
+		appLocalsServices.cxperium.session = serviceCxperiumSession;
+		appLocalsServices.cxperium.conversation = serviceCxperiumConversation;
+		appLocalsServices.cxperium.language = serviceCxperiumLanguage;
+
+		this.app.locals.service = { ...appLocalsServices };
 	}
 
 	public execute(): void {
