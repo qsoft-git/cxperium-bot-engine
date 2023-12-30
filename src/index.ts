@@ -49,6 +49,7 @@ export class Engine {
 			this.serviceCxperiumSession,
 			this.serviceCxperiumConversation,
 			this.serviceCxperiumLanguage,
+			this.serviceCxperiumMessage,
 			this.serviceDialog,
 		);
 	}

@@ -35,6 +35,7 @@ import ServiceCxperiumTicket from '../services/cxperium/ticket';
 import ServiceCxperiumSession from '../services/cxperium/session';
 import ServiceCxperiumConversation from '../services/cxperium/conversation';
 import ServiceCxperiumLanguage from '../services/cxperium/language';
+import ServiceCxperiumMessage from '../services/cxperium/message';
 import ServiceDialog from '../services/dialog';
 
 // Init services.
@@ -111,6 +112,7 @@ export class UtilApp implements IUtilsApp {
 		serviceCxperiumSession: ServiceCxperiumSession,
 		serviceCxperiumConversation: ServiceCxperiumConversation,
 		serviceCxperiumLanguage: ServiceCxperiumLanguage,
+		serviceCxperiumMessage: ServiceCxperiumMessage,
 		serviceDialog: ServiceDialog,
 	): void {
 		appLocalsServices.dialog = serviceDialog;
@@ -124,6 +126,7 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.cxperium.session = serviceCxperiumSession;
 		appLocalsServices.cxperium.conversation = serviceCxperiumConversation;
 		appLocalsServices.cxperium.language = serviceCxperiumLanguage;
+		appLocalsServices.cxperium.message = serviceCxperiumMessage;
 
 		this.app.locals.service = { ...appLocalsServices };
 	}

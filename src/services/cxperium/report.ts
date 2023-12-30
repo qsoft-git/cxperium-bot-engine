@@ -7,12 +7,7 @@ import ServiceCxperium from '.';
 // Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
-// Utils.
-import UtilConfig from '../../utils/config';
-
 export default class extends ServiceCxperium {
-	private cache = UtilConfig.getInstance().cache;
-
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
 	}

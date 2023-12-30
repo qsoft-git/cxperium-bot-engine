@@ -12,7 +12,7 @@ export default class extends ServiceCxperium {
 		super(data);
 	}
 
-	async AssignChatToTeam(chatId: string, teamId: string) {
+	async assignChatToTeam(chatId: string, teamId: string) {
 		await fetch(
 			`${this.baseUrl}/api/chat/team-change/${chatId}/${teamId}`,
 			{
@@ -25,7 +25,7 @@ export default class extends ServiceCxperium {
 		);
 	}
 
-	async CheckBusinessHour(): Promise<boolean> {
+	async checkBusinessHour(): Promise<boolean> {
 		const response = (await fetch(`${this.baseUrl}/api/business-hours`, {
 			method: 'GET',
 			headers: {
@@ -37,7 +37,7 @@ export default class extends ServiceCxperium {
 		else return true;
 	}
 
-	async GetOutsideBusinessHoursMessage(cultureCode: string): Promise<string> {
+	async getOutsideBusinessHoursMessage(cultureCode: string): Promise<string> {
 		const response = (await fetch(`${this.baseUrl}/api/business-hours`, {
 			method: 'GET',
 			headers: {
@@ -49,7 +49,7 @@ export default class extends ServiceCxperium {
 		return response.data.message.cultureCode;
 	}
 
-	async RedirectWpMessage(message: object) {
+	async redirectWpMessage(message: object) {
 		try {
 			const response = await fetch('', {
 				method: 'POST',
@@ -60,88 +60,89 @@ export default class extends ServiceCxperium {
 		}
 	}
 
-	// public static string SendNormalMessage(string message, string contactId)
-	// {
-	//     var client = Init.GetCxPeriumClient();
-	//     var body = new ExpandoObject() as IDictionary<string, object>;
+	async sendNormalMessage(message: string, contactId: string) {
+		const body = {
+			message: message,
+			contactId: contactId,
+		};
 
-	//     body.Add("message", message);
-	//     body.Add("contactId", contactId);
+		const response = (await fetch(`${this.baseUrl}/api/chat/send-message`, {
+			method: 'POST',
+			body: JSON.stringify(body),
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json())) as any;
 
-	//     var request = new RestRequest($"/api/chat/send-message", DataFormat.Json).AddJsonBody(
-	//         body
-	//     );
-	//     var response = client.Post(request);
+		return response.data;
+	}
 
-	//     dynamic obj = JsonConvert.DeserializeObject(response.Content);
+	async sendMessageWithChatId(
+		chatId: string,
+		message: string,
+		contactId: string,
+	) {
+		const body = {
+			message: message,
+			contactId: contactId,
+		};
 
-	//     return obj["data"].ToString();
-	// }
+		await fetch(`${this.baseUrl}/api/chat/send-message/${chatId}`, {
+			method: 'POST',
+			body: JSON.stringify(body),
+			headers: {
+				'content-type': 'application/json',
+			},
+		});
+	}
 
-	// public static void SendMessageWithChatId(string chatId, string message, string contactId)
-	// {
-	//     var client = Init.GetCxPeriumClient();
-	//     var body = new ExpandoObject() as IDictionary<string, object>;
+	async sendWhatsappMessage(chatId: string, message: string, phone: string) {
+		const body = {
+			phone: phone,
+			message: {
+				text: message,
+			},
+		};
+		await fetch(`${this.baseUrl}/api/chat/send-message/phone/${chatId}`, {
+			method: 'POST',
+			body: JSON.stringify(body),
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		});
+	}
 
-	//     body.Add("message", message);
-	//     body.Add("contactId", contactId);
+	async sendWhatsappMessageOverload(
+		chatId: string,
+		message: string,
+		phone: string,
+		base64Content: string,
+		filename: string,
+		type: string,
+	) {
+		const body = {
+			message: {
+				text: message,
+			},
+			phone: phone,
+			media: {
+				data: {
+					url: base64Content,
+					filename: filename,
+					type: type,
+				},
+			},
+		};
 
-	//     var request = new RestRequest(
-	//         $"/api/chat/send-message/{chatId}",
-	//         DataFormat.Json
-	//     ).AddJsonBody(body);
-	//     client.Post(request);
-	// }
-
-	// public static void SendWhatsappMessage(string chatId, string message, string phone)
-	// {
-	//     var client = Init.GetCxPeriumClient();
-	//     JObject bodyJson = new() { ["message"] = new JObject(), ["phone"]=phone };
-	//     bodyJson["message"]["text"] = message;
-
-	//     var request = new RestRequest(
-	//         $"api/chat/send-message/phone/{chatId}",
-	//         DataFormat.Json
-	//     ).AddJsonBody(bodyJson.ToString());
-
-	//     QLogger.Instance.Info(bodyJson.ToString());
-
-	//     var response = client.Post(request);
-	// }
-
-	// public static void SendWhatsappMessage(
-	//     string chatId,
-	//     string message,
-	//     string phone,
-	//     string base64Content,
-	//     string filename,
-	//     string type
-	// )
-	// {
-	//     var client = Init.GetCxPeriumClient();
-	//     var body = new ExpandoObject() as IDictionary<string, object>;
-
-	//     body.Add("message", new { text = message });
-
-	//     body.Add("phone", phone);
-
-	//     body.Add(
-	//         "media",
-	//         new
-	//         {
-	//             data = new
-	//             {
-	//                 url = base64Content,
-	//                 filename,
-	//                 type
-	//             }
-	//         }
-	//     );
-
-	//     var request = new RestRequest(
-	//         $"api/chat/send-message/phone/{chatId}",
-	//         DataFormat.Json
-	//     ).AddJsonBody(body);
-	//     _ = client.Post(request);
-	// }
+		await fetch(`${this.baseUrl}/api/chat/send-message/phone/${chatId}`, {
+			method: 'POST',
+			body: JSON.stringify(body),
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		});
+	}
 }
