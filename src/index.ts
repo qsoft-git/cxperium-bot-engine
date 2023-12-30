@@ -68,6 +68,6 @@ export class Engine {
 	}
 }
 
-applyClassMixins.run(Engine, [UtilApp, UtilDialog, UtilCxperium]);
+applyClassMixins.run(Engine, [UtilApp, UtilDialog, UtilCxperium, UtilWhatsApp]);
 
 export { ServiceBaseDialog, IDialog, TBaseDialogCtor };
