@@ -38,9 +38,7 @@ export class Engine {
 		// Initialize properties.
 		this.initCxperiumProperties(data);
 		this.initDialogProperties(data);
-		// TODO whatsapp calismiyor aw
-		//this.initWhatsAppProperties(data);
-		//this.initWhatsAppService();
+		this.initWhatsAppProperties(data);
 
 		// Initialize services.
 		this.initCxperiumService();
