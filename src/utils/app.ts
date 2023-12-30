@@ -38,6 +38,8 @@ import ServiceCxperiumLanguage from '../services/cxperium/language';
 import ServiceCxperiumMessage from '../services/cxperium/message';
 import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
 import ServiceDialog from '../services/dialog';
+import ServiceWhatsAppMessage from '../services/whatsapp/message';
+import ServiceWhatsAppMain from '../services/whatsapp/main';
 
 // Init services.
 const appLocalsServices: TAppLocalsServices | any = {};
@@ -97,6 +99,7 @@ export class UtilApp implements IUtilsApp {
 		this.app.locals.service = {};
 		this.app.locals.service.cxperium = {};
 		this.app.locals.service.dialog = {};
+		this.app.locals.service.whatsapp = {};
 
 		if (this.publicPath) {
 			this.app.use(express.static(this.publicPath));
@@ -115,10 +118,13 @@ export class UtilApp implements IUtilsApp {
 		serviceCxperiumLanguage: ServiceCxperiumLanguage,
 		serviceCxperiumMessage: ServiceCxperiumMessage,
 		serviceCxperiumConfiguration: ServiceCxperiumConfiguration,
+		serviceWhatsAppMain: ServiceWhatsAppMain,
+		serviceWhatsAppMessage: ServiceWhatsAppMessage,
 		serviceDialog: ServiceDialog,
 	): void {
 		appLocalsServices.dialog = serviceDialog;
 		appLocalsServices.cxperium = {};
+		appLocalsServices.whatsapp = {};
 		appLocalsServices.cxperium.main = serviceCxperiumMain;
 		appLocalsServices.cxperium.contact = serviceCxperiumContact;
 		appLocalsServices.cxperium.user = serviceCxperiumUser;
@@ -130,6 +136,8 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.cxperium.language = serviceCxperiumLanguage;
 		appLocalsServices.cxperium.message = serviceCxperiumMessage;
 		appLocalsServices.cxperium.configuration = serviceCxperiumConfiguration;
+		appLocalsServices.whatsapp.main = serviceWhatsAppMain;
+		appLocalsServices.whatsapp.message = serviceWhatsAppMessage;
 
 		this.app.locals.service = { ...appLocalsServices };
 	}

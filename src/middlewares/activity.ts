@@ -8,7 +8,7 @@ import {
 	TImageMessage,
 	TDocumentMessage,
 	TInteractiveMessage,
-} from '../types/activity';
+} from '../types/whatsapp/activity';
 
 export default class {
 	public static execute(

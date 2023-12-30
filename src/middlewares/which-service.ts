@@ -1,6 +1,6 @@
 // Node modules.
 import { Request, Response, NextFunction } from 'express';
-import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
+import ServiceWhatsappMessage from '../services/whatsapp/message';
 
 export default class {
 	public static async execute(
@@ -11,9 +11,12 @@ export default class {
 	): Promise<void> {
 		try {
 			// const service = req.url;
-			const config: ServiceCxperiumConfiguration =
-				res.app.locals.service.cxperium.configuration;
-			const env = await config.execute();
+			const config: ServiceWhatsappMessage =
+				res.app.locals.service.whatsapp.message;
+			const env = await config.sendRegularMessage(
+				'905366616876',
+				'selam',
+			);
 
 			res.send();
 			return;

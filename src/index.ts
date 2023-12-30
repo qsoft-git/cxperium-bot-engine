@@ -2,6 +2,7 @@
 import { UtilApp } from './utils/app';
 import { UtilDialog } from './utils/dialog';
 import { UtilCxperium } from './utils/cxperium';
+import { UtilWhatsApp } from './utils/whatsapp';
 
 // Interfaces.
 import { IDialog } from './interfaces/dialog';
@@ -17,7 +18,11 @@ import ServiceBaseDialog from './services/base-dialog';
 import applyClassMixins from './helpers/apply-class-mixins';
 
 // Mixins.
-export interface Engine extends UtilApp, UtilDialog, UtilCxperium {}
+export interface Engine
+	extends UtilApp,
+		UtilDialog,
+		UtilCxperium,
+		UtilWhatsApp {}
 
 export class Engine {
 	constructor(data: TSrcIndexConfig) {
@@ -33,9 +38,14 @@ export class Engine {
 		// Initialize properties.
 		this.initCxperiumProperties(data);
 		this.initDialogProperties(data);
+		// TODO whatsapp calismiyor aw
+		//this.initWhatsAppProperties(data);
+		//this.initWhatsAppService();
 
 		// Initialize services.
 		this.initCxperiumService();
+		this.initWhatsAppService();
+
 		this.initDialogService();
 
 		// Initialize app services.
@@ -51,6 +61,8 @@ export class Engine {
 			this.serviceCxperiumLanguage,
 			this.serviceCxperiumMessage,
 			this.serviceCxperiumConfiguration,
+			this.serviceWhatsApp,
+			this.serviceWhatsAppMessage,
 			this.serviceDialog,
 		);
 	}

@@ -1,5 +1,5 @@
 // Types.
-import { TActivity } from '../types/activity';
+import { TActivity } from '../types/whatsapp/activity';
 import { TCxperiumContact } from '../types/cxperium/contact';
 import { TBaseDialogCtor } from '../types/base-dialog';
 
