@@ -7,6 +7,7 @@ import { IUtilsWhatsApp } from '../interfaces/utils/whatsapp';
 // Services.
 import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
 import ServiceWhatsAppMessage from '../services/whatsapp/message';
+import ServiceWhatsAppMedia from '../services/whatsapp/media';
 import ServiceWhatsApp from '../services/whatsapp/index';
 
 // Types.
@@ -17,6 +18,7 @@ import { TSrcIndexConfig } from '../types/src-index';
 export class UtilWhatsApp implements IUtilsWhatsApp {
 	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
 	serviceWhatsAppMessage!: ServiceWhatsAppMessage;
+	serviceWhatsAppMedia!: ServiceWhatsAppMedia;
 	serviceWhatsApp!: ServiceWhatsApp;
 
 	public initWhatsAppProperties(data: TSrcIndexConfig): void {
@@ -36,6 +38,9 @@ export class UtilWhatsApp implements IUtilsWhatsApp {
 			this.serviceCxperiumConfiguration,
 		);
 		this.serviceWhatsAppMessage = new ServiceWhatsAppMessage(
+			this.serviceCxperiumConfiguration,
+		);
+		this.serviceWhatsAppMedia = new ServiceWhatsAppMedia(
 			this.serviceCxperiumConfiguration,
 		);
 	}

@@ -61,6 +61,7 @@ export class Engine {
 			this.serviceCxperiumConfiguration,
 			this.serviceWhatsApp,
 			this.serviceWhatsAppMessage,
+			this.serviceWhatsAppMedia,
 			this.serviceDialog,
 		);
 	}

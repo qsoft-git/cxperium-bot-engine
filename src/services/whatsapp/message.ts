@@ -18,25 +18,31 @@ export default class extends ServiceWhatsApp {
 		super(params);
 	}
 
-	private async request(body: string | Record<string, unknown>) {
-		if (typeof body === 'object') body = JSON.stringify(body);
-
-		const response = await (
-			await fetch('path', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'D360-API-KEY': 'env.WHATSAPP_API_KEY',
+	public async sendLocationRequest(
+		to: string,
+		message: string,
+	): Promise<void> {
+		try {
+			const body = {
+				recipient_type: 'individual',
+				to: to,
+				type: 'interactive',
+				interactive: {
+					type: 'location_request_message',
+					body: {
+						type: 'text',
+						text: message,
+					},
+					action: {
+						name: 'send_location',
+					},
 				},
-				body,
-			})
-		).json();
+			};
 
-		if (response.meta.success === false) {
-			throw response.meta.developer_message;
+			await this.wpRequest(body, 'v1/messages', 'application/json');
+		} catch (error) {
+			throw error!;
 		}
-
-		return response;
 	}
 
 	public async sendRegularMessage(to: string, body: string): Promise<void> {
@@ -50,7 +56,7 @@ export default class extends ServiceWhatsApp {
 				},
 			};
 
-			await this.request(msg);
+			await this.wpRequest(msg, 'v1/messages', 'application/json');
 		} catch (err: unknown) {
 			throw err!;
 		}
@@ -87,7 +93,7 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		await this.request(msg);
+		await this.wpRequest(msg, 'v1/messages', 'application/json');
 	}
 
 	public async sendListMessage(
@@ -125,7 +131,7 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		await this.request(msg);
+		await this.wpRequest(msg, 'v1/messages', 'application/json');
 	}
 
 	public async sendImageMessage(
@@ -143,6 +149,6 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		return await this.request(msg);
+		return await this.wpRequest(msg, 'v1/messages', 'application/json');
 	}
 }

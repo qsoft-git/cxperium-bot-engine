@@ -40,6 +40,7 @@ import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
 import ServiceDialog from '../services/dialog';
 import ServiceWhatsAppMessage from '../services/whatsapp/message';
 import ServiceWhatsAppMain from '../services/whatsapp/main';
+import ServiceWhatsAppMedia from '../services/whatsapp/media';
 
 // Init services.
 const appLocalsServices: TAppLocalsServices | any = {};
@@ -120,6 +121,7 @@ export class UtilApp implements IUtilsApp {
 		serviceCxperiumConfiguration: ServiceCxperiumConfiguration,
 		serviceWhatsAppMain: ServiceWhatsAppMain,
 		serviceWhatsAppMessage: ServiceWhatsAppMessage,
+		serviceWhatsAppMedia: ServiceWhatsAppMedia,
 		serviceDialog: ServiceDialog,
 	): void {
 		appLocalsServices.dialog = serviceDialog;
@@ -138,6 +140,7 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.cxperium.configuration = serviceCxperiumConfiguration;
 		appLocalsServices.whatsapp.main = serviceWhatsAppMain;
 		appLocalsServices.whatsapp.message = serviceWhatsAppMessage;
+		appLocalsServices.whatsapp.media = serviceWhatsAppMedia;
 
 		this.app.locals.service = { ...appLocalsServices };
 	}

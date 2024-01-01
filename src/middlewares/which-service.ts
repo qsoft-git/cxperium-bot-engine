@@ -1,6 +1,7 @@
 // Node modules.
 import { Request, Response, NextFunction } from 'express';
-import ServiceWhatsappMessage from '../services/whatsapp/message';
+
+import ServiceWhatsAppMedia from '../services/whatsapp/media';
 
 export default class {
 	public static async execute(
@@ -11,11 +12,12 @@ export default class {
 	): Promise<void> {
 		try {
 			// const service = req.url;
-			const config: ServiceWhatsappMessage =
-				res.app.locals.service.whatsapp.message;
-			const env = await config.sendRegularMessage(
-				'905366616876',
-				'selam',
+			const serv: ServiceWhatsAppMedia =
+				res.app.locals.service.whatsapp.media;
+
+			await serv.uploadMediaWithUrl(
+				'https://www.orimi.com/pdf-test.pdf',
+				'application/pdf',
 			);
 
 			res.send();
