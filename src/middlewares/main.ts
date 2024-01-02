@@ -9,21 +9,25 @@ export default class {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_next: NextFunction,
 	) {
-		console.error(error);
-		const serverMode = req.app.get('env');
-		const notFoundStatus = res.locals.notFoundStatus;
-		const statusCode = notFoundStatus ? 404 : 406;
+		try {
+			console.error(error);
+			const serverMode = req.app.get('env');
+			const notFoundStatus = res.locals.notFoundStatus;
+			const statusCode = notFoundStatus ? 404 : 406;
 
-		const params: Record<string, any> = {
-			status: false,
-			message: error.message,
-		};
+			const params: Record<string, any> = {
+				status: false,
+				message: error.message,
+			};
 
-		if (serverMode === 'development') {
-			params.stack = (error as Error).stack;
+			if (serverMode === 'development') {
+				params.stack = (error as Error).stack;
+			}
+
+			res.status(statusCode).json(params);
+		} catch (error) {
+			console.error(error);
 		}
-
-		res.status(statusCode).json(params);
 	}
 
 	public static noFaviconHandler(
@@ -31,7 +35,11 @@ export default class {
 		res: Response,
 		next: NextFunction,
 	): void {
-		req.url === '/favicon.ico' ? res.status(204).end() : next();
+		try {
+			req.url === '/favicon.ico' ? res.status(204).end() : next();
+		} catch (error) {
+			next(error);
+		}
 	}
 
 	public static notFoundHandler(
@@ -39,9 +47,13 @@ export default class {
 		res: Response,
 		next: NextFunction,
 	): void {
-		const message = `Not found: ${req.url}`;
-		const error = new Error(message);
-		res.locals.notFoundStatus = true;
-		next(error);
+		try {
+			const message = `Not found: ${req.url}`;
+			const error = new Error(message);
+			res.locals.notFoundStatus = true;
+			next(error);
+		} catch (error) {
+			next(error);
+		}
 	}
 }
