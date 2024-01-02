@@ -2,7 +2,7 @@
 import { Request } from 'express';
 
 // Types.
-import { TAppLocalsServices } from '../types/base-dialog';
+import { TAppLocalsServices, TBaseDialogCtor } from '../types/base-dialog';
 import {
 	TActivity,
 	TTextMessage,
@@ -40,6 +40,37 @@ export default class {
 		const serviceDialog = this.service.dialog;
 
 		const text = this.activity.text;
+
+		const cxperiumAllIntents = serviceCxperiumIntent.cache.get(
+			'all-intents',
+		) as any;
+
+		const intent = cxperiumAllIntents.find((item: any) =>
+			new RegExp(item.regexValue).test(text),
+		);
+
+		if (intent) {
+			const intentName = intent.name;
+
+			const findAllDialogs = serviceDialog.getListAll;
+
+			const findOneDialog = findAllDialogs.find(
+				(item: any) => intentName === item?.name,
+			) as any;
+
+			const runParams: TBaseDialogCtor = {
+				contact: this.contact,
+				activity: this.activity,
+				conversation: this.conversation,
+				dialogPath: findOneDialog.path,
+				services: this.service,
+			};
+
+			serviceDialog
+				.run(runParams)
+				.then(() => {})
+				.catch((error: any) => console.log(error));
+		}
 	}
 
 	private initWhichService(): void {

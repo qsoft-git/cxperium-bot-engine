@@ -12,7 +12,7 @@ import { TCxperiumIntent } from '../../types/cxperium/intent';
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
 export default class extends ServiceCxperium {
-	private cache = DataGeneral.cache;
+	public cache = DataGeneral.cache;
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
 		this.getAllIntents();
