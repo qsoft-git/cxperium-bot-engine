@@ -5,9 +5,9 @@ import express from 'express';
 const router = express.Router();
 
 // Middlewares.
-import middlewareDialog from '../middlewares/dialog';
+import middlewareRunDialog from '../middlewares/run-dialog';
 
 // Routes.
-router.post('/whatsapp', middlewareDialog.execute);
+router.post('/whatsapp', middlewareRunDialog.execute);
 
 export default router;
