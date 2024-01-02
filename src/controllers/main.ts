@@ -7,6 +7,9 @@ import getPackageJson from '../helpers/get-package-json';
 // Constants.
 const UP_TIME = new Date();
 
+// Services.
+import ServiceWhatsAppMedia from '../services/whatsapp/media';
+
 export default class {
 	public static homePage(
 		_req: Request,
@@ -39,9 +42,22 @@ export default class {
 		}
 	}
 
-	public static test(_req: Request, res: Response, next: NextFunction): void {
+	public static async test(
+		_req: Request,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
 		try {
+			const serv: ServiceWhatsAppMedia =
+				res.app.locals.service.whatsapp.media;
+
+			await serv.uploadMediaWithUrl(
+				'https://www.orimi.com/pdf-test.pdf',
+				'application/pdf',
+			);
+
 			res.send();
+			return;
 		} catch (error) {
 			next(error);
 		}
