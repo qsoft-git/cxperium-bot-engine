@@ -1,6 +1,6 @@
 // Node modules.
-import { IDialog, ServiceBaseDialog, TBaseDialogCtor } from '../../index';
-import { TButton } from '../../types/whatsapp/message';
+import { IDialog, ServiceBaseDialog, TBaseDialogCtor } from '../../../index';
+import { TButton } from '../../../types/whatsapp/message';
 
 export default class extends ServiceBaseDialog implements IDialog {
 	constructor(data: TBaseDialogCtor) {
@@ -18,6 +18,7 @@ export default class extends ServiceBaseDialog implements IDialog {
 						true,
 					);
 
+					// TODO
 					// if (
 					// 	!CxperiumHelper.IsCXPeriumTransfer(
 					// 		Contact,
