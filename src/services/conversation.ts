@@ -2,37 +2,33 @@
 import { TConversation } from '../types/conversation';
 
 export default class BaseConversation {
-	private session: Record<string, unknown>[];
-	waitData: {
-		className?: string;
-	};
-	faultCount: number;
-	languageId: number;
+	public conversation!: TConversation;
 
 	constructor(conversation: TConversation) {
-		this.waitData = conversation.waitData;
-		this.session = conversation.conversationData;
-		this.faultCount = conversation.faultCount;
-		this.languageId = conversation.languageId;
+		this.conversation.waitData = conversation.waitData;
+		this.conversation.sessionData = conversation.conversationData;
+		this.conversation.faultCount = conversation.faultCount;
+		this.conversation.languageId = conversation.languageId;
 	}
 
 	isWaitAny() {
-		return Object.values(this.waitData).length > 0;
+		return Object.values(this.conversation.waitData).length > 0;
 	}
 
 	addWaitAction(className: string) {
-		this.waitData.className = className;
+		this.conversation.waitData.className = className;
 	}
 
 	removeWaitAction() {
-		this.waitData.className = '';
+		this.conversation.waitData.className = '';
 	}
 
 	putData(data: Record<string, unknown>) {
-		if (!this.session.includes(data)) this.session.push(data);
+		if (!this.conversation.sessionData.includes(data))
+			this.conversation.sessionData.push(data);
 		else {
-			const index = this.session.indexOf(data);
-			this.session.splice(index, 1);
+			const index = this.conversation.sessionData.indexOf(data);
+			this.conversation.sessionData.splice(index, 1);
 		}
 	}
 
@@ -42,7 +38,7 @@ export default class BaseConversation {
 			value: '',
 		};
 
-		for (const rec of this.session) {
+		for (const rec of this.conversation.sessionData) {
 			if (key === rec.key) {
 				returnVal.key = rec.key;
 				returnVal.value = rec.value;
@@ -53,17 +49,17 @@ export default class BaseConversation {
 	}
 
 	resetConversation() {
-		this.session = [];
-		this.waitData = {};
+		this.conversation.sessionData = [];
+		this.conversation.waitData = {};
 	}
 
 	increaseFaultCount() {
 		const faultCount: Record<string, unknown> = {
 			key: 'faultCount',
-			value: this.faultCount + 1,
+			value: this.conversation.faultCount + 1,
 		};
 
-		this.session.push(faultCount);
+		this.conversation.sessionData.push(faultCount);
 	}
 
 	resetFaultCount() {

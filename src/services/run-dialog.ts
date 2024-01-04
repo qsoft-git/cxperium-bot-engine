@@ -13,7 +13,6 @@ import {
 
 export default class {
 	private service!: TAppLocalsServices;
-	private whichService!: string;
 	private activity!:
 		| TActivity
 		| TTextMessage
@@ -36,10 +35,23 @@ export default class {
 		this.initActivity();
 
 		const serviceCxperiumIntent = this.service.cxperium.intent;
-
 		const serviceDialog = this.service.dialog;
-
+		const serviceCxperium = this.service.cxperium;
 		const text = this.activity.text;
+		const contact = await serviceCxperium.contact.getContactByPhone(
+			this.activity.from,
+		);
+		serviceCxperium.session.createOrUpdateSession(
+			true,
+			'TR',
+			contact.phone,
+			text,
+		);
+
+		const conversation = await serviceCxperium.session.getConversation(
+			contact.phone,
+		);
+		this.conversation = conversation;
 
 		const cxperiumAllIntents = serviceCxperiumIntent.cache.get(
 			'all-intents',
@@ -48,6 +60,15 @@ export default class {
 		const intent = cxperiumAllIntents.find((item: any) =>
 			new RegExp(item.regexValue).test(text),
 		);
+
+		if (!Boolean(contact.custom as any['IsKvkkApproved'])) {
+		}
+
+		if (this.activity.type === 'document') {
+		}
+
+		if (this.activity.type === 'order') {
+		}
 
 		if (intent) {
 			const intentName = intent.name;
@@ -77,13 +98,9 @@ export default class {
 		const service = this.req.url;
 
 		if (service.startsWith('/whatsapp')) {
-			this.whichService = 'WHATSAPP';
 		} else if (service.startsWith('/teams')) {
-			this.whichService = 'TEAMS';
 		} else if (service.startsWith('/webchat')) {
-			this.whichService = 'WEBCHAT';
 		} else {
-			this.whichService = 'UNKNOWN';
 		}
 	}
 
@@ -116,6 +133,7 @@ export default class {
 				id: '',
 				text: '',
 			},
+			isCxperiumMessage: false,
 		};
 
 		if (type == 'text') {
@@ -138,6 +156,35 @@ export default class {
 			schemaActivity.document.sha256 = data.document.sha256;
 		}
 
+		this.isCxperiumMessage();
 		this.activity = schemaActivity;
+	}
+
+	private isCxperiumMessage() {
+		const data = this.req.body.messages[0];
+		const type = data.type;
+
+		if (type === 'interactive') {
+			if (data.interactive.button_reply) {
+				const msg: string = data.button_reply.payload
+					? data.button_reply.id
+					: data.button_reply.payload;
+
+				if (msg.includes('pollbot_') || msg.includes('SID:'))
+					this.activity.isCxperiumMessage = true;
+			}
+			if (data.interactive.list_reply) {
+				const msg: string = data.list_reply.id;
+
+				if (msg.includes('SID:'))
+					this.activity.isCxperiumMessage = true;
+			}
+		}
+
+		if (
+			this.conversation.lastMessage &&
+			this.conversation.lastMessage.includes('SID:')
+		)
+			this.activity.isCxperiumMessage = true;
 	}
 }

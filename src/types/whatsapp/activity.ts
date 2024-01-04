@@ -63,4 +63,5 @@ export type TActivity = {
 		id: string;
 		text: string;
 	};
+	isCxperiumMessage: boolean;
 };

@@ -73,9 +73,9 @@ export default class extends ServiceCxperium {
 				body: JSON.stringify(body),
 				headers: {
 					'content-type': 'application/json',
-					apiKey: this.apiKey,
+					apikey: this.apiKey,
 				},
-			});
+			}).then((response) => response.json());
 		} catch (error) {
 			console.error(error);
 		}
@@ -88,7 +88,7 @@ export default class extends ServiceCxperium {
 				method: 'GET',
 				headers: {
 					'content-type': 'application/json',
-					apiKey: this.apiKey,
+					apikey: this.apiKey,
 				},
 			},
 		).then((response) => response.json())) as any;
@@ -102,7 +102,7 @@ export default class extends ServiceCxperium {
 				method: 'get',
 				headers: {
 					'content-type': 'application/json',
-					apiKey: this.apiKey,
+					apikey: this.apiKey,
 				},
 			},
 		).then((response) => response.json())) as any;
@@ -134,7 +134,7 @@ export default class extends ServiceCxperium {
 			method: 'patch',
 			headers: {
 				'content-type': 'application/json',
-				apiKey: this.apiKey,
+				apikey: this.apiKey,
 			},
 		});
 	}
@@ -146,7 +146,7 @@ export default class extends ServiceCxperium {
 				method: 'get',
 				headers: {
 					'content-type': 'application/json',
-					apiKey: this.apiKey,
+					apikey: this.apiKey,
 				},
 			},
 		).then((response) => response.json())) as any;
@@ -182,7 +182,7 @@ export default class extends ServiceCxperium {
 			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
-				apiKey: this.apiKey,
+				apikey: this.apiKey,
 			},
 		}).then((response) => response.json())) as any;
 	}
@@ -204,9 +204,9 @@ export default class extends ServiceCxperium {
 			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
-				apiKey: this.apiKey,
+				apikey: this.apiKey,
 			},
-		});
+		}).then((response) => response.json());
 	}
 
 	async updateGdprApprovalStatus(contact: TCxperiumContact, status: boolean) {
@@ -219,9 +219,9 @@ export default class extends ServiceCxperium {
 			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
-				apiKey: this.apiKey,
+				apikey: this.apiKey,
 			},
-		});
+		}).then((response) => response.json());
 	}
 
 	async updateSurveyTransferStatus(
@@ -237,9 +237,9 @@ export default class extends ServiceCxperium {
 			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
-				apiKey: this.apiKey,
+				apikey: this.apiKey,
 			},
-		});
+		}).then((response) => response.json());
 	}
 
 	async updateLiveTransferStatus(contact: TCxperiumContact, status: boolean) {
@@ -252,8 +252,8 @@ export default class extends ServiceCxperium {
 			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
-				apiKey: this.apiKey,
+				apikey: this.apiKey,
 			},
-		});
+		}).then((response) => response.json());
 	}
 }
