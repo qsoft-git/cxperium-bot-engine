@@ -32,20 +32,23 @@ export default class extends ServiceCxperium {
 		language: string,
 		phone: string,
 		message: string,
+		userProfileName: string,
 	) {
 		if (!language) language = 'TR';
 
 		const body = {
 			language: language,
 			phone: phone,
-			data: {
-				message: message,
-				isLast: true,
-			},
+			data: [
+				{
+					message: message,
+					isLast: true,
+				},
+			],
 			isActive: isActive,
 		};
 
-		(await fetch(`${this.baseUrl}/api/assistant/session`, {
+		const response = (await fetch(`${this.baseUrl}/api/assistant/session`, {
 			method: 'POST',
 			body: JSON.stringify(body),
 			headers: {
@@ -54,12 +57,17 @@ export default class extends ServiceCxperium {
 			},
 		}).then((response) => response.json())) as any;
 
-		await this.updateConversationSessionTime(phone);
+		await this.updateConversationSessionTime(phone, userProfileName);
 	}
 
-	async updateConversationSessionTime(phone: string) {
-		const contact =
-			await this.serviceCxperiumContact.getContactByPhone(phone);
+	async updateConversationSessionTime(
+		phone: string,
+		userProfileName: string,
+	) {
+		const contact = await this.serviceCxperiumContact.getContactByPhone(
+			phone,
+			userProfileName,
+		);
 
 		if (contact)
 			await this.serviceCxperiumContact.updateContactConversationDateByContactId(
@@ -93,7 +101,7 @@ export default class extends ServiceCxperium {
 
 		let lastMessage;
 
-		for (const message of response.data[0].data) {
+		for (const message of response?.data[0]?.data) {
 			if (Boolean(message.isLast)) {
 				lastMessage = message.message;
 				break;

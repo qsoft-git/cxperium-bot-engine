@@ -59,6 +59,7 @@ export class Engine {
 			this.serviceCxperiumLanguage,
 			this.serviceCxperiumMessage,
 			this.serviceCxperiumConfiguration,
+			this.serviceCxperiumTransfer,
 			this.serviceWhatsApp,
 			this.serviceWhatsAppMessage,
 			this.serviceWhatsAppMedia,

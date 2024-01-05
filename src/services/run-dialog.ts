@@ -40,18 +40,23 @@ export default class {
 		const text = this.activity.text;
 		const contact = await serviceCxperium.contact.getContactByPhone(
 			this.activity.from,
+			this.activity.userProfileName,
 		);
 		serviceCxperium.session.createOrUpdateSession(
 			true,
 			'TR',
 			contact.phone,
 			text,
+			this.activity.userProfileName,
 		);
 
 		const conversation = await serviceCxperium.session.getConversation(
 			contact.phone,
 		);
 		this.conversation = conversation;
+
+		// Init cxperium message properties
+		this.initCxperiumMessage();
 
 		const cxperiumAllIntents = serviceCxperiumIntent.cache.get(
 			'all-intents',
@@ -64,6 +69,38 @@ export default class {
 		if (!Boolean(contact.custom as any['IsKvkkApproved'])) {
 		}
 
+		if (
+			serviceCxperium.transfer.isSurveyTransfer(
+				contact,
+				this.activity,
+				this.conversation,
+			)
+		) {
+			if (!contact.custom as any['IsKvkkApproved']) {
+				serviceCxperium.contact.updateGdprApprovalStatus(contact, true);
+			}
+
+			return;
+		}
+
+		if (
+			(!contact.custom as any['IsKvkkApproved']) &&
+			(await serviceCxperium.configuration.execute()).gdprConfig.isActive
+		) {
+			// TODO
+			// new KvkkDialog(contact, activity, conversationState).RunDialog();
+			// return;
+		}
+
+		if (
+			serviceCxperium.transfer.isLiveTransfer(
+				contact,
+				this.activity,
+				this.conversation,
+			)
+		) {
+			// TODO
+		}
 		if (this.activity.type === 'document') {
 		}
 
@@ -115,6 +152,7 @@ export default class {
 			| TDocumentMessage
 			| TInteractiveMessage = {
 			from: data.from,
+			userProfileName: '',
 			type: '',
 			text: '',
 			document: {
@@ -131,16 +169,23 @@ export default class {
 			},
 			value: {
 				id: '',
+				payload: '',
 				text: '',
 			},
 			isCxperiumMessage: false,
 		};
+
+		schemaActivity.userProfileName = this.req.body.contacts[0].profile.name;
 
 		if (type == 'text') {
 			schemaActivity.text = data.text.body;
 			schemaActivity.type = 'text';
 		} else if (type == 'interactive') {
 			schemaActivity.type = 'interactive';
+			if (data.interactive.button_reply.payload) {
+				schemaActivity.value = data.interactive.button_reply.payload;
+			}
+
 			schemaActivity.value = data.interactive.list_reply
 				? data.interactive.list_reply
 				: data.interactive.button_reply;
@@ -156,11 +201,10 @@ export default class {
 			schemaActivity.document.sha256 = data.document.sha256;
 		}
 
-		this.isCxperiumMessage();
 		this.activity = schemaActivity;
 	}
 
-	private isCxperiumMessage() {
+	private initCxperiumMessage() {
 		const data = this.req.body.messages[0];
 		const type = data.type;
 

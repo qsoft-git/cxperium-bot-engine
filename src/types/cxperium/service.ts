@@ -10,6 +10,7 @@ import ServiceCxperiumConversation from '../../services/cxperium/conversation';
 import ServiceCxperiumLanguage from '../../services/cxperium/language';
 import ServiceCxperiumMessage from '../../services/cxperium/message';
 import ServiceCxperiumConfiguration from '../../services/cxperium/configuration';
+import ServiceCxperiumTransfer from '../../services/cxperium/transfer';
 
 // Types.
 export type TCxperiumServices = {
@@ -24,6 +25,7 @@ export type TCxperiumServices = {
 	language: ServiceCxperiumLanguage;
 	message: ServiceCxperiumMessage;
 	configuration: ServiceCxperiumConfiguration;
+	transfer: ServiceCxperiumTransfer;
 };
 
 export type TCxperiumServiceParams = {

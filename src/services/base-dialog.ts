@@ -87,7 +87,7 @@ export default class {
 	public async getLocalizationText(key: string) {
 		const localization =
 			await this.services.cxperium.language.getLanguageByKey(
-				this.conversation.languageId,
+				this.conversation.conversation.languageId,
 				key,
 			);
 

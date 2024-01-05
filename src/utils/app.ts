@@ -37,6 +37,7 @@ import ServiceCxperiumConversation from '../services/cxperium/conversation';
 import ServiceCxperiumLanguage from '../services/cxperium/language';
 import ServiceCxperiumMessage from '../services/cxperium/message';
 import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
+import ServiceCxperiumTransfer from '../services/cxperium/transfer';
 import ServiceDialog from '../services/dialog';
 import ServiceWhatsAppMessage from '../services/whatsapp/message';
 import ServiceWhatsAppMain from '../services/whatsapp/main';
@@ -119,6 +120,7 @@ export class UtilApp implements IUtilsApp {
 		serviceCxperiumLanguage: ServiceCxperiumLanguage,
 		serviceCxperiumMessage: ServiceCxperiumMessage,
 		serviceCxperiumConfiguration: ServiceCxperiumConfiguration,
+		serviceCxperiumTransfer: ServiceCxperiumTransfer,
 		serviceWhatsAppMain: ServiceWhatsAppMain,
 		serviceWhatsAppMessage: ServiceWhatsAppMessage,
 		serviceWhatsAppMedia: ServiceWhatsAppMedia,
@@ -138,6 +140,7 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.cxperium.language = serviceCxperiumLanguage;
 		appLocalsServices.cxperium.message = serviceCxperiumMessage;
 		appLocalsServices.cxperium.configuration = serviceCxperiumConfiguration;
+		appLocalsServices.cxperium.transfer = serviceCxperiumTransfer;
 		appLocalsServices.whatsapp.main = serviceWhatsAppMain;
 		appLocalsServices.whatsapp.message = serviceWhatsAppMessage;
 		appLocalsServices.whatsapp.media = serviceWhatsAppMedia;

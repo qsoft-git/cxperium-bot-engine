@@ -2,13 +2,20 @@
 import { TConversation } from '../types/conversation';
 
 export default class BaseConversation {
-	public conversation!: TConversation;
+	conversation: TConversation = {
+		waitData: {
+			className: '',
+		},
+		conversationData: [],
+		sessionData: [],
+		languageId: 1,
+		lastMessage: '',
+		faultCount: 0,
+		cultureCode: 'TR',
+	};
 
 	constructor(conversation: TConversation) {
-		this.conversation.waitData = conversation.waitData;
-		this.conversation.sessionData = conversation.conversationData;
-		this.conversation.faultCount = conversation.faultCount;
-		this.conversation.languageId = conversation.languageId;
+		this.conversation = conversation;
 	}
 
 	isWaitAny() {

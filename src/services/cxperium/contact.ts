@@ -24,11 +24,14 @@ export default class extends ServiceCxperium {
 				phone: phone,
 				email: email,
 				userProfileName: profileName,
+				custom: {},
 			};
 
 			if (attributes && Object.entries(attributes).length > 0) {
 				for (const [key, value] of Object.entries(attributes)) {
-					body['custom'][key] = value;
+					let val = value;
+					if (val.length < 1) val = 'unknown';
+					body['custom'][key] = val;
 				}
 			}
 
@@ -139,7 +142,10 @@ export default class extends ServiceCxperium {
 		});
 	}
 
-	async getContactByPhone(phone: string): Promise<TCxperiumContact> {
+	async getContactByPhone(
+		phone: string,
+		userProfileName: string,
+	): Promise<TCxperiumContact> {
 		const response = (await fetch(
 			`${this.baseUrl}/api/contacts/phone/${phone}`,
 			{
@@ -151,7 +157,7 @@ export default class extends ServiceCxperium {
 			},
 		).then((response) => response.json())) as any;
 
-		if (response.status == 201) {
+		if (response.status == 201 && response.data) {
 			const contact: TCxperiumContact = {
 				_id: response?.data?._id,
 				phone: response?.data?.phone,
@@ -167,8 +173,23 @@ export default class extends ServiceCxperium {
 
 			return contact;
 		} else {
-			console.error('User cannot be found!');
-			throw new Error('User cannot be found!');
+			const attributes: Record<string, unknown> = {
+				FirstName: '',
+				LastName: '',
+				IsKvkkApproved: false,
+				KvkkApprovalDate: '',
+				KvkkNotApprovedDate: '',
+				IsCxLiveTransfer: false,
+				IsCxTransfer: false,
+				ChatId: '',
+			};
+
+			return await this.createContact(
+				phone,
+				'',
+				userProfileName,
+				attributes,
+			);
 		}
 	}
 

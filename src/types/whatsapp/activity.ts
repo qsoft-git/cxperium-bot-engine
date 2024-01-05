@@ -47,6 +47,7 @@ export type TActivity = {
 	from: string;
 	type: string;
 	text: string;
+	userProfileName: string;
 	document: {
 		id: string;
 		byteContent: Buffer;
@@ -61,6 +62,7 @@ export type TActivity = {
 	};
 	value: {
 		id: string;
+		payload: string;
 		text: string;
 	};
 	isCxperiumMessage: boolean;
