@@ -1,7 +1,11 @@
-import { IDialog, ServiceBaseDialog } from '../../../..';
+import { IDialog, ServiceBaseDialog, TBaseDialogCtor } from '../../../..';
 import { TButton } from '../../../../types/whatsapp/message';
 
 export default class extends ServiceBaseDialog implements IDialog {
+	constructor(data: TBaseDialogCtor) {
+		super(data);
+	}
+
 	async runDialog() {
 		if (
 			this.activity.value.id &&
@@ -28,12 +32,10 @@ export default class extends ServiceBaseDialog implements IDialog {
 				buttons,
 			);
 		} else {
-			// var cxLiveHelper = new CxLiveHelper(
-			// 	Contact,
-			// 	Activity,
-			// 	Conversation,
-			// );
-			// cxLiveHelper.TransferToRepresentative(Contact, Conversation);
+			await this.services.cxperium.transfer.transferToRepresentative(
+				this.contact,
+				this.conversation,
+			);
 		}
 	}
 }
