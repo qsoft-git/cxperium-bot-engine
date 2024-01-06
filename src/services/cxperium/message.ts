@@ -46,17 +46,17 @@ export default class extends ServiceCxperium {
 			},
 		}).then((response) => response.json())) as any;
 
-		return response.data.message.cultureCode;
+		return response.data.message[cultureCode];
 	}
 
 	async redirectWpMessage(message: object) {
 		try {
-			const response = await fetch('', {
+			const response = await fetch(this.callbackUrl, {
 				method: 'POST',
 				body: JSON.stringify(message),
-			});
+			}).then((response) => response.json());
 		} catch (error) {
-			throw new Error('');
+			throw new Error('Hook redirect error');
 		}
 	}
 
@@ -114,7 +114,7 @@ export default class extends ServiceCxperium {
 		});
 	}
 
-	async sendWhatsappMessageOverload(
+	async sendWhatsappMessageWithFile(
 		chatId: string,
 		message: string,
 		phone: string,
