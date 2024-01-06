@@ -70,7 +70,7 @@ export default class {
 		}
 
 		if (
-			serviceCxperium.transfer.isSurveyTransfer(
+			await serviceCxperium.transfer.isSurveyTransfer(
 				contact,
 				this.activity,
 				this.conversation,
@@ -93,18 +93,19 @@ export default class {
 		}
 
 		if (
-			serviceCxperium.transfer.isLiveTransfer(
+			await serviceCxperium.transfer.isLiveTransfer(
 				contact,
 				this.activity,
-				this.conversation,
 			)
 		) {
-			// TODO
+			return;
 		}
 		if (this.activity.type === 'document') {
+			// TODO
 		}
 
 		if (this.activity.type === 'order') {
+			// TODO
 		}
 
 		if (intent) {
@@ -204,7 +205,7 @@ export default class {
 		this.activity = schemaActivity;
 	}
 
-	private initCxperiumMessage() {
+	private initCxperiumMessage(): void {
 		const data = this.req.body.messages[0];
 		const type = data.type;
 
