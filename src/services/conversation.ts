@@ -18,6 +18,11 @@ export default class BaseConversation {
 		this.conversation = conversation;
 	}
 
+	isWaitAction(className: string) {
+		if (this.conversation.waitData.className === className) return true;
+		return false;
+	}
+
 	isWaitAny() {
 		return Object.values(this.conversation.waitData).length > 0;
 	}
@@ -39,7 +44,7 @@ export default class BaseConversation {
 		}
 	}
 
-	getData(key: string): Record<string, unknown> {
+	getData(key: string): unknown {
 		const returnVal: Record<string, unknown> = {
 			key: '',
 			value: '',
@@ -52,7 +57,7 @@ export default class BaseConversation {
 			}
 		}
 
-		return returnVal;
+		return returnVal[key];
 	}
 
 	resetConversation() {
