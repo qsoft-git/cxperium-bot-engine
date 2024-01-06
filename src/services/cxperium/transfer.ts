@@ -9,15 +9,26 @@ import BaseConversation from '../conversation';
 
 // Services.
 import ServiceCxperiumContact from '../cxperium/contact';
+import ServiceCxperiumConfiguration from '../cxperium/configuration';
+import ServiceCxperiumMessage from '../cxperium/message';
+import ServiceCxperiumConversation from '../cxperium/conversation';
+import ServiceCxperiumLanguage from '../cxperium/language';
+import ServiceWhatsAppMessage from '../whatsapp/message';
 
 export default class extends ServiceCxperium {
-	serviceContactService!: ServiceCxperiumContact;
+	serviceCxperiumContact!: ServiceCxperiumContact;
+	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
+	serviceCxperiumMessage!: ServiceCxperiumMessage;
+	serviceCxperiumConversation!: ServiceCxperiumConversation;
+	serviceCxperiumLanguage!: ServiceCxperiumLanguage;
+	serviceWhatsAppMessage!: ServiceWhatsAppMessage;
+
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
-		this.serviceContactService = new ServiceCxperiumContact(data);
+		this.serviceCxperiumContact = new ServiceCxperiumContact(data);
 	}
 
-	isSurveyTransfer(
+	async isSurveyTransfer(
 		contact: TCxperiumContact,
 		activity: TActivity,
 		conversation: BaseConversation,
@@ -71,7 +82,7 @@ export default class extends ServiceCxperium {
 				// 	activity,
 				// 	conversation,
 				// ).StartSurvey(conversation.LastMessage);
-				this.serviceContactService.updateSurveyTransferStatus(
+				await this.serviceCxperiumContact.updateSurveyTransferStatus(
 					contact,
 					true,
 				);
@@ -80,11 +91,150 @@ export default class extends ServiceCxperium {
 		}
 	}
 
-	isLiveTransfer(
+	async isLiveTransfer(contact: TCxperiumContact, activity: TActivity) {
+		const isActive = (await this.serviceCxperiumConfiguration.execute())
+			.cxperiumLiveConfig.isActive;
+		if (!isActive) return false;
+
+		if (Boolean(contact.custom as any['IsCxLiveTransfer'])) {
+			if (activity.type === 'document') {
+				const base64string = Buffer.from(
+					activity.document.byteContent,
+				).toString('base64');
+
+				this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
+					contact.custom as any['ChatId'],
+					activity.text,
+					contact.phone,
+					base64string,
+					activity.document.id,
+					activity.document.mimeType,
+				);
+			} else if (activity.type === 'image') {
+				const base64string = Buffer.from(
+					activity.image.byteContent,
+				).toString('base64');
+
+				this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
+					contact.custom as any['ChatId'],
+					activity.text,
+					contact.phone,
+					base64string,
+					activity.image.id,
+					activity.image.mimeType,
+				);
+			} else {
+				if (
+					await this.serviceCxperiumConversation.chatExists(
+						contact._id,
+					)
+				) {
+					this.serviceCxperiumConversation.create(contact._id);
+				}
+
+				await this.serviceCxperiumMessage.sendWhatsappMessage(
+					contact.custom as any['ChatId'],
+					activity.text,
+					contact.phone,
+				);
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	async transferToRepresentative(
 		contact: TCxperiumContact,
-		activity: TActivity,
 		conversation: BaseConversation,
-	) {
+	): Promise<boolean> {
+		if (await this.serviceCxperiumMessage.checkBusinessHour()) {
+			const message =
+				await this.serviceCxperiumMessage.getOutsideBusinessHoursMessage(
+					conversation.conversation.cultureCode,
+				);
+
+			await this.serviceWhatsAppMessage.sendRegularMessage(
+				contact.phone,
+				message,
+			);
+			return true;
+		}
+
+		const id = await this.serviceCxperiumConversation.create(contact._id);
+
+		await this.serviceCxperiumContact.updateContactByCustomFields(contact, {
+			ChatId: id,
+		});
+
+		await this.serviceCxperiumMessage.sendWhatsappMessage(
+			id,
+			conversation.conversation.sessionData[
+				conversation.conversation.sessionData.length - 2
+			] as any['message'],
+			contact.phone,
+		);
+
+		await this.serviceWhatsAppMessage.sendRegularMessage(
+			contact.phone,
+			await this.serviceCxperiumLanguage.getLanguageByKey(
+				conversation.conversation.languageId,
+				'transfer_to_represantative',
+			),
+		);
+
+		await this.serviceCxperiumContact.updateLiveTransferStatus(
+			contact,
+			true,
+		);
+		return true;
+	}
+
+	async transferToRepresentatives(
+		contact: TCxperiumContact,
+		conversation: BaseConversation,
+		teamId: string,
+	): Promise<boolean> {
+		if (await this.serviceCxperiumMessage.checkBusinessHour()) {
+			const message =
+				await this.serviceCxperiumMessage.getOutsideBusinessHoursMessage(
+					conversation.conversation.cultureCode,
+				);
+
+			await this.serviceWhatsAppMessage.sendRegularMessage(
+				contact.phone,
+				message,
+			);
+			return true;
+		}
+
+		const id = await this.serviceCxperiumConversation.create(contact._id);
+
+		await this.serviceCxperiumContact.updateContactByCustomFields(contact, {
+			ChatId: id,
+		});
+
+		await this.serviceCxperiumMessage.sendWhatsappMessage(
+			id,
+			conversation.conversation.sessionData[
+				conversation.conversation.sessionData.length - 2
+			] as any['message'],
+			contact.phone,
+		);
+
+		await this.serviceWhatsAppMessage.sendRegularMessage(
+			contact.phone,
+			await this.serviceCxperiumLanguage.getLanguageByKey(
+				conversation.conversation.languageId,
+				'transfer_to_represantative',
+			),
+		);
+
+		await this.serviceCxperiumMessage.assignChatToTeam(id, teamId);
+		await this.serviceCxperiumContact.updateLiveTransferStatus(
+			contact,
+			true,
+		);
 		return true;
 	}
 }
