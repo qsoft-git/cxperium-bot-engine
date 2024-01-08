@@ -2,18 +2,7 @@
 import { TConversation } from '../types/conversation';
 
 export default class BaseConversation {
-	conversation: TConversation = {
-		waitData: {
-			className: '',
-			functionName: '',
-		},
-		conversationData: [],
-		sessionData: [],
-		languageId: 1,
-		lastMessage: '',
-		faultCount: 0,
-		cultureCode: 'TR',
-	};
+	conversation: TConversation;
 
 	constructor(conversation: TConversation) {
 		this.conversation = conversation;
