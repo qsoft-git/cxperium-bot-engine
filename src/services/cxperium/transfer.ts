@@ -25,7 +25,11 @@ export default class extends ServiceCxperium {
 
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
+		this.serviceCxperiumConfiguration = new ServiceCxperiumConfiguration(
+			data,
+		);
 		this.serviceCxperiumContact = new ServiceCxperiumContact(data);
+		this.serviceCxperiumMessage = new ServiceCxperiumMessage(data);
 	}
 
 	async isSurveyTransfer(
@@ -34,8 +38,9 @@ export default class extends ServiceCxperium {
 		conversation: BaseConversation,
 	) {
 		const from = activity.from;
+		const customAttributes = contact.custom as any;
 
-		if (Boolean(contact.custom as any['IsCxTransfer'])) {
+		if (customAttributes.IsKvkkApproved) {
 			// TODO
 			// new CxperiumCatchDialog(
 			// 	contact,
@@ -92,11 +97,12 @@ export default class extends ServiceCxperium {
 	}
 
 	async isLiveTransfer(contact: TCxperiumContact, activity: TActivity) {
-		const isActive = (await this.serviceCxperiumConfiguration.execute())
-			.cxperiumLiveConfig.isActive;
-		if (!isActive) return false;
+		const customAttributes = contact.custom as any;
+		const env = await this.serviceCxperiumConfiguration.execute();
 
-		if (Boolean(contact.custom as any['IsCxLiveTransfer'])) {
+		if (!env.cxperiumLiveConfig.IsActive) return false;
+
+		if (customAttributes.IsCxLiveTransfer) {
 			if (activity.type === 'document') {
 				const base64string = Buffer.from(
 					activity.document.byteContent,
@@ -138,6 +144,7 @@ export default class extends ServiceCxperium {
 					contact.phone,
 				);
 			}
+
 			return true;
 		}
 

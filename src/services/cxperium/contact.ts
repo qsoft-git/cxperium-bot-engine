@@ -231,9 +231,11 @@ export default class extends ServiceCxperium {
 	}
 
 	async updateGdprApprovalStatus(contact: TCxperiumContact, status: boolean) {
-		const body: Record<string, any> = {};
+		const body: Record<string, any> = {
+			custom: {},
+		};
 
-		body['custom']['isKvkkApproved'] = status;
+		body['custom']['IsKvkkApproved'] = status;
 
 		await fetch(`${this.baseUrl}/api/contacts/${contact._id}`, {
 			method: 'PUT',
@@ -249,9 +251,11 @@ export default class extends ServiceCxperium {
 		contact: TCxperiumContact,
 		status: boolean,
 	) {
-		const body: Record<string, any> = {};
+		const body: Record<string, any> = {
+			custom: {},
+		};
 
-		body['custom']['isSurveyTransfer'] = status;
+		body['custom']['IsSurveyTransfer'] = status;
 
 		await fetch(`${this.baseUrl}/api/contacts/${contact._id}`, {
 			method: 'PUT',
@@ -264,9 +268,11 @@ export default class extends ServiceCxperium {
 	}
 
 	async updateLiveTransferStatus(contact: TCxperiumContact, status: boolean) {
-		const body: Record<string, any> = {};
+		const body: Record<string, any> = {
+			custom: {},
+		};
 
-		body['custom']['isLiveTransfer'] = status;
+		body['custom']['IsLiveTransfer'] = status;
 
 		await fetch(`${this.baseUrl}/api/contacts/${contact._id}`, {
 			method: 'PUT',

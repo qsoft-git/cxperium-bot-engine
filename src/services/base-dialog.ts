@@ -21,7 +21,7 @@ export default class {
 	}
 
 	public async sendMessage(message: string) {
-		const msg = this.services.whatsapp.message.sendRegularMessage(
+		const msg = await this.services.whatsapp.message.sendRegularMessage(
 			this.contact.phone,
 			message,
 		);
@@ -35,7 +35,7 @@ export default class {
 		message: string,
 		buttons: TButton[],
 	) {
-		const msg = this.services.whatsapp.message.sendButtonMessage(
+		const msg = await this.services.whatsapp.message.sendButtonMessage(
 			this.contact.phone,
 			header,
 			footer,
@@ -53,7 +53,7 @@ export default class {
 		buttonTitle: string,
 		rows: TRow[],
 	) {
-		const msg = this.services.whatsapp.message.sendListMessage(
+		const msg = await this.services.whatsapp.message.sendListMessage(
 			this.contact.phone,
 			header,
 			footer,
@@ -66,7 +66,7 @@ export default class {
 	}
 
 	public async sendLocationRequest(message: string) {
-		const msg = this.services.whatsapp.message.sendLocationRequest(
+		const msg = await this.services.whatsapp.message.sendLocationRequest(
 			this.contact.phone,
 			message,
 		);
@@ -75,7 +75,7 @@ export default class {
 	}
 
 	public async sendImageMessage(imageId: string, caption: string) {
-		const msg = this.services.whatsapp.message.sendImageMessage(
+		const msg = await this.services.whatsapp.message.sendImageMessage(
 			this.contact.phone,
 			imageId,
 			caption,

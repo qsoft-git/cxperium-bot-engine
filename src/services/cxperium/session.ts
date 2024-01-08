@@ -118,6 +118,7 @@ export default class extends ServiceCxperium {
 				conversationData: [],
 				waitData: {
 					className: '',
+					functionName: '',
 				},
 				faultCount: 0,
 				sessionData: response.data[0].data,

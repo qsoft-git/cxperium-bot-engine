@@ -2,7 +2,7 @@
 import { Request } from 'express';
 
 // Types.
-import { TAppLocalsServices, TBaseDialogCtor } from '../types/base-dialog';
+import { TAppLocalsServices } from '../types/base-dialog';
 import {
 	TActivity,
 	TTextMessage,
@@ -20,7 +20,6 @@ export default class {
 		| TDocumentMessage
 		| TInteractiveMessage
 		| any;
-	private contact!: any;
 	private conversation!: any;
 
 	constructor(private req: Request) {
@@ -43,6 +42,8 @@ export default class {
 			this.activity.userProfileName,
 		);
 
+		const customAttributes = contact.custom as any;
+
 		// Init conversation.
 		this.services.cxperium.session.createOrUpdateSession(
 			true,
@@ -56,60 +57,50 @@ export default class {
 		this.conversation =
 			await this.services.cxperium.session.getConversation(contact.phone);
 
+		const isGdprActive = (
+			await this.services.cxperium.configuration.execute()
+		).gdprConfig.IsActive;
+
 		// Init cxperium message properties
 		this.initCxperiumMessage();
 
-		// if (!Boolean(contact.custom as any['IsKvkkApproved'])) {
-		// }
+		if (
+			await this.services.cxperium.transfer.isSurveyTransfer(
+				contact,
+				this.activity,
+				this.conversation,
+			)
+		) {
+			if (!customAttributes.IsKvkkApproved) {
+				this.services.cxperium.contact.updateGdprApprovalStatus(
+					contact,
+					true,
+				);
+			}
 
-		// if (
-		// 	await this.service.cxperium.transfer.isSurveyTransfer(
-		// 		contact,
-		// 		this.activity,
-		// 		this.conversation,
-		// 	)
-		// ) {
-		// 	if (!contact.custom as any['IsKvkkApproved']) {
-		// 		this.service.cxperium.contact.updateGdprApprovalStatus(
-		// 			contact,
-		// 			true,
-		// 		);
-		// 	}
+			return;
+		}
 
-		// 	return;
-		// }
+		if (!customAttributes.IsKvkkApproved && isGdprActive) {
+			this.services.dialog.runWithIntentName(
+				this,
+				'CXPerium.Dialogs.WhatsApp.System.Gdpr.KvkkDialog',
+			);
+			return;
+		}
 
-		// if (
-		// 	(!contact.custom as any['IsKvkkApproved']) &&
-		// 	(await this.service.cxperium.configuration.execute()).gdprConfig
-		// 		.isActive
-		// ) {
-		// 	// TODO
-		// 	// new KvkkDialog(contact, activity, conversationState).RunDialog();
-		// 	// return;
-		// }
+		if (
+			await this.services.cxperium.transfer.isLiveTransfer(
+				contact,
+				this.activity,
+			)
+		)
+			return;
 
-		// if (
-		// 	await this.service.cxperium.transfer.isLiveTransfer(
-		// 		contact,
-		// 		this.activity,
-		// 	)
-		// ) {
-		// 	return;
-		// }
-		// if (this.activity.type === 'document') {
-		// 	// TODO
-		// }
-
-		// if (this.activity.type === 'order') {
-		// 	// TODO
-		// }
-
-		// this.services.dialog.runWithIntentName(
-		// 	this,
-		// 	'CXPerium.Dialogs.WhatsApp.System.Gdpr.KvkkDialog',
-		// );
-
+		this.services.dialog.runWithConversationWaitAction(
+			this,
+			this.conversation,
+		);
 		this.services.dialog.runWithMatchText(this, text);
 	}
 
@@ -192,15 +183,17 @@ export default class {
 
 		if (type === 'interactive') {
 			if (data.interactive.button_reply) {
-				const msg: string = data.button_reply.payload
-					? data.button_reply.id
-					: data.button_reply.payload;
+				let msg = '';
+				if (data.interactive.button_reply.payload)
+					msg = data.interactive.button_reply.payload;
+				else if (data.interactive.button_reply.id)
+					msg = data.interactive.button_reply.id;
 
 				if (msg.includes('pollbot_') || msg.includes('SID:'))
 					this.activity.isCxperiumMessage = true;
 			}
 			if (data.interactive.list_reply) {
-				const msg: string = data.list_reply.id;
+				const msg: string = data.interactive.list_reply.id;
 
 				if (msg.includes('SID:'))
 					this.activity.isCxperiumMessage = true;

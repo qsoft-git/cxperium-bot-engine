@@ -1,8 +1,8 @@
 export type TAutomateConfig = {
-	hypeUrl: string;
-	username: string;
-	password: string;
-	apiUrl: string;
-	clientId: string;
-	clientSecret: string;
+	HypeUrl: string;
+	Username: string;
+	Password: string;
+	ApiUrl: string;
+	ClientId: string;
+	ClientSecret: string;
 };

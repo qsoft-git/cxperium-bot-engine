@@ -13,35 +13,36 @@ export default class extends ServiceBaseDialog implements IDialog {
 		} else {
 			switch (this.activity.value.id) {
 				case 'kvkk_approve': {
-					this.services.cxperium.contact.updateGdprApprovalStatus(
+					await this.services.cxperium.contact.updateGdprApprovalStatus(
 						this.contact,
 						true,
 					);
 
-					// TODO
-					// if (
-					// 	!CxperiumHelper.IsCXPeriumTransfer(
-					// 		Contact,
-					// 		Activity,
-					// 		Conversation,
-					// 	)
-					// )
+					const isSurveyTransfer =
+						await this.services.cxperium.transfer.isSurveyTransfer(
+							this.contact,
+							this.activity,
+							this.conversation,
+						);
 
-					// this.services.dialog.getListAll
-					// 	new WelcomeDialog(
-					// 		Contact,
-					// 		Activity,
-					// 		Conversation,
-					// 	).RunDialog();
+					if (!isSurveyTransfer) {
+						this.services.dialog.runWithIntentName(
+							this,
+							'CXPerium.Dialogs.WhatsApp.WelcomeDialog',
+						);
+						return;
+					}
 
 					break;
 				}
 				case 'kvkk_red': {
-					this.sendMessage(await this.getLocalizationText('gdpr_no'));
+					await this.sendMessage(
+						await this.getLocalizationText('gdpr_no'),
+					);
 					break;
 				}
 				default: {
-					this.sendKvkkMessage();
+					await this.sendKvkkMessage();
 					break;
 				}
 			}
@@ -49,22 +50,22 @@ export default class extends ServiceBaseDialog implements IDialog {
 	}
 
 	private async sendKvkkMessage() {
-		this.sendMessage(
+		await this.sendMessage(
 			await this.getLocalizationText('gdpr_welcome_message'),
 		);
 
-		this.sendMessage(await this.getLocalizationText('gdpr_message'));
+		await this.sendMessage(await this.getLocalizationText('gdpr_message'));
 
 		const buttons: TButton[] = [
 			{
-				type: 'string',
+				type: 'reply',
 				reply: {
-					id: 'kvkk_approval',
+					id: 'kvkk_approve',
 					title: await this.getLocalizationText('approve'),
 				},
 			},
 			{
-				type: 'string',
+				type: 'reply',
 				reply: {
 					id: 'kvkk_red',
 					title: await this.getLocalizationText('deny'),
@@ -72,10 +73,10 @@ export default class extends ServiceBaseDialog implements IDialog {
 			},
 		];
 
-		this.sendButtonMessage(
-			await this.getLocalizationText('gdpr_question'),
-			'',
+		await this.sendButtonMessage(
 			await this.getLocalizationText('info'),
+			'',
+			await this.getLocalizationText('gdpr_question'),
 			buttons,
 		);
 	}

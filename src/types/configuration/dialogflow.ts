@@ -1,5 +1,5 @@
 export type TDialogflowConfig = {
-	credentialsFilePath: string;
-	projectId: string;
-	isEnabled: boolean;
+	CredentialsFilePath: string;
+	ProjectId: string;
+	IsEnabled: boolean;
 };

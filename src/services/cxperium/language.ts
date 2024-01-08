@@ -44,7 +44,7 @@ export default class extends ServiceCxperium {
 			},
 		).then((response) => response.json())) as any;
 
-		let languages!: TCxperiumLanguage[];
+		const languages: TCxperiumLanguage[] = [];
 		for (const [, value] of Object.entries(response.data.data) as any) {
 			const language: TCxperiumLanguage = {
 				id: value.languageId,
@@ -78,11 +78,9 @@ export default class extends ServiceCxperium {
 		const languages = await this.getAllLanguage();
 
 		for (const language of languages) {
-			if (language.id == languageId) {
-				for (const [k, v] of Object.entries(language.data) as any) {
-					if (k === key) {
-						return v;
-					}
+			if (Number(language.id) === languageId) {
+				if (key === language.data.key) {
+					return language.data.value;
 				}
 			}
 		}

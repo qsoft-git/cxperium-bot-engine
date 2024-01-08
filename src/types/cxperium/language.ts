@@ -3,5 +3,5 @@ export type TCxperiumLanguage = {
 	name: string;
 	cultureCode: string;
 	isDefault: boolean;
-	data: Record<string, string>;
+	data: any;
 };

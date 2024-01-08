@@ -1,3 +1,3 @@
 export type TGdprConfig = {
-	isActive: boolean;
+	IsActive: boolean;
 };

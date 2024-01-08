@@ -19,7 +19,7 @@ export default class {
 	) {
 		const response = (await fetch(
 			`${
-				(await this.configuration.execute()).whatsappConfig.whatsappUrl
+				(await this.configuration.execute()).whatsappConfig.wabaUrl
 			}/${endpoint}`,
 			{
 				method: 'POST',
@@ -41,21 +41,22 @@ export default class {
 
 	public async wpRequest(
 		body: string | Record<string, unknown>,
-		contentType: string,
 		endpoint: string,
+		contentType: string,
 	) {
 		if (typeof body === 'object') body = JSON.stringify(body);
 
+		const env = await this.configuration.execute();
+
 		const response = (await fetch(
-			`${
-				(await this.configuration.execute()).whatsappConfig.whatsappUrl
-			}/${endpoint}`,
+			`${(
+				await this.configuration.execute()
+			).whatsappConfig.wabaUrl.replace('-sandbox', '')}/${endpoint}`,
 			{
 				method: 'POST',
 				headers: {
 					'Content-Type': contentType,
-					'D360-API-KEY': (await this.configuration.execute())
-						.whatsappConfig.key,
+					'D360-API-KEY': env.whatsappConfig.key,
 				},
 				body,
 			},

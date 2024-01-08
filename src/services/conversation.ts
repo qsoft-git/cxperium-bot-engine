@@ -5,6 +5,7 @@ export default class BaseConversation {
 	conversation: TConversation = {
 		waitData: {
 			className: '',
+			functionName: '',
 		},
 		conversationData: [],
 		sessionData: [],
@@ -18,17 +19,19 @@ export default class BaseConversation {
 		this.conversation = conversation;
 	}
 
-	isWaitAction(className: string) {
-		if (this.conversation.waitData.className === className) return true;
+	isWaitAction(functionName: string) {
+		if (this.conversation.waitData.functionName === functionName)
+			return true;
 		return false;
 	}
 
 	isWaitAny() {
-		return Object.values(this.conversation.waitData).length > 0;
+		return Object.values(this.conversation.waitData).length > 2;
 	}
 
-	addWaitAction(className: string) {
+	addWaitAction(className: string, functionName: string) {
 		this.conversation.waitData.className = className;
+		this.conversation.waitData.functionName = functionName;
 	}
 
 	removeWaitAction() {
@@ -62,7 +65,10 @@ export default class BaseConversation {
 
 	resetConversation() {
 		this.conversation.sessionData = [];
-		this.conversation.waitData = {};
+		this.conversation.waitData = {
+			className: '',
+			functionName: '',
+		};
 	}
 
 	increaseFaultCount() {

@@ -129,9 +129,6 @@ export default class extends ServiceCxperium {
 		let whatsappConfig: TWhatsappConfig;
 
 		if (NODE_ENV === 'development') {
-			// TODO canli ortamdan donen waba config bilgisi ile dev ortaminda farkli.
-			// TODOFatmadan api tarafinda guncelleme bekleniyor.
-
 			response = (await fetch(
 				`${this.baseUrl}/api/assistant/whatsapp-config`,
 				{
@@ -143,7 +140,15 @@ export default class extends ServiceCxperium {
 				},
 			).then((response) => response.json())) as any;
 
-			whatsappConfig = response.data[0];
+			whatsappConfig = {
+				shoppingCatalogId: response.data.shoppingCatalogId,
+				key: response.data.key,
+				phone: response.data.phone,
+				wabaUrl: response.data.wabaUrl,
+				namespace: response.data.namespace,
+				platform: response.data.platform,
+				provider: response.data.providers,
+			};
 		} else {
 			response = (await fetch(`${this.baseUrl}/api/waba`, {
 				method: 'GET',
@@ -153,7 +158,15 @@ export default class extends ServiceCxperium {
 				},
 			}).then((response) => response.json())) as any;
 
-			whatsappConfig = response.data[0];
+			whatsappConfig = {
+				shoppingCatalogId: response.data.shoppingCatalogId,
+				key: response.data.key,
+				phone: response.data.phone,
+				wabaUrl: response.data.wabaUrl,
+				namespace: response.data.namespace,
+				platform: response.data.platform,
+				provider: response.data.providers,
+			};
 		}
 
 		return whatsappConfig;

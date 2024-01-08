@@ -1,8 +1,9 @@
 export type TWhatsappConfig = {
-	whatsappUrl: string;
+	wabaUrl: string;
 	key: string;
 	shoppingCatalogId: string;
 	namespace: string;
 	provider: string;
-	phoneNumber: string;
+	phone: string;
+	platform: string;
 };
