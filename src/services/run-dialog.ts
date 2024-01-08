@@ -1,8 +1,6 @@
 // Node modules.
 import { Request } from 'express';
 
-import DataGeneral from '../data/general';
-
 // Types.
 import { TAppLocalsServices } from '../types/base-dialog';
 import {
@@ -40,20 +38,17 @@ export default class {
 		const text = this.activity.text;
 
 		// Init contact.
-		this.contact = await this.services.cxperium.contact.getContactByPhone(
-			this.activity.from,
-			this.activity.userProfileName,
-		);
+		this.contact =
+			await this.services.cxperium.contact.getContactByPhone(this);
 
 		const customAttributes = this.contact.custom as any;
 
 		// Init conversation.
-		this.services.cxperium.session.createOrUpdateSession(
+		await this.services.cxperium.session.createOrUpdateSession(
 			true,
 			'TR',
-			this.contact.phone,
 			text,
-			this.activity.userProfileName,
+			this,
 		);
 
 		// Init conversation.
@@ -67,22 +62,16 @@ export default class {
 		// Init cxperium message properties
 		this.initCxperiumMessage();
 
-		// if (
-		// 	await this.services.cxperium.transfer.isSurveyTransfer(
-		// 		contact,
-		// 		this.activity,
-		// 		this.conversation,
-		// 	)
-		// ) {
-		// 	if (!customAttributes.IsKvkkApproved) {
-		// 		this.services.cxperium.contact.updateGdprApprovalStatus(
-		// 			contact,
-		// 			true,
-		// 		);
-		// 	}
+		if (await this.services.cxperium.transfer.isSurveyTransfer(this)) {
+			if (!customAttributes.IsKvkkApproved) {
+				this.services.cxperium.contact.updateGdprApprovalStatus(
+					this,
+					true,
+				);
+			}
 
-		// 	return;
-		// }
+			return;
+		}
 
 		if (!customAttributes.IsKvkkApproved && isGdprActive) {
 			this.services.dialog.runWithIntentName(
@@ -92,13 +81,7 @@ export default class {
 			return;
 		}
 
-		if (
-			await this.services.cxperium.transfer.isLiveTransfer(
-				this.contact,
-				this.activity,
-			)
-		)
-			return;
+		if (await this.services.cxperium.transfer.isLiveTransfer(this)) return;
 
 		const conversationCheck: boolean =
 			this.services.dialog.runWithConversationWaitAction(this);

@@ -13,9 +13,7 @@ export default class BaseConversation {
 	}
 
 	isWaitAction(functionName: string) {
-		if (this.conversation.waitData.functionName === functionName)
-			return true;
-		return false;
+		return this.conversation.waitData.functionName === functionName;
 	}
 
 	isWaitAny() {
@@ -25,7 +23,6 @@ export default class BaseConversation {
 	addWaitAction(className: string, functionName: string) {
 		this.conversation.waitData.className = className;
 		this.conversation.waitData.functionName = functionName;
-
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
@@ -39,7 +36,6 @@ export default class BaseConversation {
 			className: '',
 			functionName: '',
 		};
-
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
@@ -50,7 +46,6 @@ export default class BaseConversation {
 		};
 
 		this.conversation.sessionData.push(faultCount);
-
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 }

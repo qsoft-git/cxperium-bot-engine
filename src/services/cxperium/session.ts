@@ -31,12 +31,12 @@ export default class extends ServiceCxperium {
 	async createOrUpdateSession(
 		isActive: boolean,
 		language: string,
-		phone: string,
 		message: string,
-		userProfileName: string,
+		dialog: any,
 	) {
 		if (!language) language = 'TR';
 
+		const phone = dialog.contact.phone;
 		const body = {
 			language: language,
 			phone: phone,
@@ -49,7 +49,7 @@ export default class extends ServiceCxperium {
 			isActive: isActive,
 		};
 
-		const response = (await fetch(`${this.baseUrl}/api/assistant/session`, {
+		(await fetch(`${this.baseUrl}/api/assistant/session`, {
 			method: 'POST',
 			body: JSON.stringify(body),
 			headers: {
@@ -58,17 +58,12 @@ export default class extends ServiceCxperium {
 			},
 		}).then((response) => response.json())) as any;
 
-		await this.updateConversationSessionTime(phone, userProfileName);
+		await this.updateConversationSessionTime(dialog);
 	}
 
-	async updateConversationSessionTime(
-		phone: string,
-		userProfileName: string,
-	) {
-		const contact = await this.serviceCxperiumContact.getContactByPhone(
-			phone,
-			userProfileName,
-		);
+	async updateConversationSessionTime(dialog: any) {
+		const contact =
+			await this.serviceCxperiumContact.getContactByPhone(dialog);
 
 		if (contact)
 			await this.serviceCxperiumContact.updateContactConversationDateByContactId(

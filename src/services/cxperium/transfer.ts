@@ -32,13 +32,11 @@ export default class extends ServiceCxperium {
 		this.serviceCxperiumMessage = new ServiceCxperiumMessage(data);
 	}
 
-	async isSurveyTransfer(
-		contact: TCxperiumContact,
-		activity: TActivity,
-		conversation: BaseConversation,
-	) {
+	async isSurveyTransfer(dialog: any) {
+		const activity = dialog.activity;
+		const conversation = dialog.conversation;
 		const from = activity.from;
-		const customAttributes = contact.custom as any;
+		const customAttributes = dialog.contact.custom as any;
 
 		if (customAttributes.IsKvkkApproved) {
 			// TODO
@@ -88,7 +86,7 @@ export default class extends ServiceCxperium {
 				// 	conversation,
 				// ).StartSurvey(conversation.LastMessage);
 				await this.serviceCxperiumContact.updateSurveyTransferStatus(
-					contact,
+					dialog.contact,
 					true,
 				);
 				return true;
@@ -96,7 +94,9 @@ export default class extends ServiceCxperium {
 		}
 	}
 
-	async isLiveTransfer(contact: TCxperiumContact, activity: TActivity) {
+	async isLiveTransfer(dialog: any) {
+		const contact: TCxperiumContact = dialog.contact;
+		const activity: TActivity = dialog.activity;
 		const customAttributes = contact.custom as any;
 		const env = await this.serviceCxperiumConfiguration.execute();
 

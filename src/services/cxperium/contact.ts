@@ -142,10 +142,9 @@ export default class extends ServiceCxperium {
 		});
 	}
 
-	async getContactByPhone(
-		phone: string,
-		userProfileName: string,
-	): Promise<TCxperiumContact> {
+	async getContactByPhone(dialog: any): Promise<TCxperiumContact> {
+		const phone = dialog.activity.from;
+
 		const response = (await fetch(
 			`${this.baseUrl}/api/contacts/phone/${phone}`,
 			{
@@ -187,7 +186,7 @@ export default class extends ServiceCxperium {
 			return await this.createContact(
 				phone,
 				'',
-				userProfileName,
+				dialog.activity.userProfileName,
 				attributes,
 			);
 		}
@@ -230,7 +229,9 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json());
 	}
 
-	async updateGdprApprovalStatus(contact: TCxperiumContact, status: boolean) {
+	async updateGdprApprovalStatus(dialog: any, status: boolean) {
+		const contact: TCxperiumContact = dialog.contact;
+
 		const body: Record<string, any> = {
 			custom: {},
 		};

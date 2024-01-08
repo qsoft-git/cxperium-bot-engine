@@ -20,9 +20,7 @@ export default class extends ServiceBaseDialog implements IDialog {
 
 					const isSurveyTransfer =
 						await this.services.cxperium.transfer.isSurveyTransfer(
-							this.contact,
-							this.activity,
-							this.conversation,
+							this,
 						);
 
 					if (!isSurveyTransfer) {

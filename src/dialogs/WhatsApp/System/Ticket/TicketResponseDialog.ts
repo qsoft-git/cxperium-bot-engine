@@ -15,7 +15,7 @@ export default class extends ServiceBaseDialog implements IDialog {
 			)
 		) {
 			const message: string = this.activity.text;
-			const ticketId: any = this.conversation.getData('ticketId');
+			const ticketId: any = 123; //this.conversation.getData('ticketId');
 
 			await this.services.cxperium.ticket.comment(ticketId, message);
 			await this.services.whatsapp.message.sendRegularMessage(
@@ -31,7 +31,8 @@ export default class extends ServiceBaseDialog implements IDialog {
 	}
 
 	public async RunDialogByTicketId(ticketId: string): Promise<void> {
-		this.conversation.putData({ ticketId: ticketId });
+		// this.conversation.putData({ ticketId: ticketId });
+		console.log(ticketId);
 		await this.services.whatsapp.message.sendRegularMessage(
 			this.contact.phone,
 			await this.services.cxperium.language.getLanguageByKey(
