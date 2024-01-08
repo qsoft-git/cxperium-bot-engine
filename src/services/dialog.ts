@@ -25,29 +25,29 @@ export default class {
 		return this.listAll;
 	}
 
-	public runWithConversationWaitAction(
-		dialog: any,
-		conversation: BaseConversation,
-	): void {
-		if (conversation.isWaitAny()) {
-			const findOneDialog = this.getListAll.find(
-				(item: any) =>
-					conversation.conversation.waitData.className === item?.name,
-			) as any;
+	public runWithConversationWaitAction(dialog: any): boolean {
+		const conversation: BaseConversation = dialog.conversation;
 
-			const runParams: TBaseDialogCtor = {
-				contact: dialog.contact,
-				activity: dialog.activity,
-				conversation: dialog.conversation,
-				dialogPath: findOneDialog.path,
-				services: dialog.service,
-			};
+		if (!conversation.isWaitAny()) return false;
 
-			this.run(runParams)
-				.then(() => {})
-				.catch((error) => console.error(error));
-			return;
-		}
+		const findOneDialog = this.getListAll.find(
+			(item: any) =>
+				conversation.conversation.waitData.className === item?.name,
+		) as any;
+
+		const runParams: TBaseDialogCtor = {
+			contact: dialog.contact,
+			activity: dialog.activity,
+			conversation: dialog.conversation,
+			dialogPath: findOneDialog.path,
+			services: dialog.service,
+		};
+
+		this.run(runParams)
+			.then(() => {})
+			.catch((error) => console.error(error));
+
+		return true;
 	}
 
 	public runWithMatchText(dialog: any, matchText: string): void {

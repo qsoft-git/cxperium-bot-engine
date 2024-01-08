@@ -15,12 +15,13 @@ import { TConversation } from '../../types/conversation';
 import BaseConversation from '../conversation';
 
 export default class extends ServiceCxperium {
-	public cache = DataGeneral.cache;
+	public cache: any;
 	serviceCxperiumContact!: ServiceCxperiumContact;
 	serviceCxperiumConversation!: ServiceCxperiumConversation;
 
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
+		this.cache = DataGeneral.cache;
 		this.serviceCxperiumContact = new ServiceCxperiumContact(data);
 		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
 			data,
@@ -87,7 +88,9 @@ export default class extends ServiceCxperium {
 		return response;
 	}
 
-	async getConversation(phone: string) {
+	async getConversation(dialog: any) {
+		const phone: string = dialog.contact.phone;
+
 		const response = (await fetch(
 			`${this.baseUrl}/api/assistant/session/${phone}`,
 			{
@@ -129,7 +132,6 @@ export default class extends ServiceCxperium {
 			this.cache.set(`CONVERSATION-${phone}`, conversation);
 		}
 
-		const conv = new BaseConversation(conversation);
-		return conv;
+		return new BaseConversation(dialog, conversation);
 	}
 }

@@ -3,9 +3,13 @@ import { TConversation } from '../types/conversation';
 
 export default class BaseConversation {
 	conversation: TConversation;
+	cache: any;
+	contact: any;
 
-	constructor(conversation: TConversation) {
+	constructor(dialog: any, conversation: TConversation) {
 		this.conversation = conversation;
+		this.cache = dialog.services.cxperium.session.cache;
+		this.contact = dialog.contact;
 	}
 
 	isWaitAction(functionName: string) {
@@ -21,35 +25,12 @@ export default class BaseConversation {
 	addWaitAction(className: string, functionName: string) {
 		this.conversation.waitData.className = className;
 		this.conversation.waitData.functionName = functionName;
+
+		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
 	removeWaitAction() {
-		this.conversation.waitData.className = '';
-	}
-
-	putData(data: Record<string, unknown>) {
-		if (!this.conversation.sessionData.includes(data))
-			this.conversation.sessionData.push(data);
-		else {
-			const index = this.conversation.sessionData.indexOf(data);
-			this.conversation.sessionData.splice(index, 1);
-		}
-	}
-
-	getData(key: string): unknown {
-		const returnVal: Record<string, unknown> = {
-			key: '',
-			value: '',
-		};
-
-		for (const rec of this.conversation.sessionData) {
-			if (key === rec.key) {
-				returnVal.key = rec.key;
-				returnVal.value = rec.value;
-			}
-		}
-
-		return returnVal[key];
+		this.cache.del(`CONVERSATION-${this.contact.phone}`);
 	}
 
 	resetConversation() {
@@ -58,6 +39,8 @@ export default class BaseConversation {
 			className: '',
 			functionName: '',
 		};
+
+		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
 	increaseFaultCount() {
@@ -67,9 +50,7 @@ export default class BaseConversation {
 		};
 
 		this.conversation.sessionData.push(faultCount);
-	}
 
-	resetFaultCount() {
-		this.putData({ key: 'faultCount', value: 0 });
+		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 }
