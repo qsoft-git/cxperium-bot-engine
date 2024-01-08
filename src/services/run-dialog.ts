@@ -12,7 +12,7 @@ import {
 } from '../types/whatsapp/activity';
 
 export default class {
-	private service!: TAppLocalsServices;
+	private services!: TAppLocalsServices;
 	private activity!:
 		| TActivity
 		| TTextMessage
@@ -24,7 +24,7 @@ export default class {
 	private conversation!: any;
 
 	constructor(private req: Request) {
-		this.service = this.req.app.locals.service;
+		this.services = this.req.app.locals.service;
 	}
 
 	async execute(): Promise<void> {
@@ -34,15 +34,17 @@ export default class {
 		// Init activity.
 		this.initActivity();
 
-		const serviceCxperiumIntent = this.service.cxperium.intent;
-		const serviceDialog = this.service.dialog;
-		const serviceCxperium = this.service.cxperium;
+		// Init activity text.
 		const text = this.activity.text;
-		const contact = await serviceCxperium.contact.getContactByPhone(
+
+		// Init contact.
+		const contact = await this.services.cxperium.contact.getContactByPhone(
 			this.activity.from,
 			this.activity.userProfileName,
 		);
-		serviceCxperium.session.createOrUpdateSession(
+
+		// Init conversation.
+		this.services.cxperium.session.createOrUpdateSession(
 			true,
 			'TR',
 			contact.phone,
@@ -50,86 +52,65 @@ export default class {
 			this.activity.userProfileName,
 		);
 
-		const conversation = await serviceCxperium.session.getConversation(
-			contact.phone,
-		);
-		this.conversation = conversation;
+		// Init conversation.
+		this.conversation =
+			await this.services.cxperium.session.getConversation(contact.phone);
 
 		// Init cxperium message properties
 		this.initCxperiumMessage();
 
-		const cxperiumAllIntents = serviceCxperiumIntent.cache.get(
-			'all-intents',
-		) as any;
+		// if (!Boolean(contact.custom as any['IsKvkkApproved'])) {
+		// }
 
-		const intent = cxperiumAllIntents.find((item: any) =>
-			new RegExp(item.regexValue).test(text),
-		);
+		// if (
+		// 	await this.service.cxperium.transfer.isSurveyTransfer(
+		// 		contact,
+		// 		this.activity,
+		// 		this.conversation,
+		// 	)
+		// ) {
+		// 	if (!contact.custom as any['IsKvkkApproved']) {
+		// 		this.service.cxperium.contact.updateGdprApprovalStatus(
+		// 			contact,
+		// 			true,
+		// 		);
+		// 	}
 
-		if (!Boolean(contact.custom as any['IsKvkkApproved'])) {
-		}
+		// 	return;
+		// }
 
-		if (
-			await serviceCxperium.transfer.isSurveyTransfer(
-				contact,
-				this.activity,
-				this.conversation,
-			)
-		) {
-			if (!contact.custom as any['IsKvkkApproved']) {
-				serviceCxperium.contact.updateGdprApprovalStatus(contact, true);
-			}
+		// if (
+		// 	(!contact.custom as any['IsKvkkApproved']) &&
+		// 	(await this.service.cxperium.configuration.execute()).gdprConfig
+		// 		.isActive
+		// ) {
+		// 	// TODO
+		// 	// new KvkkDialog(contact, activity, conversationState).RunDialog();
+		// 	// return;
+		// }
 
-			return;
-		}
+		// if (
+		// 	await this.service.cxperium.transfer.isLiveTransfer(
+		// 		contact,
+		// 		this.activity,
+		// 	)
+		// ) {
+		// 	return;
+		// }
+		// if (this.activity.type === 'document') {
+		// 	// TODO
+		// }
 
-		if (
-			(!contact.custom as any['IsKvkkApproved']) &&
-			(await serviceCxperium.configuration.execute()).gdprConfig.isActive
-		) {
-			// TODO
-			// new KvkkDialog(contact, activity, conversationState).RunDialog();
-			// return;
-		}
+		// if (this.activity.type === 'order') {
+		// 	// TODO
+		// }
 
-		if (
-			await serviceCxperium.transfer.isLiveTransfer(
-				contact,
-				this.activity,
-			)
-		) {
-			return;
-		}
-		if (this.activity.type === 'document') {
-			// TODO
-		}
+		// this.services.dialog.runWithIntentName(
+		// 	this,
+		// 	'CXPerium.Dialogs.WhatsApp.System.Gdpr.KvkkDialog',
+		// );
 
-		if (this.activity.type === 'order') {
-			// TODO
-		}
-
-		if (intent) {
-			const intentName = intent.name;
-
-			const findAllDialogs = serviceDialog.getListAll;
-
-			const findOneDialog = findAllDialogs.find(
-				(item: any) => intentName === item?.name,
-			) as any;
-
-			const runParams: TBaseDialogCtor = {
-				contact: this.contact,
-				activity: this.activity,
-				conversation: this.conversation,
-				dialogPath: findOneDialog.path,
-				services: this.service,
-			};
-
-			serviceDialog
-				.run(runParams)
-				.then(() => {})
-				.catch((error: any) => console.log(error));
-		}
+		this.services.dialog.runWithMatchText(this, text);
 	}
 
 	private initWhichService(): void {

@@ -5,8 +5,11 @@ const { NODE_ENV } = process.env;
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Services.
+import ServiceRunDialog from '../services/run-dialog';
+
 // Types.
-import { TBaseDialogCtor } from '../types/base-dialog';
+import { TBaseDialogCtor, TAppLocalsServices } from '../types/base-dialog';
 
 export default class {
 	private folderPathExternal!: string;
@@ -24,9 +27,54 @@ export default class {
 		return this.listAll;
 	}
 
-	public async run(data: TBaseDialogCtor): Promise<any> {
-		const dialogImport = await import(data.dialogPath);
+	public runWithMatchText(dialog: any, matchText: string): void {
+		const services: TAppLocalsServices = dialog.services;
 
+		const cxperiumAllIntents = services.cxperium.intent.cache.get(
+			'all-intents',
+		) as any;
+
+		const intentParams = cxperiumAllIntents.find((item: any) =>
+			new RegExp(item.regexValue).test(matchText),
+		);
+
+		const findOneDialog = this.getListAll.find(
+			(item: any) => intentParams.name === item?.name,
+		) as any;
+
+		const runParams: TBaseDialogCtor = {
+			contact: dialog.contact,
+			activity: dialog.activity,
+			conversation: dialog.conversation,
+			dialogPath: findOneDialog.path,
+			services: dialog.service,
+		};
+
+		this.run(runParams)
+			.then(() => {})
+			.catch((error) => console.error(error));
+	}
+
+	public runWithIntentName(dialog: any, intentName: string): void {
+		const getIntentParams = this.getListAll.find((item: any) => {
+			return item.name == intentName;
+		}) as any;
+
+		const runParams: TBaseDialogCtor = {
+			contact: dialog.contact,
+			activity: dialog.activity,
+			conversation: dialog.conversation,
+			dialogPath: getIntentParams.path,
+			services: dialog.services,
+		};
+
+		this.run(runParams)
+			.then(() => {})
+			.catch((error) => console.error(error));
+	}
+
+	public async run(data: TBaseDialogCtor): Promise<void> {
+		const dialogImport = await import(data.dialogPath);
 		const dialog = new dialogImport.default(data);
 		dialog.runDialog();
 	}
