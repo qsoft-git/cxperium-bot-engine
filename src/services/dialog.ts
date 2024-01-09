@@ -40,7 +40,7 @@ export default class {
 			activity: dialog.activity,
 			conversation: dialog.conversation,
 			dialogPath: findOneDialog.path,
-			services: dialog.service,
+			services: dialog.services,
 		};
 
 		this.run(runParams)
@@ -70,7 +70,7 @@ export default class {
 			activity: dialog.activity,
 			conversation: dialog.conversation,
 			dialogPath: findOneDialog.path,
-			services: dialog.service,
+			services,
 		};
 
 		this.run(runParams)
@@ -79,6 +79,8 @@ export default class {
 	}
 
 	public runWithIntentName(dialog: any, intentName: string): void {
+		const services: TAppLocalsServices = dialog.services;
+
 		const getIntentParams = this.getListAll.find((item: any) => {
 			return item.name == intentName;
 		}) as any;
@@ -88,7 +90,7 @@ export default class {
 			activity: dialog.activity,
 			conversation: dialog.conversation,
 			dialogPath: getIntentParams.path,
-			services: dialog.services,
+			services,
 		};
 
 		this.run(runParams)
