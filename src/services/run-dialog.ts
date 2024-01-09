@@ -162,9 +162,9 @@ export default class {
 		this.activity = schemaActivity;
 	}
 
-	public activityToText(activity: any): string {
-		if (activity.text) return activity.text;
-		else if (activity.value) return activity.value.id;
+	public activityToText(): string {
+		if (this.activity?.text) return this.activity?.text;
+		else if (this.activity?.value) return this.activity?.value.id;
 
 		throw new Error('Activity problem occurred, text and value is null');
 	}
