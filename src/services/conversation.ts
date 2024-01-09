@@ -18,7 +18,10 @@ export default class BaseConversation {
 	}
 
 	isWaitAny() {
-		return Object.values(this.conversation.waitData).length > 2;
+		return (
+			String(this.conversation.waitData?.className).length != 0 &&
+			String(this.conversation.waitData?.functionName).length != 0
+		);
 	}
 
 	addWaitAction(functionName: string) {
@@ -28,7 +31,11 @@ export default class BaseConversation {
 	}
 
 	removeWaitAction() {
-		this.cache.del(`CONVERSATION-${this.contact.phone}`);
+		this.conversation.waitData = {
+			className: '',
+			functionName: '',
+		};
+		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
 	resetConversation() {

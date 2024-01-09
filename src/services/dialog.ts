@@ -30,10 +30,17 @@ export default class {
 
 		if (!conversation.isWaitAny()) return false;
 
-		const findOneDialog = this.getListAll.find(
-			(item: any) =>
-				conversation.conversation.waitData.className === item?.name,
-		) as any;
+		let findOneDialog;
+
+		try {
+			findOneDialog = this.getListAll.find(
+				(item: any) =>
+					conversation.conversation.waitData.className === item?.name,
+			) as any;
+		} catch (error) {
+			console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
+			throw error;
+		}
 
 		const runParams: TBaseDialogCtor = {
 			contact: dialog.contact,
@@ -67,9 +74,16 @@ export default class {
 			new RegExp(item.regexValue).test(activity),
 		);
 
-		const findOneDialog = this.getListAll.find(
-			(item: any) => intentParams.name === item?.name,
-		) as any;
+		let findOneDialog;
+
+		try {
+			findOneDialog = this.getListAll.find(
+				(item: any) => intentParams.name === item?.name,
+			) as any;
+		} catch (error) {
+			console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
+			throw error;
+		}
 
 		const runParams: TBaseDialogCtor = {
 			contact: dialog.contact,
@@ -91,17 +105,24 @@ export default class {
 	public runWithIntentName(dialog: any, intentName: string): void {
 		const services: TAppLocalsServices = dialog.services;
 
-		const getIntentParams = this.getListAll.find((item: any) => {
-			return item.name == intentName;
-		}) as any;
+		let findOneDialog;
+
+		try {
+			findOneDialog = this.getListAll.find((item: any) => {
+				return item.name == intentName;
+			}) as any;
+		} catch (error) {
+			console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
+			throw error;
+		}
 
 		const runParams: TBaseDialogCtor = {
 			contact: dialog.contact,
 			activity: dialog.activity,
 			conversation: dialog.conversation,
 			dialogFileParams: {
-				name: getIntentParams.name,
-				path: getIntentParams.path,
+				name: findOneDialog.name,
+				path: findOneDialog.path,
 				place: 'RUN_WITH_INTENT_NAME',
 			},
 			services,
