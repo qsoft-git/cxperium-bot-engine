@@ -15,10 +15,16 @@ export type TAppLocalsServices = {
 	dialog: ServiceDialog;
 };
 
+export type TBaseDialogDialogFileParams = {
+	name: string;
+	path: string;
+	place: string;
+};
+
 export type TBaseDialogCtor = {
 	contact: TCxperiumContact;
 	activity: TActivity;
 	conversation: BaseConversation;
-	dialogFileParams: { name: string; path: string; place: string };
+	dialogFileParams: TBaseDialogDialogFileParams;
 	services: TAppLocalsServices;
 };

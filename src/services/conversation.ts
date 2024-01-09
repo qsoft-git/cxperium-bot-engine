@@ -5,13 +5,12 @@ export default class BaseConversation {
 	conversation: TConversation;
 	cache: any;
 	contact: any;
-	dialogFileParams: any;
+	public dialogFileParams: any;
 
 	constructor(dialog: any, conversation: TConversation) {
 		this.conversation = conversation;
 		this.cache = dialog.services.cxperium.session.cache;
 		this.contact = dialog.contact;
-		this.dialogFileParams = dialog.dialogFileParams;
 	}
 
 	isWaitAction(functionName: string) {

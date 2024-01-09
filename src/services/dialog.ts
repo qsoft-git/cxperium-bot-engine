@@ -116,6 +116,8 @@ export default class {
 		console.info(
 			`RUN DIALOG: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
 		);
+
+		data.conversation.dialogFileParams = data.dialogFileParams;
 		const dialogImport = await import(data.dialogFileParams.path);
 		const dialog = new dialogImport.default(data);
 		dialog.runDialog();

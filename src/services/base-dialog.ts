@@ -1,7 +1,11 @@
 // Types.
 import { TActivity } from '../types/whatsapp/activity';
 import { TCxperiumContact } from '../types/cxperium/contact';
-import { TAppLocalsServices, TBaseDialogCtor } from '../types/base-dialog';
+import {
+	TAppLocalsServices,
+	TBaseDialogCtor,
+	TBaseDialogDialogFileParams,
+} from '../types/base-dialog';
 
 // Services.
 import BaseConversation from './conversation';
@@ -12,12 +16,14 @@ export default class {
 	activity: TActivity;
 	conversation: BaseConversation;
 	services: TAppLocalsServices;
+	dialogFileParams: TBaseDialogDialogFileParams;
 
 	constructor(data: TBaseDialogCtor) {
 		this.activity = data.activity;
 		this.contact = data.contact;
 		this.conversation = data.conversation;
 		this.services = data.services;
+		this.dialogFileParams = data.dialogFileParams;
 	}
 
 	public async sendMessage(message: string) {
