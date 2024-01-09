@@ -5,11 +5,13 @@ export default class BaseConversation {
 	conversation: TConversation;
 	cache: any;
 	contact: any;
+	dialogFileParams: any;
 
 	constructor(dialog: any, conversation: TConversation) {
 		this.conversation = conversation;
 		this.cache = dialog.services.cxperium.session.cache;
 		this.contact = dialog.contact;
+		this.dialogFileParams = dialog.dialogFileParams;
 	}
 
 	isWaitAction(functionName: string) {
@@ -20,8 +22,8 @@ export default class BaseConversation {
 		return Object.values(this.conversation.waitData).length > 2;
 	}
 
-	addWaitAction(className: string, functionName: string) {
-		this.conversation.waitData.className = className;
+	addWaitAction(functionName: string) {
+		this.conversation.waitData.className = this.dialogFileParams.name;
 		this.conversation.waitData.functionName = functionName;
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}

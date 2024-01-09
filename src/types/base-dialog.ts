@@ -19,6 +19,6 @@ export type TBaseDialogCtor = {
 	contact: TCxperiumContact;
 	activity: TActivity;
 	conversation: BaseConversation;
-	dialogPath: string;
+	dialogFileParams: { name: string; path: string; place: string };
 	services: TAppLocalsServices;
 };

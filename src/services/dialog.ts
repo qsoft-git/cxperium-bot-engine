@@ -39,7 +39,11 @@ export default class {
 			contact: dialog.contact,
 			activity: dialog.activity,
 			conversation: dialog.conversation,
-			dialogPath: findOneDialog.path,
+			dialogFileParams: {
+				name: findOneDialog.name,
+				path: findOneDialog.path,
+				place: 'RUN_WITH_CONVERSATION_WAIT_ACTION',
+			},
 			services: dialog.services,
 		};
 
@@ -71,7 +75,11 @@ export default class {
 			contact: dialog.contact,
 			activity: dialog.activity,
 			conversation: dialog.conversation,
-			dialogPath: findOneDialog.path,
+			dialogFileParams: {
+				name: findOneDialog.name,
+				path: findOneDialog.path,
+				place: 'RUN_WITH_MATCH',
+			},
 			services,
 		};
 
@@ -91,7 +99,11 @@ export default class {
 			contact: dialog.contact,
 			activity: dialog.activity,
 			conversation: dialog.conversation,
-			dialogPath: getIntentParams.path,
+			dialogFileParams: {
+				name: getIntentParams.name,
+				path: getIntentParams.path,
+				place: 'RUN_WITH_INTENT_NAME',
+			},
 			services,
 		};
 
@@ -101,7 +113,10 @@ export default class {
 	}
 
 	public async run(data: TBaseDialogCtor): Promise<void> {
-		const dialogImport = await import(data.dialogPath);
+		console.info(
+			`RUN DIALOG: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
+		);
+		const dialogImport = await import(data.dialogFileParams.path);
 		const dialog = new dialogImport.default(data);
 		dialog.runDialog();
 	}
