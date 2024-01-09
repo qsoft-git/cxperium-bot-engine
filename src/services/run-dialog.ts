@@ -86,7 +86,7 @@ export default class {
 		const conversationCheck: boolean =
 			this.services.dialog.runWithConversationWaitAction(this);
 
-		!conversationCheck && this.services.dialog.runWithMatchText(this, text);
+		!conversationCheck && this.services.dialog.runWithMatch(this);
 	}
 
 	private initWhichService(): void {
@@ -160,6 +160,13 @@ export default class {
 		}
 
 		this.activity = schemaActivity;
+	}
+
+	public activityToText(activity: any): string {
+		if (activity.text) return activity.text;
+		else if (activity.value) return activity.value.id;
+
+		throw new Error('Activity problem occurred, text and value is null');
 	}
 
 	private initCxperiumMessage(): void {

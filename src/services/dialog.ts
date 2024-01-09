@@ -50,15 +50,17 @@ export default class {
 		return true;
 	}
 
-	public runWithMatchText(dialog: any, matchText: string): void {
+	public runWithMatch(dialog: any): void {
 		const services: TAppLocalsServices = dialog.services;
+
+		const activity = dialog.activityToText();
 
 		const cxperiumAllIntents = services.cxperium.intent.cache.get(
 			'all-intents',
 		) as any;
 
 		const intentParams = cxperiumAllIntents.find((item: any) =>
-			new RegExp(item.regexValue).test(matchText),
+			new RegExp(item.regexValue).test(activity),
 		);
 
 		const findOneDialog = this.getListAll.find(
