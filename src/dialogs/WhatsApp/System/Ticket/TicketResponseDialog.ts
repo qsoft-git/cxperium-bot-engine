@@ -41,9 +41,9 @@ export default class extends ServiceBaseDialog implements IDialog {
 			),
 		);
 
-		this.conversation.addWaitAction(
-			'TicketResponseDialog',
-			this.WAIT_TICKET_RESPONSE,
-		);
+		// this.conversation.addWaitAction(
+		// 	'TicketResponseDialog',
+		// 	this.WAIT_TICKET_RESPONSE,
+		// );
 	}
 }
