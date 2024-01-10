@@ -16,13 +16,15 @@ import ServiceBaseDialog from './services/base-dialog';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
+import { UtilAutomate } from './utils/automate';
 
 // Mixins.
 export interface Engine
 	extends UtilApp,
 		UtilDialog,
 		UtilCxperium,
-		UtilWhatsApp {}
+		UtilWhatsApp,
+		UtilAutomate {}
 
 export class Engine {
 	constructor(data: TSrcIndexConfig) {
@@ -44,6 +46,9 @@ export class Engine {
 		this.initCxperiumService();
 		this.initWhatsAppService();
 
+		// Initialize automate.
+		this.initAutomateService();
+
 		this.initDialogService();
 
 		// Initialize app services.
@@ -63,11 +68,18 @@ export class Engine {
 			this.serviceWhatsApp,
 			this.serviceWhatsAppMessage,
 			this.serviceWhatsAppMedia,
+			this.serviceAutomate,
 			this.serviceDialog,
 		);
 	}
 }
 
-applyClassMixins.run(Engine, [UtilApp, UtilDialog, UtilCxperium, UtilWhatsApp]);
+applyClassMixins.run(Engine, [
+	UtilApp,
+	UtilDialog,
+	UtilCxperium,
+	UtilWhatsApp,
+	UtilAutomate,
+]);
 
 export { ServiceBaseDialog, IDialog, TBaseDialogCtor };
