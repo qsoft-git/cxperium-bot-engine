@@ -2,24 +2,28 @@
 import fetch from 'node-fetch';
 
 // Services.
-import ServiceCxperium from '../services/cxperium';
-import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
+import ServiceCxperium from '../cxperium';
+import ServiceCxperiumConfiguration from '../cxperium/configuration';
+import ServiceAutomateAuth from '../automate/auth';
 
 // Types.
-import { TCxperiumServiceParams } from '../types/cxperium/service';
-import { User } from '../types/automate/user';
+import { TCxperiumServiceParams } from '../../types/cxperium/service';
+import { User } from '../../types/automate/user';
 
 export default class extends ServiceCxperium {
 	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
+	private serviceAutomateAuth!: ServiceAutomateAuth;
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
 		this.serviceCxperiumConfiguration = new ServiceCxperiumConfiguration(
 			data,
 		);
+		this.serviceAutomateAuth = new ServiceAutomateAuth(data);
 	}
 
 	public async getUserSkills(userId: string) {
-		const token = 'Bearer ' + (await this.getAuthToken());
+		const token =
+			'Bearer ' + (await this.serviceAutomateAuth.getAuthToken());
 		const env = await this.serviceCxperiumConfiguration.execute();
 
 		const response = (await fetch(
@@ -35,23 +39,10 @@ export default class extends ServiceCxperium {
 		return response;
 	}
 
-	private async getAuthToken(): Promise<string> {
-		const env = await this.serviceCxperiumConfiguration.execute();
-		const response = (await fetch(`${env.automateConfig.ApiUrl}/login`, {
-			method: 'POST',
-			body: JSON.stringify({
-				ClientId: env.automateConfig.ClientId,
-				ClientSecret: env.automateConfig.ClientSecret,
-			}),
-		}).then((response) => response.json())) as any;
-
-		return response;
-	}
-
 	public async getUserByPhone(phone: string): Promise<User> {
 		if (!phone.startsWith('+')) phone = '+' + phone;
 
-		const token = 'Bearer' + this.getAuthToken();
+		const token = 'Bearer' + this.serviceAutomateAuth.getAuthToken();
 		const env = await this.serviceCxperiumConfiguration.execute();
 
 		const response = (await fetch(
@@ -79,31 +70,5 @@ export default class extends ServiceCxperium {
 		//         response.Data.ExtraFields.Add(key, $"{dictObj[key]}");
 		//     }
 		// }
-	}
-
-	public async post(
-		hypeUrl: string,
-		data: Record<string, any>,
-	): Promise<any> {
-		const env = await this.serviceCxperiumConfiguration.execute();
-		const url = `${env.automateConfig.HypeUrl}/webhook/${hypeUrl}`;
-
-		const response = await fetch(url, {
-			method: 'POST',
-			body: JSON.stringify(data),
-		}).then((response) => response.json());
-
-		return response;
-	}
-
-	public async get(hypeUrl: string): Promise<any> {
-		const env = await this.serviceCxperiumConfiguration.execute();
-		const url = `${env.automateConfig.HypeUrl}/webhook/${hypeUrl}`;
-
-		const response = await fetch(url, {
-			method: 'GET',
-		}).then((response) => response.json());
-
-		return response;
 	}
 }

@@ -3,7 +3,8 @@ import { IUtilsAutomate } from '../interfaces/utils/automate';
 import { TCxperiumServiceParams } from '../types/cxperium/service';
 
 // Services.
-import ServiceAutomate from '../services/automate';
+import ServiceAutomateUser from '../services/automate/user';
+import ServiceAutomateApi from '../services/automate/api';
 
 // Datas.
 import DataGeneral from '../data/general';
@@ -12,13 +13,15 @@ import DataGeneral from '../data/general';
 export class UtilAutomate implements IUtilsAutomate {
 	apiKey!: string;
 	callbackUrl!: string;
-	serviceAutomate!: ServiceAutomate;
+	serviceAutomateUser!: ServiceAutomateUser;
+	serviceAutomateApi!: ServiceAutomateApi;
 	public initAutomateService() {
 		const params: TCxperiumServiceParams = {
 			apikey: this.apiKey,
 			callbackUrl: this.callbackUrl,
 			baseUrl: DataGeneral.cxperiumBaseUrl,
 		};
-		this.serviceAutomate = new ServiceAutomate(params);
+		this.serviceAutomateUser = new ServiceAutomateUser(params);
+		this.serviceAutomateApi = new ServiceAutomateApi(params);
 	}
 }

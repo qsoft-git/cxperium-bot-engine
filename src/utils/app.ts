@@ -2,7 +2,7 @@
 const { NODE_ENV } = process.env;
 
 // Node modules.
-import express, { Application } from 'express';
+import express, { Application, application } from 'express';
 import * as path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -39,7 +39,8 @@ import ServiceCxperiumMessage from '../services/cxperium/message';
 import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
 import ServiceCxperiumTransfer from '../services/cxperium/transfer';
 import ServiceDialog from '../services/dialog';
-import ServiceAutomate from '../services/automate';
+import ServiceAutomateUser from '../services/automate/user';
+import ServiceAutomateApi from '../services/automate/api';
 import ServiceWhatsAppMessage from '../services/whatsapp/message';
 import ServiceWhatsAppMain from '../services/whatsapp/main';
 import ServiceWhatsAppMedia from '../services/whatsapp/media';
@@ -125,7 +126,8 @@ export class UtilApp implements IUtilsApp {
 		serviceWhatsAppMain: ServiceWhatsAppMain,
 		serviceWhatsAppMessage: ServiceWhatsAppMessage,
 		serviceWhatsAppMedia: ServiceWhatsAppMedia,
-		serviceAutomate: ServiceAutomate,
+		serviceAutomateUser: ServiceAutomateUser,
+		serviceAutomateApi: ServiceAutomateApi,
 		serviceDialog: ServiceDialog,
 	): void {
 		appLocalsServices.dialog = serviceDialog;
@@ -147,7 +149,8 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.whatsapp.main = serviceWhatsAppMain;
 		appLocalsServices.whatsapp.message = serviceWhatsAppMessage;
 		appLocalsServices.whatsapp.media = serviceWhatsAppMedia;
-		appLocalsServices.automate = serviceAutomate;
+		appLocalsServices.automate.user = serviceAutomateUser;
+		appLocalsServices.automate.api = serviceAutomateApi;
 
 		this.app.locals.service = { ...appLocalsServices };
 	}

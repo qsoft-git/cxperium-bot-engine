@@ -68,7 +68,8 @@ export class Engine {
 			this.serviceWhatsApp,
 			this.serviceWhatsAppMessage,
 			this.serviceWhatsAppMedia,
-			this.serviceAutomate,
+			this.serviceAutomateUser,
+			this.serviceAutomateApi,
 			this.serviceDialog,
 		);
 	}
