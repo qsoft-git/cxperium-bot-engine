@@ -1,5 +1,5 @@
 // Node modules.
-import fetch from 'node-fetch';
+import fetch, { BodyInit } from 'node-fetch';
 
 // Services.
 import ServiceCxperium from '../cxperium';
@@ -19,13 +19,16 @@ export default class extends ServiceCxperium {
 
 	public async post(
 		hypeUrl: string,
-		data: Record<string, any>,
+		data: Record<string, unknown>,
 	): Promise<any> {
 		const env = await this.serviceCxperiumConfiguration.execute();
 		const url = `${env.automateConfig.HypeUrl}/webhook/${hypeUrl}`;
 
 		const response = await fetch(url, {
 			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+			},
 			body: JSON.stringify(data),
 		}).then((response) => response.json());
 
