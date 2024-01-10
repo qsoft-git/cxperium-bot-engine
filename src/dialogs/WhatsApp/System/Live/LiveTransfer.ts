@@ -17,11 +17,8 @@ export default class extends ServiceBaseDialog implements IDialog {
 			);
 			const buttons: TButton[] = [
 				{
-					type: 'string',
-					reply: {
-						id: 'menu',
-						title: await this.getLocalizationText('home_menu'),
-					},
+					id: 'menu',
+					title: await this.getLocalizationText('home_menu'),
 				},
 			];
 

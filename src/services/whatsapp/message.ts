@@ -11,6 +11,7 @@ import {
 	TSection,
 	TButtonAction,
 	TListAction,
+	TDefaultButton,
 } from '../../types/whatsapp/message';
 
 export default class extends ServiceWhatsApp {
@@ -69,8 +70,21 @@ export default class extends ServiceWhatsApp {
 		message: string,
 		buttons: TButton[],
 	) {
+		const defaultButtons: TDefaultButton[] = [];
+
+		buttons.forEach((x) => {
+			const button: TDefaultButton = {
+				type: 'reply',
+				reply: {
+					id: x.id,
+					title: x.title,
+				},
+			};
+			defaultButtons.push(button);
+		});
+
 		const buttonAction: TButtonAction = {
-			buttons: buttons,
+			buttons: defaultButtons,
 		};
 
 		const msg: TWpInteractiveButtonMessage = {

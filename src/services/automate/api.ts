@@ -1,5 +1,5 @@
 // Node modules.
-import fetch, { BodyInit } from 'node-fetch';
+import fetch from 'node-fetch';
 
 // Services.
 import ServiceCxperium from '../cxperium';

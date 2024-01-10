@@ -41,25 +41,4 @@ export default class {
 			next(error);
 		}
 	}
-
-	public static async test(
-		_req: Request,
-		res: Response,
-		next: NextFunction,
-	): Promise<void> {
-		try {
-			const serv: ServiceWhatsAppMedia =
-				res.app.locals.service.whatsapp.media;
-
-			await serv.uploadMediaWithUrl(
-				'https://www.orimi.com/pdf-test.pdf',
-				'application/pdf',
-			);
-
-			res.send();
-			return;
-		} catch (error) {
-			next(error);
-		}
-	}
 }

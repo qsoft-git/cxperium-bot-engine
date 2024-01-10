@@ -76,13 +76,15 @@ export default class {
 
 		let findOneDialog;
 
-		try {
-			findOneDialog = this.getListAll.find(
-				(item: any) => intentParams.name === item?.name,
-			) as any;
-		} catch (error) {
-			console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
-			throw error;
+		findOneDialog = this.getListAll.find(
+			(item: any) => intentParams?.name === item?.name,
+		) as any;
+
+		if (!intentParams || !findOneDialog) {
+			findOneDialog = {
+				name: 'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
+				path: '../dialogs/WhatsApp/System/Unknown/IntentNotFoundDialog.js',
+			};
 		}
 
 		const runParams: TBaseDialogCtor = {

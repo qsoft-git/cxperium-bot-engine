@@ -1,4 +1,4 @@
-// Node modules.
+// Types.
 import { IDialog, ServiceBaseDialog, TBaseDialogCtor } from '../../../../index';
 import { TButton } from '../../../../types/whatsapp/message';
 
@@ -56,18 +56,12 @@ export default class extends ServiceBaseDialog implements IDialog {
 
 		const buttons: TButton[] = [
 			{
-				type: 'reply',
-				reply: {
-					id: 'kvkk_approve',
-					title: await this.getLocalizationText('approve'),
-				},
+				id: 'kvkk_approve',
+				title: await this.getLocalizationText('approve'),
 			},
 			{
-				type: 'reply',
-				reply: {
-					id: 'kvkk_red',
-					title: await this.getLocalizationText('deny'),
-				},
+				id: 'kvkk_red',
+				title: await this.getLocalizationText('deny'),
 			},
 		];
 

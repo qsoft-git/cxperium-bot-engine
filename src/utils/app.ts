@@ -2,7 +2,7 @@
 const { NODE_ENV } = process.env;
 
 // Node modules.
-import express, { Application, application } from 'express';
+import express, { Application } from 'express';
 import * as path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';

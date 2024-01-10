@@ -140,7 +140,7 @@ export default class {
 			schemaActivity.type = 'text';
 		} else if (type == 'interactive') {
 			schemaActivity.type = 'interactive';
-			if (data.interactive.button_reply.payload) {
+			if (data.interactive?.button_reply?.payload) {
 				schemaActivity.value = data.interactive.button_reply.payload;
 			}
 

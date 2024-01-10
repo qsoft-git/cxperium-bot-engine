@@ -39,7 +39,7 @@ type TWpInteractiveListMessage = {
 };
 
 type TButtonAction = {
-	buttons: TButton[];
+	buttons: TDefaultButton[];
 };
 
 type TListAction = {
@@ -47,12 +47,17 @@ type TListAction = {
 	sections: TSection[];
 };
 
-type TButton = {
+type TDefaultButton = {
 	type: string;
 	reply: {
 		id: string;
 		title: string;
 	};
+};
+
+type TButton = {
+	id: string;
+	title: string;
 };
 
 type TSection = {
@@ -68,6 +73,7 @@ type TRow = {
 
 export {
 	TButton,
+	TDefaultButton,
 	TRow,
 	TWpInteractiveListMessage,
 	TWpInteractiveButtonMessage,

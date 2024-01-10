@@ -1,24 +1,32 @@
 // Services.
-import ServiceWhatsApp from './';
+import ServiceCxperiumConfiguration from '../../services/cxperium/configuration';
+import ServiceWhatsApp from './index';
 
 export default class extends ServiceWhatsApp {
-	public async uploadMedia(media: Buffer, contentType: string) {
-		await this.uploadFileRequest(media, contentType, 'v1/media');
+	constructor(params: ServiceCxperiumConfiguration) {
+		super(params);
 	}
 
-	public async uploadMediaWithUrl(url: string, mimetype: string) {
-		const response = await fetch('https://www.orimi.com/pdf-test.pdf');
+	public async uploadMedia(media: Buffer, contentType: string): Promise<any> {
+		return await this.uploadFileRequest(media, contentType, 'v1/media');
+	}
+
+	public async uploadMediaWithUrl(
+		url: string,
+		mimetype: string,
+	): Promise<any> {
+		const response = await fetch(url);
 		const buffer = Buffer.from(await response.arrayBuffer());
 		const mediaId = await this.uploadMedia(buffer, mimetype);
-
 		return mediaId;
 	}
 
 	public async sendDocumentWithUrl(
 		to: string,
 		url: string,
+		filename: string,
 		mimetype: string,
-	) {
+	): Promise<any> {
 		const id = await this.uploadMediaWithUrl(url, mimetype);
 
 		const body = {
@@ -27,13 +35,19 @@ export default class extends ServiceWhatsApp {
 			type: 'document',
 			document: {
 				id: id,
+				filename: filename,
 			},
 		};
 
-		await this.wpRequest(body, 'application/json', 'v1/messages');
+		return await this.wpRequest(body, 'v1/messages', 'application/json');
 	}
 
-	public async sendImageWithUrl(to: string, url: string, mimetype: string) {
+	public async sendImageWithUrl(
+		to: string,
+		url: string,
+		filename: string,
+		mimetype: string,
+	): Promise<any> {
 		const id = await this.uploadMediaWithUrl(url, mimetype);
 
 		const body = {
@@ -42,13 +56,16 @@ export default class extends ServiceWhatsApp {
 			type: 'image',
 			image: {
 				id: id,
+				filename: filename,
 			},
 		};
 
-		await this.wpRequest(body, 'application/json', 'v1/messages');
+		return await this.wpRequest(body, 'v1/messages', mimetype);
 	}
 
-	public async sendSticker(id: string, to: string) {
+	public async sendStickerWithUrl(to: string, url: string): Promise<any> {
+		const id = await this.uploadMediaWithUrl(url, 'image/webp');
+
 		const body = {
 			recipient_type: 'individual',
 			to: to,
@@ -58,6 +75,6 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		await this.wpRequest(body, 'application/json', 'v1/messages');
+		return await this.wpRequest(body, 'v1/messages', 'image/webp');
 	}
 }

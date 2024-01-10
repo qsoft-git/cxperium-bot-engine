@@ -17,20 +17,18 @@ export default class {
 		contentType: string,
 		endpoint: string,
 	) {
-		const response = (await fetch(
-			`${
-				(await this.configuration.execute()).whatsappConfig.wabaUrl
-			}/${endpoint}`,
-			{
-				method: 'POST',
-				headers: {
-					'Content-Type': contentType,
-					'D360-API-KEY': (await this.configuration.execute())
-						.whatsappConfig.key,
-				},
-				body,
+		const env = await this.configuration.execute();
+		const url = env.whatsappConfig.wabaUrl.replace('-sandbox', '');
+
+		const response = (await fetch(`${url}/${endpoint}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': contentType,
+				'D360-API-KEY': (await this.configuration.execute())
+					.whatsappConfig.key,
 			},
-		).then((response) => response.json())) as any;
+			body,
+		}).then((response) => response.json())) as any;
 
 		if (response.meta.success === false) {
 			throw response.meta.developer_message;

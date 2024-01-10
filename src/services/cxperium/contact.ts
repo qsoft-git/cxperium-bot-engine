@@ -98,7 +98,7 @@ export default class extends ServiceCxperium {
 		return response?.data?._id;
 	}
 
-	async getContactByContactId(contactId: string): Promise<unknown> {
+	async getContactByContactId(contactId: string): Promise<TCxperiumContact> {
 		const response = (await fetch(
 			`${this.baseUrl}/api/contacts/${contactId}`,
 			{
