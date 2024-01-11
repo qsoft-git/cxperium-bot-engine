@@ -21,42 +21,26 @@ export default class extends ServiceWhatsApp {
 		return mediaId;
 	}
 
-	public async sendDocumentWithUrl(
-		to: string,
-		url: string,
-		filename: string,
-		mimetype: string,
-	): Promise<any> {
-		const id = await this.uploadMediaWithUrl(url, mimetype);
-
+	public async sendDocumentWithUrl(to: string, url: string): Promise<any> {
 		const body = {
 			recipient_type: 'individual',
 			to: to,
 			type: 'document',
 			document: {
-				id: id,
-				filename: filename,
+				link: url,
 			},
 		};
 
 		return await this.wpRequest(body, 'v1/messages');
 	}
 
-	public async sendImageWithUrl(
-		to: string,
-		url: string,
-		filename: string,
-		mimetype: string,
-	): Promise<any> {
-		const id = await this.uploadMediaWithUrl(url, mimetype);
-
+	public async sendImageWithUrl(to: string, url: string): Promise<any> {
 		const body = {
 			recipient_type: 'individual',
 			to: to,
 			type: 'image',
 			image: {
-				id: id,
-				filename: filename,
+				link: url,
 			},
 		};
 
@@ -64,14 +48,12 @@ export default class extends ServiceWhatsApp {
 	}
 
 	public async sendStickerWithUrl(to: string, url: string): Promise<any> {
-		const id = await this.uploadMediaWithUrl(url, 'image/webp');
-
 		const body = {
 			recipient_type: 'individual',
 			to: to,
 			type: 'sticker',
 			sticker: {
-				id: id,
+				link: url,
 			},
 		};
 
