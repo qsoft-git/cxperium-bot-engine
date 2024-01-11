@@ -14,6 +14,7 @@ import ServiceCxperiumMessage from '../cxperium/message';
 import ServiceCxperiumConversation from '../cxperium/conversation';
 import ServiceCxperiumLanguage from '../cxperium/language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
+import { TAppLocalsServices } from '../../types/base-dialog';
 
 export default class extends ServiceCxperium {
 	serviceCxperiumContact!: ServiceCxperiumContact;
@@ -34,18 +35,15 @@ export default class extends ServiceCxperium {
 
 	async isSurveyTransfer(dialog: any) {
 		const activity = dialog.activity;
-		const conversation = dialog.conversation;
-		const from = activity.from;
+		const contact = dialog.contact;
+		const services: TAppLocalsServices = dialog.services;
 		const customAttributes = dialog.contact.custom as any;
 
-		if (customAttributes.IsKvkkApproved) {
-			// TODO
-			// new CxperiumCatchDialog(
-			// 	contact,
-			// 	activity,
-			// 	conversation,
-			// ).RedirectMessage();
-			// return true;
+		if (customAttributes.IsCxTransfer) {
+			services.cxperium.message.redirectWpMessage(
+				dialog.activity.message,
+			);
+			return true;
 		}
 
 		if (activity.isCxperiumMessage) {
@@ -61,6 +59,10 @@ export default class extends ServiceCxperium {
 					) {
 						const ticketId: string = msg.split('_')[2];
 						// TODO
+						dialog.runWithIntentName(
+							this,
+							'CXPerium.Dialogs.WhatsApp.WelcomeDialog',
+						);
 						// new TicketResponseDialog(
 						// 	contact,
 						// 	activity,
@@ -79,19 +81,44 @@ export default class extends ServiceCxperium {
 
 				return true;
 			} else if (activity.text) {
-				// TODO
-				// new CxperiumCatchDialog(
-				// 	contact,
-				// 	activity,
-				// 	conversation,
-				// ).StartSurvey(conversation.LastMessage);
+				await this.startSurvey(activity.text, contact, dialog);
+
 				await this.serviceCxperiumContact.updateSurveyTransferStatus(
 					dialog.contact,
 					true,
 				);
+
 				return true;
 			}
 		}
+	}
+
+	async startSurvey(
+		surveyId: string,
+		contact: TCxperiumContact,
+		dialog: any,
+	) {
+		if (!surveyId.includes('SID')) surveyId = `SID: ${surveyId}`;
+
+		await this.serviceCxperiumContact.updateSurveyTransferStatus(
+			contact,
+			true,
+		);
+
+		const messages = {
+			contacts: dialog.activity.message.contacts,
+			messages: [
+				{
+					from: dialog.activity.message.messages[0].from,
+					id: dialog.activity.message.messages[0].id,
+					text: { body: surveyId },
+					timestamp: dialog.activity.message.messages[0].timestamp,
+					type: dialog.activity.message.messages[0].type,
+				},
+			],
+		};
+
+		await this.serviceCxperiumMessage.redirectWpMessage(messages);
 	}
 
 	async isLiveTransfer(dialog: any) {

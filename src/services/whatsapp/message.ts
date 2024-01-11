@@ -40,7 +40,7 @@ export default class extends ServiceWhatsApp {
 				},
 			};
 
-			await this.wpRequest(body, 'v1/messages', 'application/json');
+			await this.wpRequest(body, 'v1/messages');
 		} catch (error) {
 			throw error!;
 		}
@@ -57,7 +57,7 @@ export default class extends ServiceWhatsApp {
 				},
 			};
 
-			await this.wpRequest(msg, 'v1/messages', 'application/json');
+			await this.wpRequest(msg, 'v1/messages');
 		} catch (err: unknown) {
 			throw err!;
 		}
@@ -107,7 +107,7 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		await this.wpRequest(msg, 'v1/messages', 'application/json');
+		await this.wpRequest(msg, 'v1/messages');
 	}
 
 	public async sendListMessage(
@@ -145,7 +145,7 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		await this.wpRequest(msg, 'v1/messages', 'application/json');
+		await this.wpRequest(msg, 'v1/messages');
 	}
 
 	public async sendImageMessage(
@@ -163,6 +163,6 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		return await this.wpRequest(msg, 'v1/messages', 'application/json');
+		return await this.wpRequest(msg, 'v1/messages');
 	}
 }

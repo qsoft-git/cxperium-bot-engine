@@ -5,6 +5,9 @@ import { Request } from 'express';
 import { TCxperiumContact } from '../types/cxperium/contact';
 import { TAppLocalsServices } from '../types/base-dialog';
 
+// Datas.
+import DataGeneral from '../data/general';
+
 export default class {
 	req!: Request;
 	contact!: TCxperiumContact;
@@ -17,11 +20,11 @@ export default class {
 
 	async execute(): Promise<void> {
 		try {
-			const event = this.req.body.includes('status')
+			const event = this.req.body.status
 				? this.req.body.status
-				: this.req.body.event_status.toString();
+				: this.req.body.event_status;
 
-			const contactId = this.req.body.contactId;
+			const contactId = this.req.body.contact.contactId;
 			let contact: any;
 
 			if (contactId)
@@ -53,11 +56,11 @@ export default class {
 					break;
 				}
 				case 'ASSISTANT_LOCATION_CHANGE': {
-					// ClearLanguagesCache();
+					this.clearLanguageCache();
 					break;
 				}
 				case 'ASSISTANT_INTENT_CHANGE': {
-					// ClearIntentsCache();
+					this.clearIntentCache();
 					break;
 				}
 				case 'CHAT_NORMAL_MESSAGE': {
@@ -65,7 +68,9 @@ export default class {
 					break;
 				}
 				case 'COMPLETED':
-				case 'TIMEUOT':
+					this.cxperiumCloseEvent(contact);
+					break;
+				case 'TIMEOUT':
 				case 'LEAVE':
 				case 'REPEATED': {
 					this.cxperiumCloseEvent(contact);
@@ -79,6 +84,14 @@ export default class {
 		} catch (error) {
 			console.error(error);
 		}
+	}
+
+	private clearLanguageCache(): void {
+		this.services.cxperium.language.cache.del('all-intents');
+	}
+
+	private clearIntentCache(): void {
+		this.services.cxperium.intent.cache.del('all-intents');
 	}
 
 	private messageCreatedEvent(event: any, contact: TCxperiumContact): void {

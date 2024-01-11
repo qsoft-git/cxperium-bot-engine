@@ -40,7 +40,6 @@ export default class {
 	public async wpRequest(
 		body: string | Record<string, unknown>,
 		endpoint: string,
-		contentType: string,
 	) {
 		if (typeof body === 'object') body = JSON.stringify(body);
 
@@ -53,7 +52,7 @@ export default class {
 			{
 				method: 'POST',
 				headers: {
-					'Content-Type': contentType,
+					'Content-Type': 'application/json',
 					'D360-API-KEY': env.whatsappConfig.key,
 				},
 				body,

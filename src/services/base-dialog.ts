@@ -90,6 +90,14 @@ export default class {
 		return msg;
 	}
 
+	public async sendSurvey(surveyId: string) {
+		await this.services.cxperium.transfer.startSurvey(
+			surveyId,
+			this.contact,
+			this,
+		);
+	}
+
 	public async getLocalizationText(key: string) {
 		const localization =
 			await this.services.cxperium.language.getLanguageByKey(

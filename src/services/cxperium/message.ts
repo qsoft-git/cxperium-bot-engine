@@ -50,14 +50,13 @@ export default class extends ServiceCxperium {
 	}
 
 	async redirectWpMessage(message: object) {
-		try {
-			const response = await fetch(this.callbackUrl, {
-				method: 'POST',
-				body: JSON.stringify(message),
-			}).then((response) => response.json());
-		} catch (error) {
-			throw new Error('Hook redirect error');
-		}
+		await fetch(this.callbackUrl, {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+			},
+			body: JSON.stringify(message),
+		});
 	}
 
 	async sendNormalMessage(message: string, contactId: string) {

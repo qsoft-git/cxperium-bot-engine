@@ -17,7 +17,7 @@ export default class extends ServiceCxperium {
 	serviceCxperiumContact!: ServiceCxperiumContact;
 	serviceCxperiumConversation!: ServiceCxperiumConversation;
 
-	private cache = DataGeneral.cache;
+	public cache = DataGeneral.cache;
 
 	constructor(data: TCxperiumServiceParams) {
 		super(data);

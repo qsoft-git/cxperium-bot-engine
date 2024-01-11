@@ -102,13 +102,17 @@ export default class extends ServiceCxperium {
 		const response = (await fetch(
 			`${this.baseUrl}/api/contacts/${contactId}`,
 			{
-				method: 'get',
+				method: 'GET',
 				headers: {
 					'content-type': 'application/json',
 					apikey: this.apiKey,
 				},
 			},
-		).then((response) => response.json())) as any;
+		)
+			.then((response) => response.json())
+			.catch((error) => {
+				console.log(error);
+			})) as any;
 
 		if (response.status == 201) {
 			const contact: TCxperiumContact = {
@@ -244,9 +248,7 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json());
 	}
 
-	async updateGdprApprovalStatus(dialog: any, status: boolean) {
-		const contact: TCxperiumContact = dialog.contact;
-
+	async updateGdprApprovalStatus(contact: TCxperiumContact, status: boolean) {
 		const body: Record<string, any> = {
 			custom: {},
 		};
@@ -271,7 +273,7 @@ export default class extends ServiceCxperium {
 			custom: {},
 		};
 
-		body['custom']['IsSurveyTransfer'] = status;
+		body['custom']['IsCxTransfer'] = status;
 
 		await fetch(`${this.baseUrl}/api/contacts/${contact._id}`, {
 			method: 'PUT',

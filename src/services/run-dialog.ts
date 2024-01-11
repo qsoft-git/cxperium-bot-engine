@@ -65,7 +65,7 @@ export default class {
 		if (await this.services.cxperium.transfer.isSurveyTransfer(this)) {
 			if (!customAttributes.IsKvkkApproved) {
 				this.services.cxperium.contact.updateGdprApprovalStatus(
-					this,
+					this.contact,
 					true,
 				);
 			}
@@ -110,6 +110,7 @@ export default class {
 			| TDocumentMessage
 			| TInteractiveMessage = {
 			from: data.from,
+			message: this.req.body,
 			userProfileName: '',
 			type: '',
 			text: '',

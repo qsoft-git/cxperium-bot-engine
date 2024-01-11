@@ -45,6 +45,7 @@ export type TInteractiveMessage = {
 
 export type TActivity = {
 	from: string;
+	message: any;
 	type: string;
 	text: string;
 	userProfileName: string;

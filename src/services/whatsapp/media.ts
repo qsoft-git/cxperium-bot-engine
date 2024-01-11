@@ -39,7 +39,7 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		return await this.wpRequest(body, 'v1/messages', 'application/json');
+		return await this.wpRequest(body, 'v1/messages');
 	}
 
 	public async sendImageWithUrl(
@@ -60,7 +60,7 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		return await this.wpRequest(body, 'v1/messages', mimetype);
+		return await this.wpRequest(body, 'v1/messages');
 	}
 
 	public async sendStickerWithUrl(to: string, url: string): Promise<any> {
@@ -75,6 +75,8 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		return await this.wpRequest(body, 'v1/messages', 'image/webp');
+		const res = await this.wpRequest(body, 'v1/messages');
+
+		return res;
 	}
 }
