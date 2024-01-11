@@ -207,6 +207,21 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json())) as any;
 	}
 
+	async updateContactLanguage(contactId: string, language: string) {
+		const body = {
+			language: language,
+		};
+
+		(await fetch(`${this.baseUrl}/api/contacts/${contactId}`, {
+			method: 'PUT',
+			body: JSON.stringify(body),
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json())) as any;
+	}
+
 	async updateContactByCustomFields(
 		contact: TCxperiumContact,
 		attributes: object,
