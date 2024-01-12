@@ -49,14 +49,14 @@ export default class extends ServiceCxperium {
 			isActive: isActive,
 		};
 
-		(await fetch(`${this.baseUrl}/api/assistant/session`, {
+		await fetch(`${this.baseUrl}/api/assistant/session`, {
 			method: 'POST',
 			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
 				apikey: this.apiKey,
 			},
-		}).then((response) => response.json())) as any;
+		});
 
 		await this.updateConversationSessionTime(dialog);
 	}
