@@ -44,12 +44,12 @@ export default class {
 		const customAttributes = this.contact.custom as any;
 
 		// Init conversation.
-		await this.services.cxperium.session.createOrUpdateSession(
-			true,
-			'TR',
-			text,
-			this,
-		);
+		// await this.services.cxperium.session.createOrUpdateSession(
+		// 	true,
+		// 	'TR',
+		// 	text,
+		// 	this,
+		// );
 
 		// Init conversation.
 		this.conversation =
