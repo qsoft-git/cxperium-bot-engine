@@ -8,6 +8,9 @@ import ServiceRunDialog from '../services/run-dialog';
 export default class {
 	public static async execute(req: Request, res: Response): Promise<void> {
 		res.send();
+
+		if (!req.body.messages) return;
+
 		try {
 			const serviceRunDialog = new ServiceRunDialog(req);
 			await serviceRunDialog.execute();
