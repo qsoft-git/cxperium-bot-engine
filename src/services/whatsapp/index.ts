@@ -1,4 +1,4 @@
-// Types.
+// Services.
 import ServiceCxperiumConfiguration from '../cxperium/configuration';
 
 export default class {
