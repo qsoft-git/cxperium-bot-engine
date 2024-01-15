@@ -8,6 +8,8 @@ const router = express.Router();
 import middlewareRunDialog from '../middlewares/run-dialog';
 
 // Routes.
-router.post('/whatsapp', middlewareRunDialog.execute);
+router.post('/whatsapp', middlewareRunDialog.executeWhatsapp);
+router.post('/teams', middlewareRunDialog.executeTeams);
+// router.post('/webchat', middlewareRunDialog.execute("WEBCHAT"));
 
 export default router;

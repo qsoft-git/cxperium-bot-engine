@@ -1,8 +1,12 @@
 // Types.
-import { IDialog, ServiceBaseDialog, TBaseDialogCtor } from '../../../../index';
+import {
+	IDialog,
+	ServiceWhatsappBaseDialog,
+	TBaseDialogCtor,
+} from '../../../../index';
 import { TButton } from '../../../../types/whatsapp/message';
 
-export default class extends ServiceBaseDialog implements IDialog {
+export default class extends ServiceWhatsappBaseDialog implements IDialog {
 	constructor(data: TBaseDialogCtor) {
 		super(data);
 	}

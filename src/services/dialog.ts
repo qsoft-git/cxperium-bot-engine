@@ -9,6 +9,11 @@ import * as path from 'path';
 import { TBaseDialogCtor, TAppLocalsServices } from '../types/base-dialog';
 import BaseConversation from './conversation';
 
+const CHANNELS: Record<string, any> = {
+	WHATSAPP: '1',
+	TEAMS: '3',
+};
+
 export default class {
 	private folderPathExternal!: string;
 	private folderPathInternal!: string;
@@ -51,6 +56,7 @@ export default class {
 				path: findOneDialog.path,
 				place: 'RUN_WITH_CONVERSATION_WAIT_ACTION',
 			},
+			context: dialog.context,
 			services: dialog.services,
 		};
 
@@ -61,30 +67,40 @@ export default class {
 		return true;
 	}
 
-	public runWithMatch(dialog: any): void {
+	public async runWithMatch(dialog: any): Promise<void> {
 		const services: TAppLocalsServices = dialog.services;
 
-		const activity = dialog.activityToText();
+		let activity: any;
+
+		if (dialog.place == 'WHATSAPP') {
+			activity = dialog.activityToText();
+		} else if (dialog.place == 'TEAMS') {
+			activity = dialog.activity.text;
+		} else {
+			throw new Error('RUN DIALOG: NOT FOUND PLACE!!!');
+		}
 
 		const cxperiumAllIntents = services.cxperium.intent.cache.get(
 			'all-intents',
 		) as any;
 
-		const intentParams = cxperiumAllIntents.find((item: any) =>
-			new RegExp(item.regexValue).test(activity),
+		const channelNumber = CHANNELS[dialog.place] as string;
+
+		const intentParams = cxperiumAllIntents.find(
+			(item: any) =>
+				channelNumber == item.channel &&
+				new RegExp(item.regexValue).test(activity),
 		);
 
 		let findOneDialog;
 
-		findOneDialog = this.getListAll.find(
-			(item: any) => intentParams?.name === item?.name,
-		) as any;
-
-		if (!intentParams || !findOneDialog) {
-			findOneDialog = {
-				name: 'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
-				path: '../dialogs/WhatsApp/System/Unknown/IntentNotFoundDialog.js',
-			};
+		try {
+			findOneDialog = this.getListAll.find(
+				(item: any) => intentParams.name === item?.name,
+			) as any;
+		} catch (error) {
+			console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
+			throw error;
 		}
 
 		const runParams: TBaseDialogCtor = {
@@ -96,10 +112,11 @@ export default class {
 				path: findOneDialog.path,
 				place: 'RUN_WITH_MATCH',
 			},
+			context: dialog.context,
 			services,
 		};
 
-		this.run(runParams)
+		await this.run(runParams)
 			.then(() => {})
 			.catch((error) => console.error(error));
 	}
@@ -127,6 +144,7 @@ export default class {
 				path: findOneDialog.path,
 				place: 'RUN_WITH_INTENT_NAME',
 			},
+			context: dialog.context,
 			services,
 		};
 
@@ -143,7 +161,7 @@ export default class {
 		data.conversation.dialogFileParams = data.dialogFileParams;
 		const dialogImport = await import(data.dialogFileParams.path);
 		const dialog = new dialogImport.default(data);
-		dialog.runDialog();
+		await dialog.runDialog();
 	}
 
 	public initList(folderPath: string, type: string): void {

@@ -1,7 +1,11 @@
 // Types.
-import { IDialog, ServiceBaseDialog, TBaseDialogCtor } from '../../../..';
+import {
+	IDialog,
+	ServiceWhatsappBaseDialog,
+	TBaseDialogCtor,
+} from '../../../..';
 
-export default class extends ServiceBaseDialog implements IDialog {
+export default class extends ServiceWhatsappBaseDialog implements IDialog {
 	private WAIT_TICKET_RESPONSE = 'WAIT_TICKET_RESPONSE';
 
 	constructor(data: TBaseDialogCtor) {

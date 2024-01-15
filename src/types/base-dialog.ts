@@ -2,6 +2,7 @@
 import { TActivity } from './whatsapp/activity';
 import { TCxperiumContact } from '../types/cxperium/contact';
 import { TCxperiumServices } from '../types/cxperium/service';
+import { TurnContext } from 'botbuilder';
 
 // Services.
 import ServiceDialog from '../services/dialog';
@@ -29,4 +30,5 @@ export type TBaseDialogCtor = {
 	conversation: BaseConversation;
 	dialogFileParams: TBaseDialogDialogFileParams;
 	services: TAppLocalsServices;
+	context: TurnContext;
 };

@@ -12,7 +12,8 @@ import { TSrcIndexConfig } from './types/src-index';
 import { TBaseDialogCtor } from './types/base-dialog';
 
 // Services.
-import ServiceBaseDialog from './services/base-dialog';
+import ServiceWhatsappBaseDialog from './services/whatsapp/base-dialog';
+import ServiceTeamsBaseDialog from './services/teams/base-dialog';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
@@ -83,4 +84,9 @@ applyClassMixins.run(Engine, [
 	UtilAutomate,
 ]);
 
-export { ServiceBaseDialog, IDialog, TBaseDialogCtor };
+export {
+	ServiceWhatsappBaseDialog,
+	ServiceTeamsBaseDialog,
+	IDialog,
+	TBaseDialogCtor,
+};

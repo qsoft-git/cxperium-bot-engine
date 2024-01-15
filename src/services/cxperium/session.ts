@@ -83,7 +83,7 @@ export default class extends ServiceCxperium {
 		return response;
 	}
 
-	async getConversation(dialog: any) {
+	async getConversationWhatsapp(dialog: any) {
 		const phone: string = dialog.contact.phone;
 
 		const response = (await fetch(
@@ -125,6 +125,33 @@ export default class extends ServiceCxperium {
 			};
 
 			this.cache.set(`CONVERSATION-${phone}`, conversation);
+		}
+
+		return new BaseConversation(dialog, conversation);
+	}
+
+	async getConversationTeams(dialog: any) {
+		const id: string = dialog.activity.from.id;
+
+		let conversation: TConversation | undefined = this.cache.get(
+			`CONVERSATION-${id}`,
+		);
+
+		if (!conversation) {
+			conversation = {
+				languageId: 1,
+				conversationData: [],
+				waitData: {
+					className: '',
+					functionName: '',
+				},
+				faultCount: 0,
+				sessionData: [],
+				lastMessage: '',
+				cultureCode: 'TR',
+			};
+
+			this.cache.set(`CONVERSATION-${id}`, conversation);
 		}
 
 		return new BaseConversation(dialog, conversation);

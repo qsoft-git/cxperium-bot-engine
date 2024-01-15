@@ -1,15 +1,18 @@
+// Node modules.
+import { MessageFactory, TurnContext } from 'botbuilder';
+
 // Types.
-import { TActivity } from '../types/whatsapp/activity';
-import { TCxperiumContact } from '../types/cxperium/contact';
+import { TActivity } from '../../types/whatsapp/activity';
+import { TCxperiumContact } from '../../types/cxperium/contact';
 import {
 	TAppLocalsServices,
 	TBaseDialogCtor,
 	TBaseDialogDialogFileParams,
-} from '../types/base-dialog';
+} from '../../types/base-dialog';
 
 // Services.
-import BaseConversation from './conversation';
-import { TButton, TRow } from '../types/whatsapp/message';
+import BaseConversation from '../conversation';
+import { TButton, TRow } from '../../types/whatsapp/message';
 
 export default class {
 	contact: TCxperiumContact;
@@ -17,6 +20,7 @@ export default class {
 	conversation: BaseConversation;
 	services: TAppLocalsServices;
 	dialogFileParams: TBaseDialogDialogFileParams;
+	context: TurnContext;
 
 	constructor(data: TBaseDialogCtor) {
 		this.activity = data.activity;
@@ -24,15 +28,11 @@ export default class {
 		this.conversation = data.conversation;
 		this.services = data.services;
 		this.dialogFileParams = data.dialogFileParams;
+		this.context = data.context;
 	}
 
 	public async sendMessage(message: string) {
-		const msg = await this.services.whatsapp.message.sendRegularMessage(
-			this.contact.phone,
-			message,
-		);
-
-		return msg;
+		await this.context.sendActivity(message);
 	}
 
 	public async sendButtonMessage(

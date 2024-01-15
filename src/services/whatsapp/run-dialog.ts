@@ -2,14 +2,14 @@
 import { Request } from 'express';
 
 // Types.
-import { TAppLocalsServices } from '../types/base-dialog';
+import { TAppLocalsServices } from '../../types/base-dialog';
 import {
 	TActivity,
 	TTextMessage,
 	TImageMessage,
 	TDocumentMessage,
 	TInteractiveMessage,
-} from '../types/whatsapp/activity';
+} from '../../types/whatsapp/activity';
 
 export default class {
 	private services!: TAppLocalsServices;
@@ -22,15 +22,13 @@ export default class {
 		| any;
 	private conversation!: any;
 	private contact!: any;
+	public place = 'WHATSAPP';
 
 	constructor(private req: Request) {
 		this.services = this.req.app.locals.service;
 	}
 
 	async execute(): Promise<void> {
-		// Init which service.
-		this.initWhichService();
-
 		// Init activity.
 		this.initActivity();
 
@@ -53,7 +51,7 @@ export default class {
 
 		// Init conversation.
 		this.conversation =
-			await this.services.cxperium.session.getConversation(this);
+			await this.services.cxperium.session.getConversationWhatsapp(this);
 
 		const isGdprActive = (
 			await this.services.cxperium.configuration.execute()
@@ -87,16 +85,6 @@ export default class {
 			this.services.dialog.runWithConversationWaitAction(this);
 
 		!conversationCheck && this.services.dialog.runWithMatch(this);
-	}
-
-	private initWhichService(): void {
-		const service = this.req.url;
-
-		if (service.startsWith('/whatsapp')) {
-		} else if (service.startsWith('/teams')) {
-		} else if (service.startsWith('/webchat')) {
-		} else {
-		}
 	}
 
 	private initActivity(): void {
