@@ -1,5 +1,5 @@
 // Environment.
-const { NODE_ENV } = process.env;
+const { NODE_ENV, SENTRY_DSN } = process.env;
 
 // Node modules.
 import express, { Application } from 'express';
@@ -11,6 +11,8 @@ import compression from 'compression';
 import expressFileUpload from 'express-fileupload';
 import noCache from 'nocache';
 import cookieParser from 'cookie-parser';
+import * as Sentry from '@sentry/node';
+import { ProfilingIntegration } from '@sentry/profiling-node';
 
 // Routes.
 import routes from '../routes';
@@ -56,6 +58,7 @@ export class UtilApp implements IUtilsApp {
 
 	public initExpress(): void {
 		this.app = express();
+		this.initSentry();
 	}
 
 	public initAppProperties({
@@ -69,11 +72,17 @@ export class UtilApp implements IUtilsApp {
 	}
 
 	public initMiddlewares(): void {
+		// Sentry
+		this.app.use(Sentry.Handlers.requestHandler());
+
 		// Set general middlewares.
 		this.initGeneralMiddlewares();
 
+		this.app.use(Sentry.Handlers.tracingHandler());
+
 		// Set routes and middlewares.
 		this.app.use(routes);
+		this.app.use(Sentry.Handlers.errorHandler());
 		this.app.use(middlewareMain.notFoundHandler);
 		this.app.use(middlewareMain.errorHandler);
 	}
@@ -101,6 +110,7 @@ export class UtilApp implements IUtilsApp {
 		this.app.set('views', path.join(__dirname, '../', 'views'));
 		this.app.set('view engine', 'ejs');
 		this.app.locals.service = {};
+		this.app.locals.service.sentry = Sentry;
 		this.app.locals.service.cxperium = {};
 		this.app.locals.service.dialog = {};
 		this.app.locals.service.whatsapp = {};
@@ -108,6 +118,24 @@ export class UtilApp implements IUtilsApp {
 		if (this.publicPath) {
 			this.app.use(express.static(this.publicPath));
 		}
+	}
+
+	public initSentry() {
+		if (SENTRY_DSN)
+			Sentry.init({
+				dsn: SENTRY_DSN,
+				integrations: [
+					// enable HTTP calls tracing
+					new Sentry.Integrations.Http({ tracing: true }),
+					// enable Express.js middleware tracing
+					new Sentry.Integrations.Express({ app: this.app }),
+					new ProfilingIntegration(),
+				],
+				// Performance Monitoring
+				tracesSampleRate: 1.0, //  Capture 100% of the transactions
+				// Set sampling rate for profiling - this is relative to tracesSampleRate
+				profilesSampleRate: 1.0,
+			});
 	}
 
 	initAppService(
@@ -152,7 +180,10 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.automate.user = serviceAutomateUser;
 		appLocalsServices.automate.api = serviceAutomateApi;
 
-		this.app.locals.service = { ...appLocalsServices };
+		this.app.locals.service = {
+			...this.app.locals.service,
+			...appLocalsServices,
+		};
 	}
 
 	public execute(): void {

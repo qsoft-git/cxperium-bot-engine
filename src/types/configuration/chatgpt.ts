@@ -1,6 +1,6 @@
 export type TChatGPTConfig = {
 	IsEnabled: boolean;
-	ApiKey: string;
+	APIKey: string;
 	Model: string;
 	MaxTokens: string;
 	Temperature: string;

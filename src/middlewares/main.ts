@@ -10,6 +10,8 @@ export default class {
 		_next: NextFunction,
 	) {
 		try {
+			const sentry: any = res.app.locals.service.sentry;
+			sentry.captureException(error);
 			console.error(error);
 			const serverMode = req.app.get('env');
 			const notFoundStatus = res.locals.notFoundStatus;

@@ -13,7 +13,7 @@ import { TBaseDialogCtor } from './types/base-dialog';
 
 // Services.
 import ServiceWhatsappBaseDialog from './services/whatsapp/base-dialog';
-import ServiceTeamsBaseDialog from './services/teams/base-dialog';
+import ServiceMicrosoftBaseDialog from './services/microsoft/base-dialog';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
@@ -86,7 +86,7 @@ applyClassMixins.run(Engine, [
 
 export {
 	ServiceWhatsappBaseDialog,
-	ServiceTeamsBaseDialog,
+	ServiceMicrosoftBaseDialog,
 	IDialog,
 	TBaseDialogCtor,
 };

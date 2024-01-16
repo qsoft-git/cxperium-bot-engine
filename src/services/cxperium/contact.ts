@@ -196,6 +196,58 @@ export default class extends ServiceCxperium {
 		}
 	}
 
+	async getContactByBotframeworkId(dialog: any): Promise<TCxperiumContact> {
+		const phone = dialog.activity.from.id;
+
+		const response = (await fetch(
+			`${this.baseUrl}/api/contacts/phone/${phone}`,
+			{
+				method: 'get',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
+			},
+		).then((response) => response.json())) as any;
+
+		if (response.status == 201 && response.data) {
+			const contact: TCxperiumContact = {
+				_id: response?.data?._id,
+				phone: response?.data?.phone,
+				email: response?.data?.email,
+				userProfileName: response?.data?.userProfileName,
+				createdAt: response?.data?.createdAt,
+				updatedAt: response?.data?.updatedAt,
+				user_id: response?.data?.user_id,
+				custom: response?.data?.custom,
+				tags: response?.data?.tags,
+				delete: response?.data?.delete,
+			};
+
+			return contact;
+		} else {
+			const attributes: Record<string, unknown> = {
+				FirstName: '',
+				LastName: '',
+				IsKvkkApproved: false,
+				KvkkApprovalDate: '',
+				KvkkNotApprovedDate: '',
+				IsCxLiveTransfer: false,
+				IsCxTransfer: false,
+				ChatId: '',
+			};
+
+			const result = await this.createContact(
+				phone,
+				'',
+				dialog.activity.from.name,
+				attributes,
+			);
+
+			return result;
+		}
+	}
+
 	async updateContactEmail(contactId: string, email: string) {
 		const body = {
 			email: email,

@@ -9,7 +9,6 @@ import middlewareRunDialog from '../middlewares/run-dialog';
 
 // Routes.
 router.post('/whatsapp', middlewareRunDialog.executeWhatsapp);
-router.post('/teams', middlewareRunDialog.executeTeams);
-// router.post('/webchat', middlewareRunDialog.execute("WEBCHAT"));
+router.post('/messages', middlewareRunDialog.executeMicrosoft);
 
 export default router;

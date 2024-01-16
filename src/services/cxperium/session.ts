@@ -130,7 +130,7 @@ export default class extends ServiceCxperium {
 		return new BaseConversation(dialog, conversation);
 	}
 
-	async getConversationTeams(dialog: any) {
+	async getConversationMicrosoft(dialog: any) {
 		const id: string = dialog.activity.from.id;
 
 		let conversation: TConversation | undefined = this.cache.get(

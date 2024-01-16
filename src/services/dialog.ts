@@ -8,6 +8,11 @@ import * as path from 'path';
 // Types.
 import { TBaseDialogCtor, TAppLocalsServices } from '../types/base-dialog';
 import BaseConversation from './conversation';
+import { TIntentPrediction } from '../types/intent-prediction';
+
+// Services.
+import ServiceDialogflow from './dialogflow/match';
+import ServiceChatGPT from './chatgpt/match';
 
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
@@ -69,6 +74,55 @@ export default class {
 
 	public async runWithMatch(dialog: any): Promise<void> {
 		const services: TAppLocalsServices = dialog.services;
+		const prediction: TIntentPrediction =
+			await this.intentPrediction(dialog);
+
+		if (prediction.isMatch && prediction.fulfillment) {
+		}
+
+		if (prediction.isMatch && prediction.intent) {
+			let findOneDialog;
+
+			try {
+				findOneDialog = this.getListAll.find(
+					(item: any) => prediction.intent === item?.name,
+				) as any;
+			} catch (error) {
+				console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
+				throw error;
+			}
+
+			const runParams: TBaseDialogCtor = {
+				contact: dialog.contact,
+				activity: dialog.activity,
+				conversation: dialog.conversation,
+				dialogFileParams: {
+					name: findOneDialog.name,
+					path: findOneDialog.path,
+					place: 'RUN_WITH_MATCH',
+				},
+				context: dialog.context,
+				services,
+			};
+
+			await this.run(runParams)
+				.then(() => {})
+				.catch((error) => console.error(error));
+		}
+	}
+
+	private async intentPrediction(dialog: any): Promise<TIntentPrediction> {
+		const services: TAppLocalsServices = dialog.services;
+
+		let prediction: TIntentPrediction = {
+			isMatch: false,
+			intent: null,
+			type: null,
+			fulfillment: null,
+			chatgptMessage: null,
+		};
+
+		const env = await services.cxperium.configuration.execute();
 
 		let activity: any;
 
@@ -85,43 +139,39 @@ export default class {
 		) as any;
 
 		const channelNumber = CHANNELS[dialog.place] as string;
-
 		const intentParams = cxperiumAllIntents.find(
 			(item: any) =>
 				channelNumber == item.channel &&
 				new RegExp(item.regexValue).test(activity),
 		);
 
-		let findOneDialog;
-
-		try {
-			findOneDialog = this.getListAll.find(
-				(item: any) => intentParams.name === item?.name,
-			) as any;
-		} catch (error) {
-			console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
-			throw error;
+		if (intentParams) {
+			prediction.intent = intentParams.name;
+			prediction.isMatch = true;
+			prediction.type = 'REGEX';
 		}
 
-		const runParams: TBaseDialogCtor = {
-			contact: dialog.contact,
-			activity: dialog.activity,
-			conversation: dialog.conversation,
-			dialogFileParams: {
-				name: findOneDialog.name,
-				path: findOneDialog.path,
-				place: 'RUN_WITH_MATCH',
-			},
-			context: dialog.context,
-			services,
-		};
+		if (!prediction.isMatch && Boolean(env.dialogflowConfig.IsEnabled)) {
+			const df = new ServiceDialogflow(services);
+			prediction = await df.dialogflowMatch(
+				activity,
+				dialog.contact._id,
+				dialog.contact.language,
+			);
+		}
 
-		await this.run(runParams)
-			.then(() => {})
-			.catch((error) => console.error(error));
+		if (!prediction.isMatch && Boolean(env.chatgptConfig.IsEnabled)) {
+			const chatgptService = new ServiceChatGPT(services);
+			prediction = await chatgptService.chatGPTMatch(activity);
+		}
+
+		return prediction;
 	}
 
-	public runWithIntentName(dialog: any, intentName: string): void {
+	public async runWithIntentName(
+		dialog: any,
+		intentName: string,
+	): Promise<void> {
 		const services: TAppLocalsServices = dialog.services;
 
 		let findOneDialog;
@@ -148,7 +198,7 @@ export default class {
 			services,
 		};
 
-		this.run(runParams)
+		await this.run(runParams)
 			.then(() => {})
 			.catch((error) => console.error(error));
 	}
