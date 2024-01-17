@@ -142,7 +142,7 @@ export default class {
 		const intentParams = cxperiumAllIntents.find(
 			(item: any) =>
 				channelNumber == item.channel &&
-				new RegExp(item.regexValue).test(activity),
+				new RegExp(item.regexValue, 'i').test(activity),
 		);
 
 		if (intentParams) {
