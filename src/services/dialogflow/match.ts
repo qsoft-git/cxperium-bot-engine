@@ -27,7 +27,7 @@ export default class {
 			chatgptMessage: null,
 		};
 
-		if (!env.IsEnabled) return prediction;
+		if (!env.IsEnable) return prediction;
 
 		process.env.GOOGLE_APPLICATION_CREDENTIALS = `./${env.CredentialsFilePath}`;
 		const projectId = env.ProjectId;

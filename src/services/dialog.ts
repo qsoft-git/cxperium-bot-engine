@@ -17,6 +17,7 @@ import ServiceChatGPT from './chatgpt/match';
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
 	TEAMS: '3',
+	WEBCHAT: '4',
 };
 
 export default class {
@@ -78,6 +79,15 @@ export default class {
 			await this.intentPrediction(dialog);
 
 		if (prediction.isMatch && prediction.fulfillment) {
+			if (dialog.place == 'WHATSAPP') {
+				await dialog.services.whatsapp.message.sendRegularMessage(
+					dialog.contact.phone,
+					prediction.fulfillment,
+				);
+			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
+				await dialog.context.sendActivity(prediction.fulfillment);
+			}
+			return;
 		}
 
 		if (prediction.isMatch && prediction.intent) {
@@ -108,6 +118,18 @@ export default class {
 			await this.run(runParams)
 				.then(() => {})
 				.catch((error) => console.error(error));
+		} else {
+			if (dialog.place == 'WHATSAPP') {
+				await this.runWithIntentName(
+					dialog,
+					'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
+				);
+			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
+				await this.runWithIntentName(
+					dialog,
+					'CXPerium.Dialogs.Teams.System.Unknown.IntentNotFoundDialog',
+				);
+			}
 		}
 	}
 
@@ -130,6 +152,8 @@ export default class {
 			activity = dialog.activityToText();
 		} else if (dialog.place == 'TEAMS') {
 			activity = dialog.activity.text;
+		} else if (dialog.place == 'WEBCHAT') {
+			activity = dialog.activity.text;
 		} else {
 			throw new Error('RUN DIALOG: NOT FOUND PLACE!!!');
 		}
@@ -151,12 +175,12 @@ export default class {
 			prediction.type = 'REGEX';
 		}
 
-		if (!prediction.isMatch && Boolean(env.dialogflowConfig.IsEnabled)) {
+		if (!prediction.isMatch && Boolean(env.dialogflowConfig.IsEnable)) {
 			const df = new ServiceDialogflow(services);
 			prediction = await df.dialogflowMatch(
 				activity,
 				dialog.contact._id,
-				dialog.contact.language,
+				dialog.conversation.conversation.cultureCode,
 			);
 		}
 
