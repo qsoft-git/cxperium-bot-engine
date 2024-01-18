@@ -1,6 +1,6 @@
 {
   "name": "cxperium-bot-engine",
-  "version": "1.0.46",
+  "version": "1.0.48",
   "description": "Cxperium Bot Engine",
   "author": "QSoft Bilişim",
   "license": "MIT",
@@ -27,6 +27,7 @@
     "@google-cloud/dialogflow": "^6.3.0",
     "@sentry/node": "^7.93.0",
     "@sentry/profiling-node": "^1.3.5",
+    "adaptivecards-templating": "^2.3.1",
     "botbuilder": "^4.21.3",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
