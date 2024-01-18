@@ -5,8 +5,8 @@ export type TConversation = {
 		functionName: string;
 	};
 	faultCount: number;
-	languageId: number;
+	languageId: 1;
 	sessionData: Record<string, unknown>[];
 	lastMessage: string;
-	cultureCode: string;
+	cultureCode: 'TR';
 };
