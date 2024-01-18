@@ -1,3 +1,6 @@
+// Envrionments.
+const { PORT, HOST, API_KEY, CALLBACK_URL } = process.env;
+
 // Utils.
 import { UtilApp } from './utils/app';
 import { UtilDialog } from './utils/dialog';
@@ -19,6 +22,8 @@ import ServiceMicrosoftBaseDialog from './services/microsoft/base-dialog';
 import applyClassMixins from './helpers/apply-class-mixins';
 import { UtilAutomate } from './utils/automate';
 
+// Constant.
+
 // Mixins.
 export interface Engine
 	extends UtilApp,
@@ -28,7 +33,16 @@ export interface Engine
 		UtilAutomate {}
 
 export class Engine {
-	constructor(data: TSrcIndexConfig) {
+	constructor(srcPath: string) {
+		// Config.
+		const data: TSrcIndexConfig | any = {
+			host: HOST,
+			port: PORT,
+			apiKey: API_KEY,
+			callbackUrl: CALLBACK_URL,
+			srcPath,
+		};
+
 		// Initialize express application.
 		this.initExpress();
 

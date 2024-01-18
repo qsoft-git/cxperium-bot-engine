@@ -104,13 +104,13 @@ export default class {
 			text: '',
 			document: {
 				id: '',
-				byteContent: new Buffer(''),
+				byteContent: Buffer.from(''),
 				mimeType: '',
 				sha256: '',
 			},
 			image: {
 				id: '',
-				byteContent: new Buffer(''),
+				byteContent: Buffer.from(''),
 				mimeType: '',
 				sha256: '',
 			},
