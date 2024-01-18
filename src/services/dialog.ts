@@ -36,7 +36,7 @@ export default class {
 		return this.listAll;
 	}
 
-	public runWithConversationWaitAction(dialog: any): boolean {
+	public async runWithConversationWaitAction(dialog: any): Promise<boolean> {
 		const conversation: BaseConversation = dialog.conversation;
 
 		if (!conversation.isWaitAny()) return false;
@@ -53,6 +53,8 @@ export default class {
 			throw error;
 		}
 
+		if (!findOneDialog) throw new Error('RUN DIALOG: NOT FOUND DIALOG');
+
 		const runParams: TBaseDialogCtor = {
 			contact: dialog.contact,
 			activity: dialog.activity,
@@ -66,9 +68,7 @@ export default class {
 			services: dialog.services,
 		};
 
-		this.run(runParams)
-			.then(() => {})
-			.catch((error) => console.error(error));
+		await this.run(runParams);
 
 		return true;
 	}
@@ -102,6 +102,8 @@ export default class {
 				throw error;
 			}
 
+			if (!findOneDialog) throw new Error('RUN DIALOG: NOT FOUND DIALOG');
+
 			const runParams: TBaseDialogCtor = {
 				contact: dialog.contact,
 				activity: dialog.activity,
@@ -115,9 +117,7 @@ export default class {
 				services,
 			};
 
-			await this.run(runParams)
-				.then(() => {})
-				.catch((error) => console.error(error));
+			await this.run(runParams);
 		} else {
 			if (dialog.place == 'WHATSAPP') {
 				await this.runWithIntentName(
@@ -209,6 +209,8 @@ export default class {
 			throw error;
 		}
 
+		if (!findOneDialog) throw new Error('RUN DIALOG: NOT FOUND DIALOG');
+
 		const runParams: TBaseDialogCtor = {
 			contact: dialog.contact,
 			activity: dialog.activity,
@@ -222,9 +224,7 @@ export default class {
 			services,
 		};
 
-		await this.run(runParams)
-			.then(() => {})
-			.catch((error) => console.error(error));
+		await this.run(runParams);
 	}
 
 	public async run(data: TBaseDialogCtor): Promise<void> {

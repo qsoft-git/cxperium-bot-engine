@@ -22,8 +22,6 @@ import ServiceMicrosoftBaseDialog from './services/microsoft/base-dialog';
 import applyClassMixins from './helpers/apply-class-mixins';
 import { UtilAutomate } from './utils/automate';
 
-// Constant.
-
 // Mixins.
 export interface Engine
 	extends UtilApp,
@@ -34,6 +32,9 @@ export interface Engine
 
 export class Engine {
 	constructor(srcPath: string) {
+		// Process on.
+		this.processOn();
+
 		// Config.
 		const data: TSrcIndexConfig | any = {
 			host: HOST,
@@ -87,6 +88,65 @@ export class Engine {
 			this.serviceAutomateApi,
 			this.serviceDialog,
 		);
+	}
+
+	private processOn() {
+		process.on('SIGTERM', async () => {
+			console.log('Received SIGTERM signal, shutting down...');
+			process.exit(1);
+		});
+
+		process.on('SIGINT', async () => {
+			console.log('Received SIGINT signal, shutting down...');
+			process.exit(1);
+		});
+
+		process.on('uncaughtException', (error) => {
+			console.error('Uncaught Exception:', error);
+			process.exit(1);
+		});
+
+		process.on('unhandledRejection', (reason, promise) => {
+			console.error(
+				'Unhandled Rejection at:',
+				promise,
+				'reason:',
+				reason,
+			);
+			process.exit(1);
+		});
+
+		process.on('warning', (warning) => {
+			console.warn('Warning:', warning);
+		});
+
+		process.on('exit', (code) => {
+			console.log('Process exit with code:', code);
+		});
+
+		process.on('beforeExit', (code) => {
+			console.log('Process beforeExit with code:', code);
+		});
+
+		process.on('disconnect', () => {
+			console.log('Process disconnect');
+		});
+
+		process.on('message', (message, sendHandle) => {
+			console.log('Process message:', message, sendHandle);
+		});
+
+		process.on('multipleResolves', (type, promise, reason) => {
+			console.log('Process multipleResolves:', type, promise, reason);
+		});
+
+		process.on('rejectionHandled', (promise) => {
+			console.log('Process rejectionHandled:', promise);
+		});
+
+		process.on('uncaughtExceptionMonitor', (error, origin) => {
+			console.log('Process uncaughtExceptionMonitor:', error, origin);
+		});
 	}
 }
 

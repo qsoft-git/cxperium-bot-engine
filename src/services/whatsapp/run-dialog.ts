@@ -62,7 +62,7 @@ export default class {
 
 		if (await this.services.cxperium.transfer.isSurveyTransfer(this)) {
 			if (!customAttributes.IsKvkkApproved) {
-				this.services.cxperium.contact.updateGdprApprovalStatus(
+				await this.services.cxperium.contact.updateGdprApprovalStatus(
 					this.contact,
 					true,
 				);
@@ -72,7 +72,7 @@ export default class {
 		}
 
 		if (!customAttributes.IsKvkkApproved && isGdprActive) {
-			this.services.dialog.runWithIntentName(
+			await this.services.dialog.runWithIntentName(
 				this,
 				'CXPerium.Dialogs.WhatsApp.System.Gdpr.KvkkDialog',
 			);
@@ -82,9 +82,9 @@ export default class {
 		if (await this.services.cxperium.transfer.isLiveTransfer(this)) return;
 
 		const conversationCheck: boolean =
-			this.services.dialog.runWithConversationWaitAction(this);
+			await this.services.dialog.runWithConversationWaitAction(this);
 
-		!conversationCheck && this.services.dialog.runWithMatch(this);
+		!conversationCheck && (await this.services.dialog.runWithMatch(this));
 	}
 
 	private initActivity(): void {

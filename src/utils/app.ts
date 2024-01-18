@@ -13,6 +13,7 @@ import noCache from 'nocache';
 import cookieParser from 'cookie-parser';
 import * as Sentry from '@sentry/node';
 import { ProfilingIntegration } from '@sentry/profiling-node';
+import http from 'http';
 
 // Routes.
 import routes from '../routes';
@@ -51,6 +52,7 @@ import ServiceWhatsAppMedia from '../services/whatsapp/media';
 const appLocalsServices: TAppLocalsServices | any = {};
 
 export class UtilApp implements IUtilsApp {
+	server!: http.Server;
 	app!: Application;
 	host!: string;
 	port!: string;
@@ -187,13 +189,43 @@ export class UtilApp implements IUtilsApp {
 	}
 
 	public execute(): void {
-		this.app.listen(this.port, () => {
-			console.table({
-				mode: NODE_ENV,
-				host: this.host,
-				port: this.port,
-				message: 'Listening Cxperium ChatBot Engine',
-			});
+		this.app.set('port', this.port);
+		this.server = http.createServer(this.app);
+		this.server.listen(this.port);
+		this.server.on('error', this.serverOnError);
+		this.server.on('listening', this.serverOnListening);
+	}
+
+	private serverOnListening() {
+		console.table({
+			mode: NODE_ENV,
+			host: this.host,
+			port: this.port,
+			message: 'Listening Cxperium ChatBot Engine',
 		});
+	}
+
+	private serverOnError(error: any) {
+		if (error.syscall !== 'listen') {
+			throw error;
+		}
+
+		const bind =
+			typeof this.port === 'string'
+				? 'Pipe ' + this.port
+				: 'Port ' + this.port;
+
+		switch (error.code) {
+			case 'EACCES':
+				console.error(bind + ' requires elevated privileges');
+				process.exit(1);
+				break;
+			case 'EADDRINUSE':
+				console.error(bind + ' is already in use');
+				process.exit(1);
+				break;
+			default:
+				throw error;
+		}
 	}
 }
