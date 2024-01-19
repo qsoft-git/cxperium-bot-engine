@@ -13,24 +13,24 @@ export default class BaseConversation {
 		this.contact = dialog.contact;
 	}
 
-	isWaitAction(functionName: string) {
+	public isWaitAction(functionName: string): boolean {
 		return this.conversation.waitData.functionName === functionName;
 	}
 
-	isWaitAny() {
+	public isWaitAny(): any {
 		return (
 			String(this.conversation.waitData?.className).length != 0 &&
 			String(this.conversation.waitData?.functionName).length != 0
 		);
 	}
 
-	addWaitAction(functionName: string) {
+	public addWaitAction(functionName: string): void {
 		this.conversation.waitData.className = this.dialogFileParams.name;
 		this.conversation.waitData.functionName = functionName;
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
-	removeWaitAction() {
+	public removeWaitAction(): void {
 		this.conversation.waitData = {
 			className: '',
 			functionName: '',
@@ -38,7 +38,7 @@ export default class BaseConversation {
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
-	resetConversation() {
+	public resetConversation(): void {
 		this.conversation.sessionData = [];
 		this.conversation.waitData = {
 			className: '',
@@ -47,7 +47,7 @@ export default class BaseConversation {
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
-	increaseFaultCount() {
+	public increaseFaultCount(): void {
 		const faultCount: Record<string, unknown> = {
 			key: 'faultCount',
 			value: this.conversation.faultCount + 1,
@@ -57,7 +57,7 @@ export default class BaseConversation {
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
-	getCache(key: string) {
+	public getCache(key: string): any {
 		if (!key || typeof key != 'string' || String(key).length == 0) {
 			return null;
 		} else {
@@ -65,19 +65,26 @@ export default class BaseConversation {
 		}
 	}
 
-	setCache(key: string, value: string) {
+	public setCache(key: string, value: string): void {
 		if (!key || typeof key != 'string' || String(key).length == 0) return;
 
 		this.conversation.cache[key || 'NULL'] = value || '';
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
-	clearCache() {
+	public delCache(key: string): void {
+		if (!key || typeof key != 'string' || String(key).length == 0) return;
+
+		delete this.conversation.cache[key];
+		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
+	}
+
+	public clearCache(): void {
 		this.conversation.cache = {};
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
 
-	getLastMessage() {
+	public getLastMessage(): any {
 		return this.conversation.lastMessage;
 	}
 }
