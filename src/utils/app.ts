@@ -1,6 +1,3 @@
-// Environment.
-const { NODE_ENV, SENTRY_DSN } = process.env;
-
 // Node modules.
 import express, { Application } from 'express';
 import * as path from 'path';
@@ -57,20 +54,25 @@ export class UtilApp implements IUtilsApp {
 	host!: string;
 	port!: string;
 	publicPath!: string;
+	sentryDsn!: string;
+	mode!: string;
 
 	public initExpress(): void {
 		this.app = express();
-		this.initSentry();
 	}
 
 	public initAppProperties({
 		host: _host,
 		port: _port,
 		srcPath: _srcPath,
+		sentryDsn: _sentryDsn,
+		mode: _mode,
 	}: TSrcIndexConfig): void {
 		this.port = _port || '3978';
 		this.host = _host || 'localhost';
 		this.publicPath = path.join(_srcPath, '/', 'public');
+		this.sentryDsn = _sentryDsn || '';
+		this.mode = _mode || 'development';
 	}
 
 	public initMiddlewares(): void {
@@ -123,9 +125,9 @@ export class UtilApp implements IUtilsApp {
 	}
 
 	public initSentry() {
-		if (SENTRY_DSN)
+		if (this.sentryDsn)
 			Sentry.init({
-				dsn: SENTRY_DSN,
+				dsn: this.sentryDsn,
 				integrations: [
 					// enable HTTP calls tracing
 					new Sentry.Integrations.Http({ tracing: true }),
@@ -189,43 +191,54 @@ export class UtilApp implements IUtilsApp {
 	}
 
 	public execute(): void {
+		this.app.set('env', this.mode);
 		this.app.set('port', this.port);
+		this.app.set('host', this.host);
 		this.server = http.createServer(this.app);
 		this.server.listen(this.port);
-		this.server.on('error', this.serverOnError);
-		this.server.on('listening', this.serverOnListening);
+		this.server.on('error', this.serverOnError(this.port));
+		this.server.on(
+			'listening',
+			this.serverOnListening(this.mode, this.host, this.port),
+		);
 	}
 
-	private serverOnListening() {
-		console.table({
-			mode: NODE_ENV,
-			host: this.host,
-			port: this.port,
-			message: 'Listening Cxperium ChatBot Engine',
-		});
+	private serverOnListening(
+		mode: string | undefined,
+		host: string,
+		port: string,
+	) {
+		return function () {
+			console.table({
+				mode,
+				host,
+				port,
+				message: 'Listening Cxperium ChatBot Engine',
+			});
+		};
 	}
 
-	private serverOnError(error: any) {
-		if (error.syscall !== 'listen') {
-			throw error;
-		}
-
-		const bind =
-			typeof this.port === 'string'
-				? 'Pipe ' + this.port
-				: 'Port ' + this.port;
-
-		switch (error.code) {
-			case 'EACCES':
-				console.error(bind + ' requires elevated privileges');
-				process.exit(1);
-				break;
-			case 'EADDRINUSE':
-				console.error(bind + ' is already in use');
-				process.exit(1);
-				break;
-			default:
+	private serverOnError(port: string) {
+		return function (error: any) {
+			if (error.syscall !== 'listen') {
 				throw error;
-		}
+			}
+
+			const bind =
+				typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+
+			switch (error.code) {
+				case 'EACCES':
+					console.error(bind + ' requires elevated privileges');
+					process.exit(1);
+					break;
+				case 'EADDRINUSE':
+					console.error(bind + ' is already in use');
+					process.exit(1);
+					break;
+				default:
+					throw error;
+			}
+		};
 	}
 }

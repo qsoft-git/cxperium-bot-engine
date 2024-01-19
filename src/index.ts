@@ -1,5 +1,5 @@
 // Envrionments.
-const { PORT, HOST, API_KEY, CALLBACK_URL } = process.env;
+const { PORT, HOST, API_KEY, CALLBACK_URL, SENTRY_DSN, NODE_ENV } = process.env;
 
 // Utils.
 import { UtilApp } from './utils/app';
@@ -41,6 +41,8 @@ export class Engine {
 			port: PORT,
 			apiKey: API_KEY,
 			callbackUrl: CALLBACK_URL,
+			sentryDsn: SENTRY_DSN,
+			mode: NODE_ENV,
 			srcPath,
 		};
 
@@ -49,6 +51,9 @@ export class Engine {
 
 		// Set App properties.
 		this.initAppProperties(data);
+
+		// Initialize sentry.
+		this.initSentry();
 
 		// Initialize middlewares.
 		this.initMiddlewares();

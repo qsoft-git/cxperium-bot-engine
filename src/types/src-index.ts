@@ -4,4 +4,6 @@ export type TSrcIndexConfig = {
 	apiKey: string;
 	srcPath: string;
 	callbackUrl: string;
+	sentryDsn: string;
+	mode: string;
 };
