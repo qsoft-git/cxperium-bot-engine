@@ -7,9 +7,6 @@ import getPackageJson from '../helpers/get-package-json';
 // Constants.
 const UP_TIME = new Date();
 
-// Services.
-import ServiceWhatsAppMedia from '../services/whatsapp/media';
-
 export default class {
 	public static homePage(
 		_req: Request,

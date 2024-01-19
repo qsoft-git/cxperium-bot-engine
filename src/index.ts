@@ -6,6 +6,8 @@ import { UtilApp } from './utils/app';
 import { UtilDialog } from './utils/dialog';
 import { UtilCxperium } from './utils/cxperium';
 import { UtilWhatsApp } from './utils/whatsapp';
+import { UtilAutomate } from './utils/automate';
+import { UtilSentry } from './utils/sentry';
 
 // Interfaces.
 import { IDialog } from './interfaces/dialog';
@@ -20,7 +22,6 @@ import ServiceMicrosoftBaseDialog from './services/microsoft/base-dialog';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
-import { UtilAutomate } from './utils/automate';
 
 // Mixins.
 export interface Engine
@@ -28,13 +29,11 @@ export interface Engine
 		UtilDialog,
 		UtilCxperium,
 		UtilWhatsApp,
-		UtilAutomate {}
+		UtilAutomate,
+		UtilSentry {}
 
 export class Engine {
 	constructor(srcPath: string) {
-		// Process on.
-		this.processOn();
-
 		// Config.
 		const data: TSrcIndexConfig | any = {
 			host: HOST,
@@ -49,14 +48,17 @@ export class Engine {
 		// Initialize express application.
 		this.initExpress();
 
+		// Initialize sentry properties.
+		this.initSentryProperties(data, this.app);
+
+		// Process on.
+		this.processOn();
+
 		// Set App properties.
 		this.initAppProperties(data);
 
-		// Initialize sentry.
-		this.initSentry();
-
 		// Initialize middlewares.
-		this.initMiddlewares();
+		this.initMiddlewares(this.sentry);
 
 		// Initialize properties.
 		this.initCxperiumProperties(data);
@@ -70,6 +72,7 @@ export class Engine {
 		// Initialize automate.
 		this.initAutomateService();
 
+		// Initialize dialog.
 		this.initDialogService();
 
 		// Initialize app services.
@@ -92,66 +95,8 @@ export class Engine {
 			this.serviceAutomateUser,
 			this.serviceAutomateApi,
 			this.serviceDialog,
+			this.sentry,
 		);
-	}
-
-	private processOn() {
-		process.on('SIGTERM', async () => {
-			console.log('Received SIGTERM signal, shutting down...');
-			process.exit(1);
-		});
-
-		process.on('SIGINT', async () => {
-			console.log('Received SIGINT signal, shutting down...');
-			process.exit(1);
-		});
-
-		process.on('uncaughtException', (error) => {
-			console.error('Uncaught Exception:', error);
-			process.exit(1);
-		});
-
-		process.on('unhandledRejection', (reason, promise) => {
-			console.error(
-				'Unhandled Rejection at:',
-				promise,
-				'reason:',
-				reason,
-			);
-			process.exit(1);
-		});
-
-		process.on('warning', (warning) => {
-			console.warn('Warning:', warning);
-		});
-
-		process.on('exit', (code) => {
-			console.log('Process exit with code:', code);
-		});
-
-		process.on('beforeExit', (code) => {
-			console.log('Process beforeExit with code:', code);
-		});
-
-		process.on('disconnect', () => {
-			console.log('Process disconnect');
-		});
-
-		process.on('message', (message, sendHandle) => {
-			console.log('Process message:', message, sendHandle);
-		});
-
-		process.on('multipleResolves', (type, promise, reason) => {
-			console.log('Process multipleResolves:', type, promise, reason);
-		});
-
-		process.on('rejectionHandled', (promise) => {
-			console.log('Process rejectionHandled:', promise);
-		});
-
-		process.on('uncaughtExceptionMonitor', (error, origin) => {
-			console.log('Process uncaughtExceptionMonitor:', error, origin);
-		});
 	}
 }
 
@@ -161,6 +106,7 @@ applyClassMixins.run(Engine, [
 	UtilCxperium,
 	UtilWhatsApp,
 	UtilAutomate,
+	UtilSentry,
 ]);
 
 export {

@@ -1,5 +1,6 @@
 // Node modules.
 import { Application } from 'express';
+import * as Sentry from '@sentry/node';
 
 // Types.
 import { TSrcIndexConfig } from '../../types/src-index';
@@ -12,7 +13,7 @@ export interface IUtilsApp {
 	execute(): void;
 	initAppProperties(data: TSrcIndexConfig): void;
 	initExpress(): void;
-	initMiddlewares(): void;
+	initMiddlewares(sentry: typeof Sentry): void;
 	initGeneralMiddlewares(): void;
 	initAppService(...services: any[]): void;
 }

@@ -8,9 +8,8 @@ import compression from 'compression';
 import expressFileUpload from 'express-fileupload';
 import noCache from 'nocache';
 import cookieParser from 'cookie-parser';
-import * as Sentry from '@sentry/node';
-import { ProfilingIntegration } from '@sentry/profiling-node';
 import http from 'http';
+import * as Sentry from '@sentry/node';
 
 // Routes.
 import routes from '../routes';
@@ -54,7 +53,6 @@ export class UtilApp implements IUtilsApp {
 	host!: string;
 	port!: string;
 	publicPath!: string;
-	sentryDsn!: string;
 	mode!: string;
 
 	public initExpress(): void {
@@ -65,28 +63,29 @@ export class UtilApp implements IUtilsApp {
 		host: _host,
 		port: _port,
 		srcPath: _srcPath,
-		sentryDsn: _sentryDsn,
 		mode: _mode,
 	}: TSrcIndexConfig): void {
 		this.port = _port || '3978';
 		this.host = _host || 'localhost';
 		this.publicPath = path.join(_srcPath, '/', 'public');
-		this.sentryDsn = _sentryDsn || '';
 		this.mode = _mode || 'development';
 	}
 
-	public initMiddlewares(): void {
-		// Sentry
-		this.app.use(Sentry.Handlers.requestHandler());
+	public initMiddlewares(sentry: typeof Sentry): void {
+		// Set sentry request handler.
+		this.app.use(sentry.Handlers.requestHandler());
 
 		// Set general middlewares.
 		this.initGeneralMiddlewares();
 
-		this.app.use(Sentry.Handlers.tracingHandler());
+		// Set sentry tracing handler.
+		this.app.use(sentry.Handlers.tracingHandler());
 
-		// Set routes and middlewares.
+		// Set routes.
 		this.app.use(routes);
-		this.app.use(Sentry.Handlers.errorHandler());
+
+		// Set error middlewares.
+		this.app.use(sentry.Handlers.errorHandler());
 		this.app.use(middlewareMain.notFoundHandler);
 		this.app.use(middlewareMain.errorHandler);
 	}
@@ -114,7 +113,7 @@ export class UtilApp implements IUtilsApp {
 		this.app.set('views', path.join(__dirname, '../', 'views'));
 		this.app.set('view engine', 'ejs');
 		this.app.locals.service = {};
-		this.app.locals.service.sentry = Sentry;
+		this.app.locals.service.sentry = {};
 		this.app.locals.service.cxperium = {};
 		this.app.locals.service.dialog = {};
 		this.app.locals.service.whatsapp = {};
@@ -122,24 +121,6 @@ export class UtilApp implements IUtilsApp {
 		if (this.publicPath) {
 			this.app.use(express.static(this.publicPath));
 		}
-	}
-
-	public initSentry() {
-		if (this.sentryDsn)
-			Sentry.init({
-				dsn: this.sentryDsn,
-				integrations: [
-					// enable HTTP calls tracing
-					new Sentry.Integrations.Http({ tracing: true }),
-					// enable Express.js middleware tracing
-					new Sentry.Integrations.Express({ app: this.app }),
-					new ProfilingIntegration(),
-				],
-				// Performance Monitoring
-				tracesSampleRate: 1.0, //  Capture 100% of the transactions
-				// Set sampling rate for profiling - this is relative to tracesSampleRate
-				profilesSampleRate: 1.0,
-			});
 	}
 
 	initAppService(
@@ -161,6 +142,7 @@ export class UtilApp implements IUtilsApp {
 		serviceAutomateUser: ServiceAutomateUser,
 		serviceAutomateApi: ServiceAutomateApi,
 		serviceDialog: ServiceDialog,
+		sentry: typeof Sentry,
 	): void {
 		appLocalsServices.dialog = serviceDialog;
 		appLocalsServices.cxperium = {};
@@ -183,11 +165,9 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.whatsapp.media = serviceWhatsAppMedia;
 		appLocalsServices.automate.user = serviceAutomateUser;
 		appLocalsServices.automate.api = serviceAutomateApi;
+		appLocalsServices.sentry = sentry;
 
-		this.app.locals.service = {
-			...this.app.locals.service,
-			...appLocalsServices,
-		};
+		this.app.locals.service = appLocalsServices;
 	}
 
 	public execute(): void {
