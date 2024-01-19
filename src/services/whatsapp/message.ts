@@ -40,7 +40,7 @@ export default class extends ServiceWhatsApp {
 				},
 			};
 
-			await this.wpRequest(body, 'v1/messages');
+			return await this.wpRequest(body, 'v1/messages');
 		} catch (error) {
 			throw error!;
 		}
@@ -57,7 +57,7 @@ export default class extends ServiceWhatsApp {
 				},
 			};
 
-			await this.wpRequest(msg, 'v1/messages');
+			return await this.wpRequest(msg, 'v1/messages');
 		} catch (err: unknown) {
 			throw err!;
 		}
@@ -107,7 +107,7 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		await this.wpRequest(msg, 'v1/messages');
+		return await this.wpRequest(msg, 'v1/messages');
 	}
 
 	public async sendListMessage(
@@ -145,7 +145,29 @@ export default class extends ServiceWhatsApp {
 			},
 		};
 
-		await this.wpRequest(msg, 'v1/messages');
+		return await this.wpRequest(msg, 'v1/messages');
+	}
+
+	public async sendLocationMessage(
+		to: string,
+		lat: number,
+		long: number,
+		name: string,
+		address: string,
+	) {
+		const msg = {
+			recipient_type: 'individual',
+			to,
+			type: 'location',
+			location: {
+				longitude: long,
+				latitude: lat,
+				name,
+				address,
+			},
+		};
+
+		return await this.wpRequest(msg, 'v1/messages');
 	}
 
 	public async sendImageMessage(
