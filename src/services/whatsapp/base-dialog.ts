@@ -52,6 +52,23 @@ export default class {
 		return msg;
 	}
 
+	public async sendLocationMessage(
+		lat: number,
+		long: number,
+		name: string,
+		address: string,
+	) {
+		const msg = await this.services.whatsapp.message.sendLocationMessage(
+			this.contact.phone,
+			lat,
+			long,
+			name,
+			address,
+		);
+
+		return msg;
+	}
+
 	public async sendListMessage(
 		header: string,
 		footer: string,

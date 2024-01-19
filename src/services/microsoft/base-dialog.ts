@@ -62,15 +62,11 @@ export default class {
 		const adaptiveCard = CardFactory.adaptiveCard(payload);
 
 		if (data) {
-			const context: ACData.IEvaluationContext = {
-				$root: {
-					title: 'test-deneme-birki',
-				},
-			};
+			const context: ACData.IEvaluationContext = {};
 
-			// for (const [k, v] of Object.entries(data)) {
-			// 	templateData.$root[k] = v;
-			// }
+			for (const [k, v] of Object.entries(data)) {
+				context.$root[k] = v;
+			}
 
 			const template = new ACData.Template(payload);
 			const card = template.expand(context);
