@@ -150,9 +150,9 @@ export default class {
 
 		if (dialog.place == 'WHATSAPP') {
 			activity = dialog.activityToText();
-		} else if (dialog.place == 'TEAMS') {
-			activity = dialog.activity.text;
-		} else if (dialog.place == 'WEBCHAT') {
+		} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
+			if (dialog.activity.value)
+				activity = Object.values(dialog.activity.value)[0];
 			activity = dialog.activity.text;
 		} else {
 			throw new Error('RUN DIALOG: NOT FOUND PLACE!!!');
