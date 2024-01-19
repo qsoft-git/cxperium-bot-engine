@@ -9,4 +9,5 @@ export type TConversation = {
 	sessionData: Record<string, unknown>[];
 	lastMessage: string;
 	cultureCode: 'TR';
+	cache: Record<string, unknown>;
 };

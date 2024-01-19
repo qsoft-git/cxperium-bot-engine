@@ -122,6 +122,7 @@ export default class extends ServiceCxperium {
 				sessionData: response.data[0].data,
 				lastMessage: lastMessage,
 				cultureCode: 'TR',
+				cache: {},
 			};
 
 			this.cache.set(`CONVERSATION-${phone}`, conversation);
@@ -149,6 +150,7 @@ export default class extends ServiceCxperium {
 				sessionData: [],
 				lastMessage: '',
 				cultureCode: 'TR',
+				cache: {},
 			};
 
 			this.cache.set(`CONVERSATION-${id}`, conversation);

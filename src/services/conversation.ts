@@ -56,4 +56,28 @@ export default class BaseConversation {
 		this.conversation.sessionData.push(faultCount);
 		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
 	}
+
+	getCache(key: string) {
+		if (!key || typeof key != 'string' || String(key).length == 0) {
+			return null;
+		} else {
+			return this.conversation.cache?.[key];
+		}
+	}
+
+	setCache(key: string, value: string) {
+		if (!key || typeof key != 'string' || String(key).length == 0) return;
+
+		this.conversation.cache[key || 'NULL'] = value || '';
+		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
+	}
+
+	clearCache() {
+		this.conversation.cache = {};
+		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
+	}
+
+	getLastMessage() {
+		return this.conversation.lastMessage;
+	}
 }
