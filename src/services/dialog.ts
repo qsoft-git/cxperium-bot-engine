@@ -13,6 +13,8 @@ import { TIntentPrediction } from '../types/intent-prediction';
 // Services.
 import ServiceDialogflow from './dialogflow/match';
 import ServiceChatGPT from './chatgpt/match';
+import { TCxperiumLiveConfig } from '../types/configuration/live';
+import { TButton } from '../types/whatsapp/message';
 
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
@@ -120,6 +122,52 @@ export default class {
 			await this.run(runParams);
 		} else {
 			if (dialog.place == 'WHATSAPP') {
+				const liveConfig: TCxperiumLiveConfig = (
+					await dialog.services.cxperium.configuration.execute()
+				).cxperiumLiveConfig;
+
+				const conversation: BaseConversation = dialog.conversation;
+				const faultCount = conversation.getFaultCount();
+				if (liveConfig.IsActive) {
+					if (faultCount >= liveConfig.TransferFaultCount) {
+						conversation.setFaultCount(1);
+						const buttons: TButton[] = [
+							{
+								id: 'humantransfer_yes',
+								title: await dialog.services.cxperium.language.getLanguageByKey(
+									conversation.conversation.languageId,
+									'yes_humantransfer',
+								),
+							},
+							{
+								id: 'humantransfer_no',
+								title: await dialog.services.cxperium.language.getLanguageByKey(
+									conversation.conversation.languageId,
+									'no_humantransfer',
+								),
+							},
+						];
+
+						await dialog.services.whatsapp.message.sendButtonMessage(
+							dialog.contact.phone,
+							await dialog.services.cxperium.language.getLanguageByKey(
+								conversation.conversation.languageId,
+								'transfer_representative_title',
+							),
+							'',
+							await dialog.services.cxperium.language.getLanguageByKey(
+								conversation.conversation.languageId,
+								'transfer_message_to_representative',
+							),
+							buttons,
+						);
+
+						return;
+					}
+
+					conversation.increaseFaultCount();
+				}
+
 				await this.runWithIntentName(
 					dialog,
 					'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',

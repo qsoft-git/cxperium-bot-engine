@@ -52,6 +52,13 @@ export default class {
 		return msg;
 	}
 
+	public async transferToLiveRepresentative() {
+		await this.services.cxperium.transfer.transferToRepresentative(
+			this.contact,
+			this.conversation,
+		);
+	}
+
 	public async sendLocationMessage(
 		lat: number,
 		long: number,

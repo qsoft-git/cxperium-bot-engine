@@ -31,6 +31,13 @@ export default class extends ServiceCxperium {
 		);
 		this.serviceCxperiumContact = new ServiceCxperiumContact(data);
 		this.serviceCxperiumMessage = new ServiceCxperiumMessage(data);
+		this.serviceCxperiumLanguage = new ServiceCxperiumLanguage(data);
+		this.serviceWhatsAppMessage = new ServiceWhatsAppMessage(
+			this.serviceCxperiumConfiguration,
+		);
+		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
+			data,
+		);
 	}
 
 	async isSurveyTransfer(dialog: any) {
@@ -157,16 +164,19 @@ export default class extends ServiceCxperium {
 					activity.image.mimeType,
 				);
 			} else {
-				if (
+				const chatExists =
 					await this.serviceCxperiumConversation.chatExists(
 						contact._id,
-					)
-				) {
+					);
+
+				if (!chatExists) {
 					this.serviceCxperiumConversation.create(contact._id);
 				}
 
+				const custom: any = contact.custom;
+
 				await this.serviceCxperiumMessage.sendWhatsappMessage(
-					contact.custom as any['ChatId'],
+					custom.ChatId,
 					activity.text,
 					contact.phone,
 				);
@@ -182,7 +192,10 @@ export default class extends ServiceCxperium {
 		contact: TCxperiumContact,
 		conversation: BaseConversation,
 	): Promise<boolean> {
-		if (await this.serviceCxperiumMessage.checkBusinessHour()) {
+		const isAvailable =
+			await this.serviceCxperiumMessage.checkBusinessHour();
+
+		if (!isAvailable) {
 			const message =
 				await this.serviceCxperiumMessage.getOutsideBusinessHoursMessage(
 					conversation.conversation.cultureCode,
@@ -201,11 +214,13 @@ export default class extends ServiceCxperium {
 			ChatId: id,
 		});
 
+		const lastMessage = conversation.conversation.sessionData[
+			conversation.conversation.sessionData.length - 1
+		] as any['message'];
+
 		await this.serviceCxperiumMessage.sendWhatsappMessage(
 			id,
-			conversation.conversation.sessionData[
-				conversation.conversation.sessionData.length - 2
-			] as any['message'],
+			lastMessage.message,
 			contact.phone,
 		);
 

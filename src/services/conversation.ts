@@ -48,13 +48,19 @@ export default class BaseConversation {
 	}
 
 	public increaseFaultCount(): void {
-		const faultCount: Record<string, unknown> = {
-			key: 'faultCount',
-			value: this.conversation.faultCount + 1,
-		};
+		const faultCount = this.getFaultCount();
+		this.setCache('faultCount', faultCount + 1);
+	}
 
-		this.conversation.sessionData.push(faultCount);
-		this.cache.set(`CONVERSATION-${this.contact.phone}`, this.conversation);
+	public setFaultCount(count: number): void {
+		this.setCache('faultCount', count);
+	}
+
+	public getFaultCount(): number {
+		const faultCount = this.getCache('faultCount');
+
+		if (faultCount) return faultCount;
+		else return 1;
 	}
 
 	public getCache(key: string): any {
@@ -65,7 +71,7 @@ export default class BaseConversation {
 		}
 	}
 
-	public setCache(key: string, value: string): void {
+	public setCache(key: string, value: any): void {
 		if (!key || typeof key != 'string' || String(key).length == 0) return;
 
 		this.conversation.cache[key || 'NULL'] = value || '';

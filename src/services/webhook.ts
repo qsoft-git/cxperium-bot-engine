@@ -5,9 +5,6 @@ import { Request } from 'express';
 import { TCxperiumContact } from '../types/cxperium/contact';
 import { TAppLocalsServices } from '../types/base-dialog';
 
-// Datas.
-import DataGeneral from '../data/general';
-
 export default class {
 	req!: Request;
 	contact!: TCxperiumContact;
@@ -24,7 +21,7 @@ export default class {
 				? this.req.body.status
 				: this.req.body.event_status;
 
-			const contactId = this.req.body.contact.contactId;
+			const contactId = this.req.body.contactId;
 			let contact: any;
 
 			if (contactId)

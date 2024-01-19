@@ -67,12 +67,14 @@ export default class extends ServiceCxperium {
 
 	async updateContactConversationDateByContactId(contactId: string) {
 		try {
+			const date = new Date();
+
 			const body = {
-				lastConversationDate: Date.now,
+				lastConversationDate: date.toISOString(),
 			};
 
 			await fetch(`${this.baseUrl}/api/contacts/${contactId}`, {
-				method: 'put',
+				method: 'PUT',
 				body: JSON.stringify(body),
 				headers: {
 					'content-type': 'application/json',
@@ -282,7 +284,7 @@ export default class extends ServiceCxperium {
 		contact: TCxperiumContact,
 		attributes: object,
 	) {
-		const body: Record<string, any> = {};
+		const body: Record<string, any> = { custom: {} };
 
 		if (attributes) {
 			for (const [key, value] of Object.entries(attributes)) {
@@ -342,7 +344,7 @@ export default class extends ServiceCxperium {
 			custom: {},
 		};
 
-		body['custom']['IsLiveTransfer'] = status;
+		body['custom']['IsCxLiveTransfer'] = status;
 
 		await fetch(`${this.baseUrl}/api/contacts/${contact._id}`, {
 			method: 'PUT',

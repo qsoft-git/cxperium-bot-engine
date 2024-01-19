@@ -46,7 +46,7 @@ export default class extends ServiceCxperium {
 			},
 		}).then((response) => response.json())) as any;
 
-		return response.data.message[cultureCode];
+		return response.data?.message[cultureCode];
 	}
 
 	async redirectWpMessage(message: object) {

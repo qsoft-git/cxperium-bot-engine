@@ -52,7 +52,7 @@ export default class extends ServiceCxperium {
 	async create(contactId: string) {
 		const body = { contactId: contactId };
 		const response = (await fetch(`${this.baseUrl}/api/chat`, {
-			method: 'GET',
+			method: 'POST',
 			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
