@@ -43,6 +43,7 @@ export default class extends ServiceCxperium {
 	async isSurveyTransfer(dialog: any) {
 		const activity = dialog.activity;
 		const contact = dialog.contact;
+		const conversation: BaseConversation = dialog.conversation;
 		const services: TAppLocalsServices = dialog.services;
 		const customAttributes = dialog.contact.custom as any;
 
@@ -65,24 +66,19 @@ export default class extends ServiceCxperium {
 						msg.includes('cxperium_ticket_')
 					) {
 						const ticketId: string = msg.split('_')[2];
-						// TODO
+						conversation.setCache('ticketId', ticketId);
 						dialog.runWithIntentName(
 							this,
-							'CXPerium.Dialogs.WhatsApp.WelcomeDialog',
+							'CXPerium.Dialogs.WhatsApp.System.TicketResponseDialog',
 						);
-						// new TicketResponseDialog(
-						// 	contact,
-						// 	activity,
-						// 	conversation
-						// ).RunDialogByTicketId(ticketId);
 					} else {
-						// TODO
-						// new CxperiumCatchDialog(
-						// 	contact,
-						// 	activity,
-						// 	conversation
-						// ).RedirectMessage();
-						// CxContact.UpdateCxTransfer(contact, true);
+						services.cxperium.message.redirectWpMessage(
+							dialog.activity.message,
+						);
+						await this.serviceCxperiumContact.updateSurveyTransferStatus(
+							dialog.contact,
+							true,
+						);
 					}
 				}
 
