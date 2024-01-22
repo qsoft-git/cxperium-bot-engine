@@ -22,23 +22,24 @@ export default class extends ServiceCxperium {
 			contactId: contactId,
 			message: message,
 			subject: subject,
+			tags: [],
 		};
 
 		if (tags && tags.length > 0) {
 			body['tags'] = tags;
 		}
 
-		const response = (await fetch(this.baseUrl + '/api/ticket', {
+		const response = (await fetch(`${this.baseUrl}/api/ticket`, {
 			method: 'POST',
-			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
 				apikey: this.apiKey,
 			},
-		}).then((response) => response.json)) as any;
+			body: JSON.stringify(body),
+		}).then((response) => response.json())) as any;
 
 		if (response.status == 201) {
-			return response.data.data.ticketId;
+			return response.data.ticketId;
 		}
 
 		console.error(`${body} has a problem creating ticket.`);
