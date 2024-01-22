@@ -58,8 +58,8 @@ export default class extends ServiceCxperium {
 			if (activity.type === 'interactive') {
 				if (activity.value.id) {
 					const msg = activity.value.id
-						? activity.value.payload
-						: activity.value.id;
+						? activity.value.id
+						: activity.value.payload;
 
 					if (
 						msg.includes('pollbot_ticket_') ||
@@ -72,9 +72,7 @@ export default class extends ServiceCxperium {
 							'CXPerium.Dialogs.WhatsApp.System.TicketResponseDialog',
 						);
 					} else {
-						services.cxperium.message.redirectWpMessage(
-							dialog.activity.message,
-						);
+						this.startSurvey(msg, contact, dialog);
 						await this.serviceCxperiumContact.updateSurveyTransferStatus(
 							dialog.contact,
 							true,
