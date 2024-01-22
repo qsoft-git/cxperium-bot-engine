@@ -33,7 +33,7 @@ export default class extends ServiceCxperium {
 			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
-				apiKey: this.apiKey,
+				apikey: this.apiKey,
 			},
 		}).then((response) => response.json)) as any;
 
@@ -57,7 +57,7 @@ export default class extends ServiceCxperium {
 				body: JSON.stringify(body),
 				headers: {
 					'content-type': 'application/json',
-					apiKey: this.apiKey,
+					apikey: this.apiKey,
 				},
 			},
 		);
