@@ -21,7 +21,9 @@ export default class {
 				? this.req.body.status
 				: this.req.body.event_status;
 
-			const contactId = this.req.body.contactId;
+			const contactId = this.req.body.contactId
+				? this.req.body.contactId
+				: this.req.body.contact.contactId;
 			let contact: any;
 
 			if (contactId)

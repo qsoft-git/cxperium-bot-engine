@@ -72,7 +72,7 @@ export default class extends ServiceCxperium {
 							'CXPerium.Dialogs.WhatsApp.System.TicketResponseDialog',
 						);
 					} else {
-						this.startSurvey(msg, contact, dialog);
+						await this.startSurvey(msg, contact, dialog);
 						await this.serviceCxperiumContact.updateSurveyTransferStatus(
 							dialog.contact,
 							true,
@@ -92,6 +92,8 @@ export default class extends ServiceCxperium {
 				return true;
 			}
 		}
+
+		return false;
 	}
 
 	async startSurvey(
