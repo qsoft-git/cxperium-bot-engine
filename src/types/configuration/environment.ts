@@ -5,6 +5,7 @@ import { TGdprConfig } from './gdpr';
 import { TCxperiumLiveConfig } from './live';
 import { TWhatsappConfig } from './whatsapp';
 import { TBotFrameworkConfig } from './botframework';
+import { TEnterpriseChatGPTConfig } from './enterpriseChatGPT';
 
 export type TCxperiumEnvironment = {
 	whatsappConfig: TWhatsappConfig;
@@ -14,5 +15,6 @@ export type TCxperiumEnvironment = {
 	gdprConfig: TGdprConfig;
 	automateConfig: TAutomateConfig;
 	botframeworkConfig: TBotFrameworkConfig;
+	enterpriseChatgptConfig: TEnterpriseChatGPTConfig;
 	extraFields: Record<string, unknown>;
 };

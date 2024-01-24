@@ -92,6 +92,18 @@ export default class {
 			return;
 		}
 
+		if (prediction.isMatch && prediction.chatgptMessage) {
+			if (dialog.place == 'WHATSAPP') {
+				await dialog.services.whatsapp.message.sendRegularMessage(
+					dialog.contact.phone,
+					prediction.chatgptMessage,
+				);
+			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
+				await dialog.context.sendActivity(prediction.chatgptMessage);
+			}
+			return;
+		}
+
 		if (prediction.isMatch && prediction.intent) {
 			let findOneDialog;
 
@@ -234,7 +246,22 @@ export default class {
 
 		if (!prediction.isMatch && Boolean(env.chatgptConfig.IsEnabled)) {
 			const chatgptService = new ServiceChatGPT(services);
-			prediction = await chatgptService.chatGPTMatch(activity);
+			prediction = await chatgptService.chatGPTMatch(
+				activity,
+				env.chatgptConfig,
+			);
+		}
+
+		if (
+			!prediction.isMatch &&
+			Boolean(env.enterpriseChatgptConfig.IsEnabled)
+		) {
+			const chatgptService = new ServiceChatGPT(services);
+			prediction = await chatgptService.enterpriseChatGPTMatch(
+				activity,
+				activity.from,
+				env.enterpriseChatgptConfig,
+			);
 		}
 
 		return prediction;

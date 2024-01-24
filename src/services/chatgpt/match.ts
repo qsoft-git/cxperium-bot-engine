@@ -9,7 +9,10 @@ export default class {
 		this.services = services;
 	}
 
-	public async chatGPTMatch(text: string): Promise<TIntentPrediction> {
+	public async chatGPTMatch(
+		text: string,
+		chatgptConfig: any,
+	): Promise<TIntentPrediction> {
 		const prediction: TIntentPrediction = {
 			isMatch: false,
 			type: 'CHATGPT',
@@ -17,11 +20,6 @@ export default class {
 			fulfillment: null,
 			chatgptMessage: null,
 		};
-		const chatgptConfig = (
-			await this.services.cxperium.configuration.execute()
-		).chatgptConfig;
-
-		if (!chatgptConfig.IsEnabled) return prediction;
 
 		const openai = new OpenAI({
 			apiKey: chatgptConfig.APIKey,
@@ -35,6 +33,48 @@ export default class {
 		if (completion.choices && completion.choices.length > 0) {
 			prediction.isMatch = true;
 			prediction.chatgptMessage = completion.choices[0].message?.content;
+		}
+
+		return prediction;
+	}
+
+	public async enterpriseChatGPTMatch(
+		text: string,
+		client: any,
+		enterpriseChatgptConfig: any,
+	): Promise<TIntentPrediction> {
+		const prediction: TIntentPrediction = {
+			isMatch: false,
+			type: 'CHATGPT',
+			intent: null,
+			fulfillment: null,
+			chatgptMessage: null,
+		};
+
+		const body = {
+			question: text,
+			response: ['TEXT'],
+		};
+
+		const auth = `Basic ${Buffer.from(
+			`${enterpriseChatgptConfig.Username}:${enterpriseChatgptConfig.Password}`,
+		).toString('base64')}`;
+
+		const response = (await fetch(
+			`${enterpriseChatgptConfig.URL}/api/chat/${client}`,
+			{
+				method: 'POST',
+				headers: {
+					Authorization: auth,
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify(body),
+			},
+		).then((response) => response.json())) as any;
+
+		if (response) {
+			prediction.isMatch = true;
+			prediction.chatgptMessage = response.text;
 		}
 
 		return prediction;

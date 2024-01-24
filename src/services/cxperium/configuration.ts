@@ -22,6 +22,7 @@ import { TCxperiumLiveConfig } from '../../types/configuration/live';
 import { TDialogflowConfig } from '../../types/configuration/dialogflow';
 import { TGdprConfig } from '../../types/configuration/gdpr';
 import { TBotFrameworkConfig } from '../../types/configuration/botframework';
+import { TEnterpriseChatGPTConfig } from '../../types/configuration/enterpriseChatGPT';
 
 export default class extends ServiceCxperium {
 	private cache = DataGeneral.cache;
@@ -42,6 +43,8 @@ export default class extends ServiceCxperium {
 		const chatgptConfig: TChatGPTConfig = allEnv.ChatGPTConfig;
 		const liveConfig: TCxperiumLiveConfig = allEnv.CxperiumLiveConfig;
 		const dialogflowConfig: TDialogflowConfig = allEnv.DialogFlowConfig;
+		const enterpriseChatGPTConfig: TEnterpriseChatGPTConfig =
+			allEnv.EnterpriseChatGptConfig;
 		const gdprConfig: TGdprConfig = allEnv.GdprConfig;
 		const botframeworkConfig: TBotFrameworkConfig = allEnv.TeamsConfig;
 		const extraFields: Record<string, unknown> = {};
@@ -66,6 +69,7 @@ export default class extends ServiceCxperium {
 			gdprConfig: gdprConfig,
 			whatsappConfig: whatsappConfig,
 			botframeworkConfig: botframeworkConfig,
+			enterpriseChatgptConfig: enterpriseChatGPTConfig,
 			extraFields: extraFields,
 		};
 
@@ -96,6 +100,11 @@ export default class extends ServiceCxperium {
 		if (!result.ChatGPTConfig) {
 			throw new Error(
 				'ChatGPTConfig is required to continue to run this project',
+			);
+		}
+		if (!result.EnterpriseChatGptConfig) {
+			throw new Error(
+				'Enterprise ChatGpt Config is required to continue to run this project',
 			);
 		}
 		if (!result.GdprConfig) {
