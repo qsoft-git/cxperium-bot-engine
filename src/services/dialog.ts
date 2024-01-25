@@ -233,6 +233,7 @@ export default class {
 			prediction.intent = intentParams.name;
 			prediction.isMatch = true;
 			prediction.type = 'REGEX';
+			return prediction;
 		}
 
 		if (!prediction.isMatch && Boolean(env.dialogflowConfig.IsEnable)) {
