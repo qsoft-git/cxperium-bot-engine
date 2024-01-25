@@ -45,7 +45,7 @@ export default class extends ServiceCxperium {
 			intents.push(int);
 		}
 
-		this.cache.set('all-intents', intents, 1000);
+		this.cache.set('all-intents', intents);
 		console.info('Intents found and cached');
 		return intents;
 	}
