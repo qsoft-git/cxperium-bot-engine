@@ -1,5 +1,5 @@
 // Environment.
-const { NODE_ENV } = process.env;
+const { NODE_ENV, RESET_KEY } = process.env;
 
 // Node modules.
 import * as fs from 'fs';
@@ -216,6 +216,11 @@ export default class {
 			else activity = dialog.activity.text;
 		} else {
 			throw new Error('RUN DIALOG: NOT FOUND PLACE!!!');
+		}
+
+		if (RESET_KEY && RESET_KEY == activity) {
+			console.log('!!! Server shutdown request sent !!!');
+			process.exit(137);
 		}
 
 		const cxperiumAllIntents = services.cxperium.intent.cache.get(
