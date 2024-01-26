@@ -58,7 +58,7 @@ export default class {
 		try {
 			await this.initEntryPoint();
 		} catch (error: any) {
-			if (error?.message === 'end-conversation') {
+			if (error?.message === 'end') {
 				return;
 			}
 		}
@@ -88,8 +88,8 @@ export default class {
 				'CXPerium.Dialogs.Webchat.Entry',
 			);
 		} catch (error: any) {
-			if (error?.message === 'end-conversation') {
-				throw new Error('end-conversation');
+			if (error?.message === 'end') {
+				throw new Error('end');
 			}
 			console.error(
 				'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel file.',
