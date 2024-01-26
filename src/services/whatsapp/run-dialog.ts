@@ -61,7 +61,13 @@ export default class {
 		this.initCxperiumMessage();
 
 		// Init EntryPoint.
-		await this.initEntryPoint();
+		try {
+			await this.initEntryPoint();
+		} catch (error: any) {
+			if (error?.message === 'end-conversation') {
+				return;
+			}
+		}
 
 		if (await this.services.cxperium.transfer.isSurveyTransfer(this)) {
 			if (!customAttributes.IsKvkkApproved) {
@@ -98,6 +104,9 @@ export default class {
 				'CXPerium.Dialogs.WhatsApp.Entry',
 			);
 		} catch (error: any) {
+			if (error?.message === 'end-conversation') {
+				throw new Error('end-conversation');
+			}
 			console.error(
 				'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel file.',
 			);

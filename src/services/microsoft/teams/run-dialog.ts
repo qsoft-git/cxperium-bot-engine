@@ -47,7 +47,13 @@ export default class {
 			await this.services.cxperium.session.getConversationMicrosoft(this);
 
 		// Init EntryPoint.
-		await this.initEntryPoint();
+		try {
+			await this.initEntryPoint();
+		} catch (error: any) {
+			if (error?.message === 'end-conversation') {
+				return;
+			}
+		}
 
 		const customAttributes = this.contact.custom as any;
 
@@ -74,8 +80,11 @@ export default class {
 				'CXPerium.Dialogs.Teams.Entry',
 			);
 		} catch (error: any) {
+			if (error?.message === 'end-conversation') {
+				throw new Error('end-conversation');
+			}
 			console.error(
-				'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel folder.',
+				'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel file.',
 			);
 			process.exit(137);
 		}
