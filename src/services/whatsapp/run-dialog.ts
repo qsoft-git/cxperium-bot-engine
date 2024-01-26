@@ -30,7 +30,7 @@ export default class {
 
 	async execute(): Promise<void> {
 		// Init activity.
-		this.initActivity();
+		await this.initActivity();
 
 		// Init activity text.
 		const text = this.activity.text;
@@ -87,7 +87,7 @@ export default class {
 		!conversationCheck && (await this.services.dialog.runWithMatch(this));
 	}
 
-	private initActivity(): void {
+	private async initActivity(): Promise<void> {
 		const data = this.req.body.messages[0];
 		const type = data.type;
 
@@ -139,13 +139,23 @@ export default class {
 		} else if (type == 'image') {
 			schemaActivity.type = 'image';
 			schemaActivity.image.id = data.image.id;
-			schemaActivity.image.mimeType = data.image.mimeType;
+			schemaActivity.image.mimeType = data.image.mime_type;
 			schemaActivity.image.sha256 = data.image.sha256;
+			schemaActivity.image.byteContent =
+				await this.services.whatsapp.media.getMediaWithId(
+					data.image.id,
+					data.image.mime_type,
+				);
 		} else if (type == 'document') {
 			schemaActivity.type = 'document';
 			schemaActivity.document.id = data.document.id;
-			schemaActivity.document.mimeType = data.document.mimeType;
+			schemaActivity.document.mimeType = data.document.mime_type;
 			schemaActivity.document.sha256 = data.document.sha256;
+			schemaActivity.document.byteContent =
+				await this.services.whatsapp.media.getMediaWithId(
+					data.document.id,
+					data.document.mime_type,
+				);
 		}
 
 		this.activity = schemaActivity;

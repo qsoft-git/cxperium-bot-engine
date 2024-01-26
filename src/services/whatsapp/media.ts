@@ -14,6 +14,11 @@ export default class extends ServiceWhatsApp {
 		return await this.uploadFileRequest(media, contentType, 'v1/media');
 	}
 
+	public async getMediaWithId(id: string, mimeType: string) {
+		const fileContent = await this.getFileRequest(id, mimeType);
+		return fileContent;
+	}
+
 	public async uploadMediaWithUrl(
 		url: string,
 		mimetype: string,

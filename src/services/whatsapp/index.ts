@@ -1,4 +1,5 @@
 // Services.
+import { FieldType } from 'botbuilder';
 import ServiceCxperiumConfiguration from '../cxperium/configuration';
 
 export default class {
@@ -10,6 +11,21 @@ export default class {
 
 	public get configuration(): ServiceCxperiumConfiguration {
 		return this.CONFIGURATION;
+	}
+
+	public async getFileRequest(fileId: string, contentType: string) {
+		const env = await this.configuration.execute();
+		const url = env.whatsappConfig.wabaUrl.replace('-sandbox', '');
+
+		const response = (await fetch(`${url}/v1/media/${fileId}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': contentType,
+				'D360-API-KEY': env.whatsappConfig.key,
+			},
+		}).then((response) => response.arrayBuffer())) as any;
+
+		return response;
 	}
 
 	public async uploadFileRequest(
