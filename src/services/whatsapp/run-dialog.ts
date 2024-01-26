@@ -60,6 +60,9 @@ export default class {
 		// Init cxperium message properties
 		this.initCxperiumMessage();
 
+		// Init EntryPoint.
+		await this.initEntryPoint();
+
 		if (await this.services.cxperium.transfer.isSurveyTransfer(this)) {
 			if (!customAttributes.IsKvkkApproved) {
 				await this.services.cxperium.contact.updateGdprApprovalStatus(
@@ -85,6 +88,21 @@ export default class {
 			await this.services.dialog.runWithConversationWaitAction(this);
 
 		!conversationCheck && (await this.services.dialog.runWithMatch(this));
+	}
+
+	private async initEntryPoint(): Promise<void> {
+		try {
+			// Init custom needs dialog.
+			await this.services.dialog.runWithIntentName(
+				this,
+				'CXPerium.Dialogs.WhatsApp.Entry',
+			);
+		} catch (error: any) {
+			console.error(
+				'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel file.',
+			);
+			process.exit(137);
+		}
 	}
 
 	private async initActivity(): Promise<void> {

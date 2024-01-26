@@ -46,6 +46,9 @@ export default class {
 		this.conversation =
 			await this.services.cxperium.session.getConversationMicrosoft(this);
 
+		// Init EntryPoint.
+		await this.initEntryPoint();
+
 		const customAttributes = this.contact.custom as any;
 
 		const isGdprActive = (
@@ -61,6 +64,21 @@ export default class {
 		}
 
 		await this.services.dialog.runWithMatch(this);
+	}
+
+	private async initEntryPoint(): Promise<void> {
+		try {
+			// Init custom needs dialog.
+			await this.services.dialog.runWithIntentName(
+				this,
+				'CXPerium.Dialogs.Teams.Entry',
+			);
+		} catch (error: any) {
+			console.error(
+				'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel folder.',
+			);
+			process.exit(137);
+		}
 	}
 
 	private initActivity(): void {
