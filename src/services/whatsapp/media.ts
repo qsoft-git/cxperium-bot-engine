@@ -7,7 +7,10 @@ export default class extends ServiceWhatsApp {
 		super(params);
 	}
 
-	public async uploadMedia(media: Buffer, contentType: string): Promise<any> {
+	private async uploadMedia(
+		media: Buffer,
+		contentType: string,
+	): Promise<any> {
 		return await this.uploadFileRequest(media, contentType, 'v1/media');
 	}
 
@@ -21,26 +24,36 @@ export default class extends ServiceWhatsApp {
 		return mediaId;
 	}
 
-	public async sendDocumentWithUrl(to: string, url: string): Promise<any> {
+	public async sendDocumentWithUrl(
+		to: string,
+		filename: string,
+		url: string,
+	): Promise<any> {
 		const body = {
 			recipient_type: 'individual',
 			to: to,
 			type: 'document',
 			document: {
 				link: url,
+				filename: filename,
 			},
 		};
 
 		return await this.wpRequest(body, 'v1/messages');
 	}
 
-	public async sendImageWithUrl(to: string, url: string): Promise<any> {
+	public async sendImageWithUrl(
+		to: string,
+		filename: string,
+		url: string,
+	): Promise<any> {
 		const body = {
 			recipient_type: 'individual',
 			to: to,
 			type: 'image',
 			image: {
 				link: url,
+				filename: filename,
 			},
 		};
 

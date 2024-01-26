@@ -114,6 +114,26 @@ export default class {
 		return msg;
 	}
 
+	public async sendImageWithUrl(filename: string, url: string) {
+		const msg = await this.services.whatsapp.media.sendImageWithUrl(
+			this.contact.phone,
+			filename,
+			url,
+		);
+
+		return msg;
+	}
+
+	public async sendDocumentWithUrl(filename: string, url: string) {
+		const msg = await this.services.whatsapp.media.sendDocumentWithUrl(
+			this.contact.phone,
+			filename,
+			url,
+		);
+
+		return msg;
+	}
+
 	public async sendSurvey(surveyId: string) {
 		await this.services.cxperium.transfer.startSurvey(
 			surveyId,
