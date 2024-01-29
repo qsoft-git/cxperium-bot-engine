@@ -17,6 +17,15 @@ export type TImageMessage = {
 	};
 };
 
+export type TLocationMessage = {
+	from: string;
+	type: 'location';
+	image: {
+		latitude: string;
+		longitude: string;
+	};
+};
+
 export type TDocumentMessage = {
 	from: string;
 	type: 'document';
@@ -54,6 +63,10 @@ export type TActivity = {
 		byteContent: Buffer;
 		mimeType: string;
 		sha256: string;
+	};
+	location: {
+		longitude: string;
+		latitude: string;
 	};
 	image: {
 		id: string;

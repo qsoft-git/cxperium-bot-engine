@@ -9,6 +9,7 @@ import {
 	TImageMessage,
 	TDocumentMessage,
 	TInteractiveMessage,
+	TLocationMessage,
 } from '../../types/whatsapp/activity';
 
 export default class {
@@ -123,7 +124,8 @@ export default class {
 			| TTextMessage
 			| TImageMessage
 			| TDocumentMessage
-			| TInteractiveMessage = {
+			| TInteractiveMessage
+			| TLocationMessage = {
 			from: data.from,
 			message: this.req.body,
 			userProfileName: '',
@@ -134,6 +136,10 @@ export default class {
 				byteContent: Buffer.from(''),
 				mimeType: '',
 				sha256: '',
+			},
+			location: {
+				latitude: '',
+				longitude: '',
 			},
 			image: {
 				id: '',
@@ -183,6 +189,10 @@ export default class {
 					data.document.id,
 					data.document.mime_type,
 				);
+		} else if (type == 'location') {
+			schemaActivity.type = 'location';
+			schemaActivity.location.latitude = data.location.latitude;
+			schemaActivity.location.longitude = data.location.longitude;
 		}
 
 		this.activity = schemaActivity;
