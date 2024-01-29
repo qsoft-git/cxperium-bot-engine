@@ -12,6 +12,8 @@ import {
 	TButtonAction,
 	TListAction,
 	TDefaultButton,
+	TMultiProductMessage,
+	TMultiProductSection,
 } from '../../types/whatsapp/message';
 
 export default class extends ServiceWhatsApp {
@@ -182,6 +184,70 @@ export default class extends ServiceWhatsApp {
 			image: {
 				id: imageId,
 				caption: caption,
+			},
+		};
+
+		return await this.wpRequest(msg, 'v1/messages');
+	}
+
+	public async sendProductMessage(
+		to: string,
+		body: string,
+		footer: string | null,
+		catalogId: string,
+		productRetailerId: string,
+	) {
+		const msg = {
+			recipient_type: 'individual',
+			to,
+			type: 'interactive',
+			interactive: {
+				type: 'product',
+				body: {
+					text: body,
+				},
+				footer: {
+					text: footer,
+				},
+				action: {
+					catalog_id: catalogId,
+					product_retailer_id: productRetailerId,
+				},
+			},
+		};
+
+		return await this.wpRequest(msg, 'v1/messages');
+	}
+
+	public async sendMultiProductMessage(
+		to: string,
+		header: string | null,
+		body: string,
+		footer: string | null,
+		catalogId: string,
+		sections: TMultiProductSection[],
+	) {
+		const msg: TMultiProductMessage = {
+			messaging_product: 'whatsapp',
+			recipient_type: 'individual',
+			to: to,
+			type: 'interactive',
+			interactive: {
+				type: 'product_list',
+				header: {
+					type: 'text',
+					text: header,
+				},
+				body: {
+					text: body,
+				},
+				footer: {
+					text: footer,
+				},
+				action: {
+					catalog_id: catalogId,
+					sections: sections,
+				},
 			},
 		};
 

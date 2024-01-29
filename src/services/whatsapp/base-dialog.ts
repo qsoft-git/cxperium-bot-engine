@@ -9,7 +9,11 @@ import {
 
 // Services.
 import BaseConversation from '../conversation';
-import { TButton, TRow } from '../../types/whatsapp/message';
+import {
+	TButton,
+	TMultiProductSection,
+	TRow,
+} from '../../types/whatsapp/message';
 
 export default class {
 	contact: TCxperiumContact;
@@ -150,5 +154,37 @@ export default class {
 			);
 
 		return localization;
+	}
+
+	public async sendSingleProductMessage(
+		body: string,
+		footer: string | null,
+		catalogId: string,
+		productRetailerId: string,
+	) {
+		return await this.services.whatsapp.message.sendProductMessage(
+			this.contact.phone,
+			body,
+			footer,
+			catalogId,
+			productRetailerId,
+		);
+	}
+
+	public async sendMultiProductMessage(
+		header: string | null,
+		body: string,
+		footer: string | null,
+		catalogId: string,
+		sections: TMultiProductSection[],
+	) {
+		return await this.services.whatsapp.message.sendMultiProductMessage(
+			this.contact.phone,
+			header,
+			body,
+			footer,
+			catalogId,
+			sections,
+		);
 	}
 }

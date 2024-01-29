@@ -18,6 +18,58 @@ type TWpInteractiveButtonMessage = {
 	};
 };
 
+type TSingleProductMessage = {
+	recipient_type: 'individual';
+	to: string;
+	type: 'interactive';
+	interactive: {
+		type: 'product';
+		body: {
+			text: string;
+		};
+		footer: {
+			text: string | null;
+		};
+		action: {
+			catalog_id: string;
+			product_retailer_id: string;
+		};
+	};
+};
+
+type TMultiProductMessage = {
+	messaging_product: 'whatsapp';
+	recipient_type: 'individual';
+	to: string;
+	type: 'interactive';
+	interactive: {
+		type: 'product_list';
+		header: {
+			type: 'text';
+			text: string | null;
+		};
+		body: {
+			text: string;
+		};
+		footer: {
+			text: string | null;
+		};
+		action: {
+			catalog_id: string;
+			sections: TMultiProductSection[];
+		};
+	};
+};
+
+type TMultiProductSection = {
+	title: string;
+	products_items: TProductItem[];
+};
+
+type TProductItem = {
+	product_retailer_id: string;
+};
+
 type TWpInteractiveListMessage = {
 	recipient_type: 'individual';
 	to: string;
@@ -80,4 +132,7 @@ export {
 	TSection,
 	TButtonAction,
 	TListAction,
+	TMultiProductMessage,
+	TSingleProductMessage,
+	TMultiProductSection,
 };
