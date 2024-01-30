@@ -13,6 +13,7 @@ import {
 	TButton,
 	TMultiProductSection,
 	TRow,
+	TSection,
 } from '../../types/whatsapp/message';
 
 export default class {
@@ -86,6 +87,7 @@ export default class {
 		message: string,
 		buttonTitle: string,
 		rows: TRow[],
+		sections: TSection[],
 	) {
 		const msg = await this.services.whatsapp.message.sendListMessage(
 			this.contact.phone,
@@ -94,6 +96,7 @@ export default class {
 			message,
 			buttonTitle,
 			rows,
+			sections,
 		);
 
 		return msg;
