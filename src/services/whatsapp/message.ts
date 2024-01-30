@@ -190,7 +190,7 @@ export default class extends ServiceWhatsApp {
 		return await this.wpRequest(msg, 'v1/messages');
 	}
 
-	public async sendProductMessage(
+	public async sendSingleProductMessage(
 		to: string,
 		body: string,
 		footer: string | null,

@@ -162,7 +162,7 @@ export default class {
 		catalogId: string,
 		productRetailerId: string,
 	) {
-		return await this.services.whatsapp.message.sendProductMessage(
+		return await this.services.whatsapp.message.sendSingleProductMessage(
 			this.contact.phone,
 			body,
 			footer,
