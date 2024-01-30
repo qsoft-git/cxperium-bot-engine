@@ -119,13 +119,14 @@ export default class extends ServiceWhatsApp {
 		message: string,
 		buttonTitle: string,
 		rows: TRow[],
+		sections: TSection[],
 	) {
-		const sections: TSection[] = [{ title: '', rows: rows }];
-
 		const listAction: TListAction = {
 			button: buttonTitle,
-			sections: sections,
+			sections: [],
 		};
+
+		if (sections) listAction.sections = sections;
 
 		const msg: TWpInteractiveListMessage = {
 			recipient_type: 'individual',
