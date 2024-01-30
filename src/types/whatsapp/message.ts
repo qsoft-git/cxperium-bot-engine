@@ -63,7 +63,7 @@ type TMultiProductMessage = {
 
 type TMultiProductSection = {
 	title: string;
-	products_items: TProductItem[];
+	product_items: TProductItem[];
 };
 
 type TProductItem = {
