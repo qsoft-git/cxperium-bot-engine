@@ -119,14 +119,49 @@ export default class extends ServiceWhatsApp {
 		message: string,
 		buttonTitle: string,
 		rows: TRow[],
+	) {
+		const sections: TSection[] = [{ title: '', rows: rows }];
+
+		const listAction: TListAction = {
+			button: buttonTitle,
+			sections: sections,
+		};
+
+		const msg: TWpInteractiveListMessage = {
+			recipient_type: 'individual',
+			to,
+			type: 'interactive',
+			interactive: {
+				header: {
+					type: 'text',
+					text: header,
+				},
+				body: {
+					text: message,
+				},
+				footer: {
+					text: footer,
+				},
+				type: 'list',
+				action: listAction,
+			},
+		};
+
+		return await this.wpRequest(msg, 'v1/messages');
+	}
+
+	public async sendListMessageWithSection(
+		to: string,
+		header: string,
+		footer: string,
+		message: string,
+		buttonTitle: string,
 		sections: TSection[],
 	) {
 		const listAction: TListAction = {
 			button: buttonTitle,
-			sections: [],
+			sections: sections,
 		};
-
-		if (sections) listAction.sections = sections;
 
 		const msg: TWpInteractiveListMessage = {
 			recipient_type: 'individual',

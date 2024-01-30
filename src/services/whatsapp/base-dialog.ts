@@ -87,7 +87,6 @@ export default class {
 		message: string,
 		buttonTitle: string,
 		rows: TRow[],
-		sections: TSection[],
 	) {
 		const msg = await this.services.whatsapp.message.sendListMessage(
 			this.contact.phone,
@@ -96,8 +95,27 @@ export default class {
 			message,
 			buttonTitle,
 			rows,
-			sections,
 		);
+
+		return msg;
+	}
+
+	public async sendListMessageWithSection(
+		header: string,
+		footer: string,
+		message: string,
+		buttonTitle: string,
+		sections: TSection[],
+	) {
+		const msg =
+			await this.services.whatsapp.message.sendListMessageWithSection(
+				this.contact.phone,
+				header,
+				footer,
+				message,
+				buttonTitle,
+				sections,
+			);
 
 		return msg;
 	}
