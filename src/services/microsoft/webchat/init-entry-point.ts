@@ -2,12 +2,12 @@ export default async (dialog: any) => {
 	try {
 		// Init custom needs dialog.
 		await dialog.services.dialog.runWithIntentName(
-			this,
+			dialog,
 			'CXPerium.Dialogs.Webchat.Entry',
 		);
 
 		await dialog.services.dialog.runWithIntentName(
-			this,
+			dialog,
 			'CXPerium.Dialogs.Webchat.WelcomeDialog',
 		);
 	} catch (error: any) {
