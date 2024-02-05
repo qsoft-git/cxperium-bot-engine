@@ -47,7 +47,7 @@ export default class extends ServiceCxperium {
 		const services: TAppLocalsServices = dialog.services;
 		const customAttributes = dialog.contact.custom as any;
 
-		if (customAttributes.IsCxTransfer) {
+		if (JSON.parse(customAttributes.IsCxTransfer || false)) {
 			services.cxperium.message.redirectWpMessage(
 				dialog.activity.message,
 			);
@@ -132,7 +132,7 @@ export default class extends ServiceCxperium {
 
 		if (!env.cxperiumLiveConfig.IsActive) return false;
 
-		if (customAttributes.IsCxLiveTransfer) {
+		if (JSON.parse(customAttributes.IsCxLiveTransfer || false)) {
 			if (activity.type === 'document') {
 				const base64string = Buffer.from(
 					activity.document.byteContent,

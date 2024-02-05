@@ -309,14 +309,18 @@ export default class {
 	}
 
 	public async run(data: TBaseDialogCtor): Promise<void> {
-		console.info(
-			`RUN DIALOG: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
-		);
+		try {
+			console.info(
+				`RUN DIALOG: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
+			);
 
-		data.conversation.dialogFileParams = data.dialogFileParams;
-		const dialogImport = await import(data.dialogFileParams.path);
-		const dialog = new dialogImport.default(data);
-		await dialog.runDialog();
+			data.conversation.dialogFileParams = data.dialogFileParams;
+			const dialogImport = await import(data.dialogFileParams.path);
+			const dialog = new dialogImport.default(data);
+			await dialog.runDialog();
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	public initList(folderPath: string, type: string): void {
