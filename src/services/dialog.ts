@@ -241,7 +241,7 @@ export default class {
 			return prediction;
 		}
 
-		if (!prediction.isMatch && Boolean(env.dialogflowConfig.IsEnable)) {
+		if (!prediction.isMatch && env.dialogflowConfig.IsEnable) {
 			const df = new ServiceDialogflow(services);
 			prediction = await df.dialogflowMatch(
 				activity,
@@ -250,7 +250,7 @@ export default class {
 			);
 		}
 
-		if (!prediction.isMatch && Boolean(env.chatgptConfig.IsEnabled)) {
+		if (!prediction.isMatch && env.chatgptConfig.IsEnabled) {
 			const chatgptService = new ServiceChatGPT(services);
 			prediction = await chatgptService.chatGPTMatch(
 				activity,
@@ -258,10 +258,7 @@ export default class {
 			);
 		}
 
-		if (
-			!prediction.isMatch &&
-			Boolean(env.enterpriseChatgptConfig.IsEnabled)
-		) {
+		if (!prediction.isMatch && env.enterpriseChatgptConfig.IsEnabled) {
 			const chatgptService = new ServiceChatGPT(services);
 			prediction = await chatgptService.enterpriseChatGPTMatch(
 				activity,
@@ -309,18 +306,14 @@ export default class {
 	}
 
 	public async run(data: TBaseDialogCtor): Promise<void> {
-		try {
-			console.info(
-				`RUN DIALOG: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
-			);
+		console.info(
+			`RUN DIALOG: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
+		);
 
-			data.conversation.dialogFileParams = data.dialogFileParams;
-			const dialogImport = await import(data.dialogFileParams.path);
-			const dialog = new dialogImport.default(data);
-			await dialog.runDialog();
-		} catch (error) {
-			console.log(error);
-		}
+		data.conversation.dialogFileParams = data.dialogFileParams;
+		const dialogImport = await import(data.dialogFileParams.path);
+		const dialog = new dialogImport.default(data);
+		await dialog.runDialog();
 	}
 
 	public initList(folderPath: string, type: string): void {

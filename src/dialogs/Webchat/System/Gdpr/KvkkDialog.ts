@@ -5,6 +5,7 @@ import {
 	ServiceMicrosoftBaseDialog,
 	TBaseDialogCtor,
 } from '../../../../index';
+import initEntryPoint from '../../../../services/whatsapp/init-entry-point';
 
 export default class extends ServiceMicrosoftBaseDialog implements IDialog {
 	constructor(data: TBaseDialogCtor) {
@@ -23,12 +24,14 @@ export default class extends ServiceMicrosoftBaseDialog implements IDialog {
 						true,
 					);
 
-					await this.services.dialog.runWithIntentName(
-						this,
-						'CXPerium.Dialogs.Teams.WelcomeDialog',
-					);
-
-					return;
+					// Init EntryPoint.
+					try {
+						await initEntryPoint(this);
+					} catch (error: any) {
+						if (error?.message === 'end') {
+							return;
+						}
+					}
 				}
 				case 'kvkk_red': {
 					await this.sendMessage(

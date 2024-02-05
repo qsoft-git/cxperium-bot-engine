@@ -13,6 +13,7 @@ import {
 	TInteractiveMessage,
 	TTextMessage,
 } from '../../../types/whatsapp/activity';
+import initEntryPoint from './init-entry-point';
 
 export default class {
 	private services!: TAppLocalsServices;
@@ -46,15 +47,6 @@ export default class {
 		this.conversation =
 			await this.services.cxperium.session.getConversationMicrosoft(this);
 
-		// Init EntryPoint.
-		try {
-			await this.initEntryPoint();
-		} catch (error: any) {
-			if (error?.message === 'end') {
-				return;
-			}
-		}
-
 		const customAttributes = this.contact.custom as any;
 
 		const isGdprActive = (
@@ -69,25 +61,16 @@ export default class {
 			return;
 		}
 
-		await this.services.dialog.runWithMatch(this);
-	}
-
-	private async initEntryPoint(): Promise<void> {
+		// Init EntryPoint.
 		try {
-			// Init custom needs dialog.
-			await this.services.dialog.runWithIntentName(
-				this,
-				'CXPerium.Dialogs.Teams.Entry',
-			);
+			await initEntryPoint(this);
 		} catch (error: any) {
 			if (error?.message === 'end') {
-				throw new Error('end');
+				return;
 			}
-			console.error(
-				'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel file.',
-			);
-			process.exit(137);
 		}
+
+		await this.services.dialog.runWithMatch(this);
 	}
 
 	private initActivity(): void {

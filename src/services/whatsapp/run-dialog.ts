@@ -11,6 +11,7 @@ import {
 	TInteractiveMessage,
 	TLocationMessage,
 } from '../../types/whatsapp/activity';
+import initEntryPoint from './init-entry-point';
 
 export default class {
 	private services!: TAppLocalsServices;
@@ -61,15 +62,6 @@ export default class {
 		// Init cxperium message properties
 		this.initCxperiumMessage();
 
-		// Init EntryPoint.
-		try {
-			await this.initEntryPoint();
-		} catch (error: any) {
-			if (error?.message === 'end') {
-				return;
-			}
-		}
-
 		if (await this.services.cxperium.transfer.isSurveyTransfer(this)) {
 			if (!customAttributes.IsKvkkApproved) {
 				await this.services.cxperium.contact.updateGdprApprovalStatus(
@@ -89,30 +81,21 @@ export default class {
 			return;
 		}
 
+		// Init EntryPoint.
+		try {
+			await initEntryPoint(this);
+		} catch (error: any) {
+			if (error?.message === 'end') {
+				return;
+			}
+		}
+
 		if (await this.services.cxperium.transfer.isLiveTransfer(this)) return;
 
 		const conversationCheck: boolean =
 			await this.services.dialog.runWithConversationWaitAction(this);
 
 		!conversationCheck && (await this.services.dialog.runWithMatch(this));
-	}
-
-	private async initEntryPoint(): Promise<void> {
-		try {
-			// Init custom needs dialog.
-			await this.services.dialog.runWithIntentName(
-				this,
-				'CXPerium.Dialogs.WhatsApp.Entry',
-			);
-		} catch (error: any) {
-			if (error?.message === 'end') {
-				throw new Error('end');
-			}
-			console.error(
-				'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel file.',
-			);
-			process.exit(137);
-		}
 	}
 
 	private async initActivity(): Promise<void> {

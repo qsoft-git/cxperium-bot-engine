@@ -4,6 +4,7 @@ import {
 	ServiceWhatsappBaseDialog,
 	TBaseDialogCtor,
 } from '../../../../index';
+import initEntryPoint from '../../../../services/whatsapp/init-entry-point';
 import { TButton } from '../../../../types/whatsapp/message';
 
 export default class extends ServiceWhatsappBaseDialog implements IDialog {
@@ -28,11 +29,15 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 						);
 
 					if (!isSurveyTransfer) {
-						this.services.dialog.runWithIntentName(
-							this,
-							'CXPerium.Dialogs.WhatsApp.WelcomeDialog',
-						);
-						return;
+						// Init EntryPoint.
+						try {
+							await initEntryPoint(this);
+							return;
+						} catch (error: any) {
+							if (error?.message === 'end') {
+								return;
+							}
+						}
 					}
 
 					break;
@@ -48,6 +53,29 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 					break;
 				}
 			}
+		}
+	}
+
+	private async initEntryPoint(): Promise<void> {
+		try {
+			// Init custom needs dialog.
+			await this.services.dialog.runWithIntentName(
+				this,
+				'CXPerium.Dialogs.WhatsApp.Entry',
+			);
+
+			await this.services.dialog.runWithIntentName(
+				this,
+				'CXPerium.Dialogs.WhatsApp.WelcomeDialog',
+			);
+		} catch (error: any) {
+			if (error?.message === 'end') {
+				throw new Error('end');
+			}
+			console.error(
+				'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel file.',
+			);
+			process.exit(137);
 		}
 	}
 
