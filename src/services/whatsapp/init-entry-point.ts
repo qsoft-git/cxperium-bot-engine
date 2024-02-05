@@ -5,11 +5,6 @@ export default async (dialog: any) => {
 			dialog,
 			'CXPerium.Dialogs.WhatsApp.Entry',
 		);
-
-		await dialog.services.dialog.runWithIntentName(
-			dialog,
-			'CXPerium.Dialogs.WhatsApp.WelcomeDialog',
-		);
 	} catch (error: any) {
 		if (error?.message === 'end') {
 			throw new Error('end');

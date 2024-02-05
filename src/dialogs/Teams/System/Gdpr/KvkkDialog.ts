@@ -5,7 +5,7 @@ import {
 	ServiceMicrosoftBaseDialog,
 	TBaseDialogCtor,
 } from '../../../../index';
-import initEntryPoint from '../../../../services/whatsapp/init-entry-point';
+import initEntryPoint from '../../../../services/microsoft/teams/init-entry-point';
 
 export default class extends ServiceMicrosoftBaseDialog implements IDialog {
 	constructor(data: TBaseDialogCtor) {
@@ -27,6 +27,10 @@ export default class extends ServiceMicrosoftBaseDialog implements IDialog {
 					// Init EntryPoint.
 					try {
 						await initEntryPoint(this);
+						await this.services.dialog.runWithIntentName(
+							this,
+							'CXPerium.Dialogs.Teams.WelcomeDialog',
+						);
 					} catch (error: any) {
 						if (error?.message === 'end') {
 							return;

@@ -32,6 +32,10 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 						// Init EntryPoint.
 						try {
 							await initEntryPoint(this);
+							await this.services.dialog.runWithIntentName(
+								this,
+								'CXPerium.Dialogs.WhatsApp.WelcomeDialog',
+							);
 							return;
 						} catch (error: any) {
 							if (error?.message === 'end') {
