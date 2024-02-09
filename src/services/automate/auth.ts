@@ -7,12 +7,19 @@ import ServiceCxperium from '../cxperium';
 // Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
+// Services.
+import ServiceCxperiumConfiguration from '../cxperium/configuration';
+
 export default class extends ServiceCxperium {
+	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
+		this.serviceCxperiumConfiguration = new ServiceCxperiumConfiguration(
+			data,
+		);
 	}
 
-	public async getAuthToken(this: any): Promise<string> {
+	public async getAuthToken(): Promise<string> {
 		const env = await this.serviceCxperiumConfiguration.execute();
 		const response = (await fetch(`${env.automateConfig.ApiUrl}/login`, {
 			method: 'POST',
