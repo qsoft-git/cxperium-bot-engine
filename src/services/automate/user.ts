@@ -42,7 +42,8 @@ export default class extends ServiceCxperium {
 	public async getUserByPhone(phone: string): Promise<User> {
 		if (!phone.startsWith('+')) phone = '+' + phone;
 
-		const token = 'Bearer' + this.serviceAutomateAuth.getAuthToken();
+		const token =
+			'Bearer' + (await this.serviceAutomateAuth.getAuthToken());
 		const env = await this.serviceCxperiumConfiguration.execute();
 
 		const response = (await fetch(
