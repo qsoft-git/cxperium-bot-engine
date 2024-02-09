@@ -21,12 +21,17 @@ export default class extends ServiceCxperium {
 
 	public async getAuthToken(): Promise<string> {
 		const env = await this.serviceCxperiumConfiguration.execute();
+		const body = {
+			ClientId: env.automateConfig.ClientId,
+			ClientSecret: env.automateConfig.ClientSecret,
+		};
+
 		const response = (await fetch(`${env.automateConfig.ApiUrl}/login`, {
 			method: 'POST',
-			body: JSON.stringify({
-				ClientId: env.automateConfig.ClientId,
-				ClientSecret: env.automateConfig.ClientSecret,
-			}),
+			headers: {
+				'content-type': 'application/json',
+			},
+			body: JSON.stringify(body),
 		}).then((response) => response.json())) as any;
 
 		return response;
