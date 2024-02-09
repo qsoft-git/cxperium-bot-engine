@@ -57,19 +57,5 @@ export default class extends ServiceCxperium {
 		).then((response) => response.json())) as any;
 
 		return response;
-
-		// response.Data.ExtraFields = new Dictionary<string, string>();
-
-		// var dictObj = JObject.FromObject(obj).ToObject<Dictionary<string, object>>();
-		// var modelData = JsonConvert.SerializeObject(response.Data);
-		// var responseObj = JObject.Parse(modelData);
-
-		// foreach (var key in dictObj.Keys)
-		// {
-		//     if (!responseObj.ContainsKey(key))
-		//     {
-		//         response.Data.ExtraFields.Add(key, $"{dictObj[key]}");
-		//     }
-		// }
 	}
 }
