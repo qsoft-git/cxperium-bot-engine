@@ -34,6 +34,6 @@ export default class extends ServiceCxperium {
 			body: JSON.stringify(body),
 		}).then((response) => response.json())) as any;
 
-		return response;
+		return response.token;
 	}
 }
