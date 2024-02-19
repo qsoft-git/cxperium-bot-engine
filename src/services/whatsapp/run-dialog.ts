@@ -192,23 +192,25 @@ export default class {
 		const data = this.req.body.messages[0];
 		const type = data.type;
 
-		if (type === 'interactive') {
-			if (data.interactive.button_reply) {
+		if (type === 'interactive' || type === 'button') {
+			if (data.interactive?.button_reply || data.button.payload) {
 				let msg = '';
-				if (data.interactive.button_reply.payload)
-					msg = data.interactive.button_reply.payload;
-				else if (data.interactive.button_reply.id)
+				if (data.button.payload) {
+					msg = data.button.payload;
+					this.activity.value.id = data.button.payload;
+				} else if (data.interactive.button_reply.id)
 					msg = data.interactive.button_reply.id;
 
 				if (msg.includes('pollbot_') || msg.includes('SID:'))
 					this.activity.isCxperiumMessage = true;
 			}
-			if (data.interactive.list_reply) {
+			if (data?.interactive?.list_reply) {
 				const msg: string = data.interactive.list_reply.id;
 
 				if (msg.includes('SID:'))
 					this.activity.isCxperiumMessage = true;
 			}
+			this.activity.type = 'interactive';
 		}
 
 		if (
