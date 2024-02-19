@@ -48,7 +48,7 @@ export default class extends ServiceCxperium {
 		const customAttributes = dialog.contact.custom as any;
 
 		if (JSON.parse(customAttributes.IsCxTransfer || false)) {
-			services.cxperium.message.redirectWpMessage(
+			await services.cxperium.message.redirectWpMessage(
 				dialog.activity.message,
 			);
 			return true;
@@ -101,6 +101,7 @@ export default class extends ServiceCxperium {
 		contact: TCxperiumContact,
 		dialog: any,
 	) {
+		if (surveyId.includes('pollbot')) surveyId = surveyId.split('_')[1];
 		if (!surveyId.includes('SID')) surveyId = `SID: ${surveyId}`;
 
 		await this.serviceCxperiumContact.updateSurveyTransferStatus(
