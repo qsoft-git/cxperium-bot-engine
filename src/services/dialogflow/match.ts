@@ -59,8 +59,14 @@ export default class {
 				: null;
 
 			const fulfillmentText = queryResult[0].text?.text;
+			const payload =
+				queryResult[1]?.payload?.fields?.intent?.stringValue;
 
-			if (fields) {
+			if (payload) {
+				prediction.isMatch = true;
+				prediction.intent = payload;
+				return prediction;
+			} else if (fields) {
 				const intent = fields.intent.stringValue;
 				prediction.isMatch = true;
 				prediction.intent = intent ? intent : null;
