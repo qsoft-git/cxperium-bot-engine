@@ -29,7 +29,7 @@ export default class extends ServiceCxperium {
 
 	async getAllLanguage(): Promise<TCxperiumLanguage[]> {
 		const cached: TCxperiumLanguage[] | undefined =
-			this.cache.get('GET_ALL_LANGUAGE');
+			this.cache.get('ALL_LANGUAGES');
 
 		if (cached) return cached;
 

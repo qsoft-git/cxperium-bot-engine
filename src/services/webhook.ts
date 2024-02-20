@@ -86,7 +86,7 @@ export default class {
 	}
 
 	private clearLanguageCache(): void {
-		this.services.cxperium.language.cache.del('all-intents');
+		this.services.cxperium.language.cache.del('ALL_LANGUAGES');
 	}
 
 	private clearIntentCache(): void {
