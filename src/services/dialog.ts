@@ -241,6 +241,16 @@ export default class {
 			prediction.intent = intentParams.name;
 			prediction.isMatch = true;
 			prediction.type = 'REGEX';
+
+			await dialog.services.cxperium.report.sendAssistantReport(
+				dialog.activity.from,
+				prediction.intent ? prediction.intent : 'NOT FOUND',
+				dialog.activity.text.length > 1
+					? dialog.activity.text
+					: dialog.activity.value.id,
+				prediction.type ? prediction.type : 'NOT FOUND',
+			);
+
 			return prediction;
 		}
 
@@ -269,6 +279,15 @@ export default class {
 				env.enterpriseChatgptConfig,
 			);
 		}
+
+		await dialog.services.cxperium.report.sendAssistantReport(
+			dialog.activity.from,
+			prediction.intent ? prediction.intent : 'NOT FOUND',
+			dialog.activity.text.length > 1
+				? dialog.activity.text
+				: dialog.activity.value.id,
+			prediction.type ? prediction.type : 'NOT FOUND',
+		);
 
 		return prediction;
 	}

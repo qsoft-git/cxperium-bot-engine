@@ -35,6 +35,7 @@ export default class {
 			prediction.chatgptMessage = completion.choices[0].message?.content;
 		}
 
+		prediction.type = 'CHATGPT';
 		return prediction;
 	}
 
@@ -77,6 +78,7 @@ export default class {
 			prediction.chatgptMessage = response.text;
 		}
 
+		prediction.type = 'CHATGPT';
 		return prediction;
 	}
 }

@@ -65,7 +65,6 @@ export default class {
 			if (payload) {
 				prediction.isMatch = true;
 				prediction.intent = payload;
-				return prediction;
 			} else if (fields) {
 				const intent = fields.intent.stringValue;
 				prediction.isMatch = true;
@@ -76,6 +75,7 @@ export default class {
 			}
 		}
 
+		prediction.type = 'DIALOGFLOW';
 		return prediction;
 	}
 }

@@ -18,29 +18,28 @@ export default class extends ServiceCxperium {
 		messageStr: string,
 		nlpType: string,
 	): Promise<void> {
-		const intentName = intent ? true : '';
-		const body = {
-			phone: phone,
-			intentName: intentName,
-			message: messageStr,
-			nlp: nlpType,
-		};
+		try {
+			const body = {
+				phone: phone,
+				intentName: intent,
+				message: messageStr,
+				nlp: nlpType,
+			};
 
-		const response = await fetch(this.baseUrl + '/api/assistant/report', {
-			method: 'POST',
-			body: JSON.stringify(body),
-			headers: {
-				'content-type': 'application/json',
-				apiKey: this.apiKey,
-			},
-		});
+			await fetch(this.baseUrl + '/api/assistant/report', {
+				method: 'POST',
+				body: JSON.stringify(body),
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
+			});
 
-		if (response && response.status == 201) {
 			console.info('Intent report is sent to Cxperium successfully');
-		} else {
+		} catch (error) {
 			console.info('Problem occurred during sending report to cxperium');
 			console.info(
-				`Phone:${phone}, Intent:${intentName}, Message:${messageStr}, NlpType:${nlpType}`,
+				`Phone:${phone}, Intent:${intent}, Message:${messageStr}, NlpType:${nlpType}`,
 			);
 		}
 	}
