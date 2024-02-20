@@ -226,9 +226,12 @@ export default class {
 			process.exit(137);
 		}
 
-		const cxperiumAllIntents = services.cxperium.intent.cache.get(
+		let cxperiumAllIntents = services.cxperium.intent.cache.get(
 			'all-intents',
 		) as any;
+
+		if (!cxperiumAllIntents)
+			cxperiumAllIntents = await services.cxperium.intent.getAllIntents();
 
 		const channelNumber = CHANNELS[dialog.place] as string;
 		const intentParams = cxperiumAllIntents.find(
