@@ -9,11 +9,9 @@ import mainController from '../controllers/main';
 
 // Import routes.
 import routerApi from './api';
-import routerWebhook from './webhook';
 
 // Routes.
 router.use('/api', routerApi);
-router.use('/webhook', routerWebhook);
 router.get('/error-test', mainController.errorTest);
 router.get('/', mainController.homePage);
 
