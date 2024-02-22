@@ -54,11 +54,11 @@ export default class {
 		const queryResult = response[0].queryResult?.fulfillmentMessages;
 
 		if (queryResult) {
-			const fields = queryResult[0].payload
+			const fields = queryResult[0]?.payload
 				? queryResult[0].payload?.fields
 				: null;
 
-			const fulfillmentText = queryResult[0].text?.text;
+			const fulfillmentText = queryResult[0]?.text?.text;
 			const payload =
 				queryResult[1]?.payload?.fields?.intent?.stringValue;
 
