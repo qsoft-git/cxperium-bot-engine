@@ -11,6 +11,7 @@ import ServiceCxperiumLanguage from '../../services/cxperium/language';
 import ServiceCxperiumMessage from '../../services/cxperium/message';
 import ServiceCxperiumConfiguration from '../../services/cxperium/configuration';
 import ServiceCxperiumTransfer from '../../services/cxperium/transfer';
+import ServiceCxperiumShoppingCart from '../../services/cxperium/shopping-cart';
 
 // Types.
 export type TCxperiumServices = {
@@ -26,6 +27,7 @@ export type TCxperiumServices = {
 	message: ServiceCxperiumMessage;
 	configuration: ServiceCxperiumConfiguration;
 	transfer: ServiceCxperiumTransfer;
+	shoppingCart: ServiceCxperiumShoppingCart;
 };
 
 export type TCxperiumServiceParams = {

@@ -21,6 +21,7 @@ import ServiceCxperiumLanguage from '../services/cxperium/language';
 import ServiceCxperiumMessage from '../services/cxperium/message';
 import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
 import ServiceCxperiumTransfer from '../services/cxperium/transfer';
+import ServiceCxperiumShoppingCart from '../services/cxperium/shopping-cart';
 
 // Export default module.
 export class UtilCxperium implements IUtilsCxperium {
@@ -38,6 +39,7 @@ export class UtilCxperium implements IUtilsCxperium {
 	serviceCxperiumMessage!: ServiceCxperiumMessage;
 	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
 	serviceCxperiumTransfer!: ServiceCxperiumTransfer;
+	serviceCxperiumShoppingCart!: ServiceCxperiumShoppingCart;
 
 	public initCxperiumProperties({
 		apiKey: _apiKey,
@@ -74,5 +76,8 @@ export class UtilCxperium implements IUtilsCxperium {
 			params,
 		);
 		this.serviceCxperiumTransfer = new ServiceCxperiumTransfer(params);
+		this.serviceCxperiumShoppingCart = new ServiceCxperiumShoppingCart(
+			params,
+		);
 	}
 }

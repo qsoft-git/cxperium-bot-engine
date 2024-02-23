@@ -89,6 +89,7 @@ export class Engine {
 			this.serviceCxperiumMessage,
 			this.serviceCxperiumConfiguration,
 			this.serviceCxperiumTransfer,
+			this.serviceCxperiumShoppingCart,
 			this.serviceWhatsApp,
 			this.serviceWhatsAppMessage,
 			this.serviceWhatsAppMedia,

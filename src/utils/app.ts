@@ -37,6 +37,7 @@ import ServiceCxperiumLanguage from '../services/cxperium/language';
 import ServiceCxperiumMessage from '../services/cxperium/message';
 import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
 import ServiceCxperiumTransfer from '../services/cxperium/transfer';
+import ServiceCxperiumShoppingCart from '../services/cxperium/shopping-cart';
 import ServiceDialog from '../services/dialog';
 import ServiceAutomateUser from '../services/automate/user';
 import ServiceAutomateApi from '../services/automate/api';
@@ -136,6 +137,7 @@ export class UtilApp implements IUtilsApp {
 		serviceCxperiumMessage: ServiceCxperiumMessage,
 		serviceCxperiumConfiguration: ServiceCxperiumConfiguration,
 		serviceCxperiumTransfer: ServiceCxperiumTransfer,
+		serviceCxperiumShoppingCart: ServiceCxperiumShoppingCart,
 		serviceWhatsAppMain: ServiceWhatsAppMain,
 		serviceWhatsAppMessage: ServiceWhatsAppMessage,
 		serviceWhatsAppMedia: ServiceWhatsAppMedia,
@@ -160,6 +162,7 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.cxperium.message = serviceCxperiumMessage;
 		appLocalsServices.cxperium.configuration = serviceCxperiumConfiguration;
 		appLocalsServices.cxperium.transfer = serviceCxperiumTransfer;
+		appLocalsServices.cxperium.shoppingCart = serviceCxperiumShoppingCart;
 		appLocalsServices.whatsapp.main = serviceWhatsAppMain;
 		appLocalsServices.whatsapp.message = serviceWhatsAppMessage;
 		appLocalsServices.whatsapp.media = serviceWhatsAppMedia;
@@ -211,11 +214,9 @@ export class UtilApp implements IUtilsApp {
 				case 'EACCES':
 					console.error(bind + ' requires elevated privileges');
 					process.exit(1);
-					break;
 				case 'EADDRINUSE':
 					console.error(bind + ' is already in use');
 					process.exit(1);
-					break;
 				default:
 					throw error;
 			}
