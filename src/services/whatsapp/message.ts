@@ -15,6 +15,7 @@ import {
 	TMultiProductMessage,
 	TMultiProductSection,
 } from '../../types/whatsapp/message';
+import { TFlowMessage } from '../../types/whatsapp/flow';
 
 export default class extends ServiceWhatsApp {
 	constructor(params: ServiceCxperiumConfiguration) {
@@ -288,5 +289,52 @@ export default class extends ServiceWhatsApp {
 		};
 
 		return await this.wpRequest(msg, 'v1/messages');
+	}
+
+	public async sendFlowMessage(
+		to: string,
+		header: string | null,
+		body: string,
+		footer: string | null,
+		flowToken: string,
+		flowId: string,
+		flowCta: string,
+		flowAction: string,
+		screen: string,
+		data: object | null,
+	) {
+		const msg: TFlowMessage = {
+			recipient_type: 'individual',
+			to,
+			type: 'interactive',
+			interactive: {
+				type: 'flow',
+				header: {
+					text: header,
+				},
+				body: {
+					text: body,
+				},
+				footer: {
+					text: footer,
+				},
+				action: {
+					name: 'flow',
+					parameters: {
+						flow_message_version: '3',
+						flow_token: flowToken,
+						flow_id: flowId,
+						flow_cta: flowCta,
+						flow_action: flowAction,
+						flow_action_payload: {
+							screen,
+							data,
+						},
+					},
+				},
+			},
+		};
+
+		return await this.wpRequest(msg, 'v1/message');
 	}
 }

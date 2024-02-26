@@ -208,4 +208,29 @@ export default class {
 			sections,
 		);
 	}
+
+	public async sendFlowMessage(
+		header: string | null,
+		body: string,
+		footer: string | null,
+		flowToken: string,
+		flowId: string,
+		flowCta: string,
+		flowAction: string,
+		screen: string,
+		data: object | null,
+	) {
+		return await this.services.whatsapp.message.sendFlowMessage(
+			this.contact.phone,
+			header,
+			body,
+			footer,
+			flowToken,
+			flowId,
+			flowCta,
+			flowAction,
+			screen,
+			data,
+		);
+	}
 }
