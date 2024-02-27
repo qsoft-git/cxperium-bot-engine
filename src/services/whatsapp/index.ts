@@ -1,5 +1,4 @@
 // Services.
-import { FieldType } from 'botbuilder';
 import ServiceCxperiumConfiguration from '../cxperium/configuration';
 
 export default class {
@@ -15,7 +14,7 @@ export default class {
 
 	public async getFileRequest(fileId: string, contentType: string) {
 		const env = await this.configuration.execute();
-		const url = env.whatsappConfig.wabaUrl.replace('-sandbox', '');
+		const url = env.whatsappConfig.wabaUrl;
 
 		const response = (await fetch(`${url}/v1/media/${fileId}`, {
 			method: 'GET',
@@ -34,14 +33,13 @@ export default class {
 		endpoint: string,
 	) {
 		const env = await this.configuration.execute();
-		const url = env.whatsappConfig.wabaUrl.replace('-sandbox', '');
+		const url = env.whatsappConfig.wabaUrl;
 
 		const response = (await fetch(`${url}/${endpoint}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': contentType,
-				'D360-API-KEY': (await this.configuration.execute())
-					.whatsappConfig.key,
+				'D360-API-KEY': env.whatsappConfig.key,
 			},
 			body,
 		}).then((response) => response.json())) as any;
@@ -62,9 +60,7 @@ export default class {
 		const env = await this.configuration.execute();
 
 		const response = (await fetch(
-			`${(
-				await this.configuration.execute()
-			).whatsappConfig.wabaUrl.replace('-sandbox', '')}/${endpoint}`,
+			`${env.whatsappConfig.wabaUrl}/${endpoint}`,
 			{
 				method: 'POST',
 				headers: {

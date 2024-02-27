@@ -2,8 +2,8 @@
 import { Request } from 'express';
 
 // Types.
-import { TCxperiumContact } from '../types/cxperium/contact';
-import { TAppLocalsServices } from '../types/base-dialog';
+import { TCxperiumContact } from '../../types/cxperium/contact';
+import { TAppLocalsServices } from '../../types/base-dialog';
 
 export default class {
 	req!: Request;

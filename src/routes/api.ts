@@ -7,7 +7,7 @@ const router = express.Router();
 // Middlewares.
 import middlewareRunDialog from '../middlewares/run-dialog';
 import middlewareWebhook from '../middlewares/webhook';
-import middlewareFlowsHook from '../middlewares/flows';
+import middlewareFlowsHook from '../middlewares/flow';
 
 // Routes.
 router.post('/whatsapp', middlewareRunDialog.executeWhatsapp);
