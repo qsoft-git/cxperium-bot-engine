@@ -2,7 +2,7 @@
 import { Request } from 'express';
 
 // Types.
-import { TAppLocalsServices, TBaseDialogCtor } from '../../types/base-dialog';
+import { TAppLocalsServices } from '../../types/base-dialog';
 import {
 	TActivity,
 	TTextMessage,
