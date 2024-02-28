@@ -212,7 +212,7 @@ export default class {
 		let activity: any;
 
 		if (dialog.place == 'WHATSAPP') {
-			activity = dialog.activityToText();
+			activity = dialog.serviceInitActivity.activityToText();
 		} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
 			if (dialog.activity.value)
 				activity = Object.values(dialog.activity.value)[0];
@@ -328,6 +328,49 @@ export default class {
 		};
 
 		await this.run(runParams);
+	}
+
+	public async runWithFlow(dialog: any, intentName: string): Promise<void> {
+		const services: TAppLocalsServices = dialog.services;
+
+		let findOneDialog;
+
+		try {
+			findOneDialog = this.getListAll.find((item: any) => {
+				return item.name == intentName;
+			}) as any;
+		} catch (error) {
+			console.error('RUN FLOW: NOT FOUND FLOW FILE!!!');
+			throw error;
+		}
+
+		if (!findOneDialog) throw new Error('RUN FLOW: NOT FOUND FLOW');
+
+		const runParams: TBaseDialogCtor = {
+			contact: dialog.contact,
+			activity: dialog.activity,
+			conversation: dialog.conversation,
+			dialogFileParams: {
+				name: findOneDialog.name,
+				path: findOneDialog.path,
+				place: 'RUN_WITH_FLOW',
+			},
+			context: dialog.context,
+			services,
+		};
+
+		await this.runFlow(runParams);
+	}
+
+	public async runFlow(data: TBaseDialogCtor): Promise<void> {
+		console.info(
+			`RUN FLOW: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
+		);
+
+		data.conversation.dialogFileParams = data.dialogFileParams;
+		const dialogImport = await import(data.dialogFileParams.path);
+		const dialog = new dialogImport.default(data);
+		await dialog.recieveFlow();
 	}
 
 	public async run(data: TBaseDialogCtor): Promise<void> {

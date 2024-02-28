@@ -23,7 +23,7 @@ export type TFlowMessage = {
 				flow_action: string;
 				flow_action_payload: {
 					screen: string;
-					data: object | null;
+					data?: object | null | undefined;
 				};
 			};
 		};

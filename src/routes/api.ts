@@ -13,6 +13,6 @@ import middlewareFlowsHook from '../middlewares/flow';
 router.post('/whatsapp', middlewareRunDialog.executeWhatsapp);
 router.post('/messages', middlewareRunDialog.executeMicrosoft);
 router.post('/webhook/transfer', middlewareWebhook.execute);
-router.post('/webhook/flows', middlewareFlowsHook.execute);
+router.post('/cxperium/flows', middlewareFlowsHook.execute);
 
 export default router;

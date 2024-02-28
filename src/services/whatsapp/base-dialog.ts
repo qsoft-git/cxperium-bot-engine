@@ -216,7 +216,6 @@ export default class {
 		flowToken: string,
 		flowId: string,
 		flowCta: string,
-		flowAction: string,
 		screen: string,
 		data: object | null,
 	) {
@@ -228,7 +227,6 @@ export default class {
 			flowToken,
 			flowId,
 			flowCta,
-			flowAction,
 			screen,
 			data,
 		);

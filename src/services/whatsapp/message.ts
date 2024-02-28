@@ -299,7 +299,6 @@ export default class extends ServiceWhatsApp {
 		flowToken: string,
 		flowId: string,
 		flowCta: string,
-		flowAction: string,
 		screen: string,
 		data: object | null,
 	) {
@@ -325,16 +324,18 @@ export default class extends ServiceWhatsApp {
 						flow_token: flowToken,
 						flow_id: flowId,
 						flow_cta: flowCta,
-						flow_action: flowAction,
+						flow_action: 'navigate',
 						flow_action_payload: {
-							screen,
-							data,
+							screen: screen,
 						},
 					},
 				},
 			},
 		};
 
-		return await this.wpRequest(msg, 'v1/message');
+		if (data)
+			msg.interactive.action.parameters.flow_action_payload.data = data;
+
+		return await this.wpRequest(msg, 'v1/messages');
 	}
 }

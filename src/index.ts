@@ -11,6 +11,7 @@ import { UtilSentry } from './utils/sentry';
 
 // Interfaces.
 import { IDialog } from './interfaces/dialog';
+import { IFlow } from './interfaces/flow';
 
 // Types.
 import { TSrcIndexConfig } from './types/src-index';
@@ -114,5 +115,6 @@ export {
 	ServiceWhatsappBaseDialog,
 	ServiceMicrosoftBaseDialog,
 	IDialog,
+	IFlow,
 	TBaseDialogCtor,
 };

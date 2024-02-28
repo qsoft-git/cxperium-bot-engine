@@ -79,5 +79,9 @@ export type TActivity = {
 		payload: string;
 		text: string;
 	};
+	flow: {
+		isFlow: boolean | null;
+		responseJson: object | null;
+	};
 	isCxperiumMessage: boolean;
 };
