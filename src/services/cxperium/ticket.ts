@@ -6,6 +6,7 @@ import ServiceCxperium from '.';
 
 // Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
+import { response } from 'express';
 
 export default class extends ServiceCxperium {
 	constructor(data: TCxperiumServiceParams) {
@@ -39,7 +40,7 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json())) as any;
 
 		if (response.status == 201) {
-			return response.data.ticketId;
+			return response.data.ticket;
 		}
 
 		console.error(`${body} has a problem creating ticket.`);
@@ -51,7 +52,7 @@ export default class extends ServiceCxperium {
 			message: comment,
 		};
 
-		await fetch(
+		const result = await fetch(
 			`${this.baseUrl}/api/ticket/send-comment/phone/${ticketId}`,
 			{
 				method: 'POST',
@@ -61,6 +62,6 @@ export default class extends ServiceCxperium {
 					apikey: this.apiKey,
 				},
 			},
-		);
+		).then((response) => response.json());
 	}
 }
