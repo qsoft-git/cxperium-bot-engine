@@ -163,7 +163,7 @@ export default class extends ServiceCxperium {
 		).then((response) => response.json())) as any;
 
 		if (response.status == 201 && response.data) {
-			const contact: TCxperiumContact = {
+			let contact: TCxperiumContact = {
 				_id: response?.data?._id,
 				phone: response?.data?.phone,
 				email: response?.data?.email,
@@ -175,6 +175,38 @@ export default class extends ServiceCxperium {
 				tags: response?.data?.tags,
 				delete: response?.data?.delete,
 			};
+
+			if (
+				response?.data?.custom?.IsKvkkApproved?.length == 0 ||
+				response.data?.custom?.IsCxLiveTransfer == null ||
+				response.data?.custom?.IsCxTransfer == null
+			) {
+				const attributes: Record<string, unknown> = {
+					FirstName: '',
+					LastName: '',
+					IsKvkkApproved: false,
+					KvkkApprovalDate: '',
+					KvkkNotApprovedDate: '',
+					IsCxLiveTransfer: false,
+					IsCxTransfer: false,
+					ChatId: '',
+				};
+
+				await this.updateContactByCustomFields(contact, attributes);
+
+				const result = (await fetch(
+					`${this.baseUrl}/api/contacts/phone/${phone}`,
+					{
+						method: 'get',
+						headers: {
+							'content-type': 'application/json',
+							apikey: this.apiKey,
+						},
+					},
+				).then((response) => response.json())) as any;
+
+				contact = result?.data;
+			}
 
 			return contact;
 		} else {
