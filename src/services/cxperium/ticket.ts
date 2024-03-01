@@ -52,7 +52,7 @@ export default class extends ServiceCxperium {
 			message: comment,
 		};
 
-		const result = await fetch(
+		await fetch(
 			`${this.baseUrl}/api/ticket/send-comment/phone/${ticketId}`,
 			{
 				method: 'POST',

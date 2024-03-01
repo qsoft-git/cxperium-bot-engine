@@ -47,7 +47,7 @@ export default class extends ServiceCxperium {
 		const services: TAppLocalsServices = dialog.services;
 		const customAttributes = dialog.contact.custom as any;
 
-		if (JSON.parse(customAttributes.IsCxTransfer || false)) {
+		if (JSON.parse(customAttributes?.IsCxTransfer || false)) {
 			await services.cxperium.message.redirectWpMessage(
 				dialog.activity.message,
 			);
@@ -85,7 +85,7 @@ export default class extends ServiceCxperium {
 				await this.startSurvey(activity.text, contact, dialog);
 
 				await this.serviceCxperiumContact.updateSurveyTransferStatus(
-					dialog.contact,
+					dialog?.contact,
 					true,
 				);
 
@@ -131,9 +131,9 @@ export default class extends ServiceCxperium {
 		const customAttributes = contact.custom as any;
 		const env = await this.serviceCxperiumConfiguration.execute();
 
-		if (!env.cxperiumLiveConfig.IsActive) return false;
+		if (!env.cxperiumLiveConfig?.IsActive) return false;
 
-		if (JSON.parse(customAttributes.IsCxLiveTransfer || false)) {
+		if (JSON.parse(customAttributes?.IsCxLiveTransfer || false)) {
 			if (activity.type === 'document') {
 				const base64string = Buffer.from(
 					activity.document.byteContent,
