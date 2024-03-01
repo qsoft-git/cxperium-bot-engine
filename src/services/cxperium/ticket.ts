@@ -6,7 +6,6 @@ import ServiceCxperium from '.';
 
 // Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
-import { response } from 'express';
 
 export default class extends ServiceCxperium {
 	constructor(data: TCxperiumServiceParams) {
