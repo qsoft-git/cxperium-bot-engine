@@ -118,7 +118,6 @@ export default class extends ServiceCxperium {
 		message: string,
 		phone: string,
 		base64Content: string,
-		filename: string,
 		type: string,
 	) {
 		const body = {
@@ -129,7 +128,6 @@ export default class extends ServiceCxperium {
 			media: {
 				data: {
 					url: base64Content,
-					filename: filename,
 					type: type,
 				},
 			},

@@ -144,7 +144,6 @@ export default class extends ServiceCxperium {
 					activity.text,
 					contact.phone,
 					base64string,
-					activity.document.id,
 					activity.document.mimeType,
 				);
 			} else if (activity.type === 'image') {
@@ -157,7 +156,6 @@ export default class extends ServiceCxperium {
 					activity.text,
 					contact.phone,
 					base64string,
-					activity.image.id,
 					activity.image.mimeType,
 				);
 			} else {
