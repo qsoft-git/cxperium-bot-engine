@@ -139,8 +139,8 @@ export default class extends ServiceCxperium {
 					activity.document.byteContent,
 				).toString('base64');
 
-				this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
-					contact.custom as any['ChatId'],
+				await this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
+					customAttributes.ChatId,
 					activity.text,
 					contact.phone,
 					base64string,
@@ -153,7 +153,7 @@ export default class extends ServiceCxperium {
 				).toString('base64');
 
 				this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
-					contact.custom as any['ChatId'],
+					customAttributes.ChatId,
 					activity.text,
 					contact.phone,
 					base64string,
