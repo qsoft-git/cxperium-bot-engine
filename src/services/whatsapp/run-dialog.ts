@@ -65,9 +65,22 @@ export default class {
 		this.serviceInitActivity.initCxperiumMessage();
 
 		if (this.activity.flow.isFlow) {
+			if (Object.entries(this.activity.flow.responseJson).length == 0) {
+				await this.services.whatsapp.message.sendRegularMessage(
+					this.activity.from,
+					'İşleminiz tamamlanmıştır.',
+					// await this.services.cxperium.language.getLanguageByKey(
+					// 	this.contact.languageId,
+					// 	'key',
+					// ),
+				);
+				return;
+			}
+
 			await this.services.dialog.runWithFlow(
 				this,
-				this.activity.flow.responseJson.flow_token,
+				this.activity.flow?.responseJson?.flow_token?.includes('&') ??
+					this.activity.flow?.responseJson?.flow_token?.split('&')[0],
 			);
 			return;
 		}

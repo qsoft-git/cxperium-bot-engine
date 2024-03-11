@@ -19,7 +19,8 @@ import {
 export default class {
 	private req!: Request;
 	private contact!: TCxperiumContact;
-	private serviceInitActivity: ServiceInitActivity;
+	private serviceInitActivity!: ServiceInitActivity;
+	private conversation!: any;
 	private services!: TAppLocalsServices;
 
 	private activity!:
@@ -84,13 +85,28 @@ export default class {
 	}
 
 	private async dataExchangeResponse(request: any) {
-		// await this.services.dialog.runWithFlow(
-		// 	this,
-		// 	request.decryptedBody.flow_token,
-		// );
+		const intent = request.decryptedBody.flow_token.split('&')[0];
+		const phone = request.decryptedBody.flow_token.split('&')[1];
+		this.activity = {
+			flow: {
+				isFlow: true,
+				responseJson: request.decryptedBody.data,
+			},
+			from: phone,
+		};
+		this.contact =
+			await this.services.cxperium.contact.getContactByPhone(this);
+		this.conversation =
+			await this.services.cxperium.session.getConversationWhatsapp(this);
+
+		const res = await this.services.dialog.runReturnFlowResponse(
+			this,
+			request.decryptedBody.screen,
+			intent,
+		);
 
 		const response = encryptResponse(
-			request.decryptedBody,
+			res,
 			request.aesKeyBuffer,
 			request.initialVectorBuffer,
 		);
