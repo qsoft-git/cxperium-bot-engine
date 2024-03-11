@@ -196,6 +196,36 @@ export default class {
 		}
 	}
 
+	public async runWithAi(dialog: any, activity: string): Promise<any> {
+		const services: TAppLocalsServices = dialog.services;
+
+		let prediction: string | null;
+		const env = await services.cxperium.configuration.execute();
+
+		if (env.chatgptConfig.IsEnabled) {
+			const chatgptService = new ServiceChatGPT(services);
+			const result = await chatgptService.chatGPTMatch(
+				activity,
+				env.chatgptConfig,
+			);
+
+			prediction = result.chatgptMessage;
+		} else if (env.enterpriseChatgptConfig.IsEnabled) {
+			const chatgptService = new ServiceChatGPT(services);
+			const result = await chatgptService.enterpriseChatGPTMatch(
+				activity,
+				activity,
+				env.enterpriseChatgptConfig,
+			);
+
+			prediction = result.chatgptMessage;
+		} else {
+			prediction = null;
+		}
+
+		return prediction;
+	}
+
 	private async intentPrediction(dialog: any): Promise<TIntentPrediction> {
 		const services: TAppLocalsServices = dialog.services;
 
