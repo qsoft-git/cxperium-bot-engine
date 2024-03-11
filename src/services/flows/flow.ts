@@ -101,7 +101,7 @@ export default class {
 
 		const res = await this.services.dialog.runReturnFlowResponse(
 			this,
-			request.decryptedBody.screen,
+			request.decryptedBody,
 			intent,
 		);
 

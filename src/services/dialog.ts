@@ -362,7 +362,7 @@ export default class {
 
 	public async runReturnFlowResponse(
 		dialog: any,
-		screen: string,
+		body: any,
 		intentName: string,
 	): Promise<any> {
 		const services: TAppLocalsServices = dialog.services;
@@ -393,7 +393,7 @@ export default class {
 			services,
 		};
 
-		return await this.returnFlowResponse(runParams, screen);
+		return await this.returnFlowResponse(runParams, body);
 	}
 
 	public async runWithFlow(dialog: any, intentName: string): Promise<void> {
@@ -430,7 +430,7 @@ export default class {
 
 	public async returnFlowResponse(
 		data: TBaseDialogCtor,
-		screen: string,
+		body: any,
 	): Promise<any> {
 		console.info(
 			`RETURNING FLOW RESPONSE: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
@@ -439,7 +439,7 @@ export default class {
 		data.conversation.dialogFileParams = data.dialogFileParams;
 		const dialogImport = await import(data.dialogFileParams.path);
 		const dialog = new dialogImport.default(data);
-		return await dialog.returnResponse(screen);
+		return await dialog.returnResponse(body);
 	}
 
 	public async runFlow(data: TBaseDialogCtor): Promise<void> {

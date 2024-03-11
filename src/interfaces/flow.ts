@@ -1,4 +1,4 @@
 export interface IFlow {
 	recieveFlow(): void;
-	returnResponse(screen: string): any;
+	returnResponse(body: any): any;
 }
