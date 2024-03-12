@@ -4,9 +4,9 @@ export type TConversation = {
 		className: string;
 		functionName: string;
 	};
-	languageId: 1;
+	languageId: 1 | number;
 	sessionData: Record<string, unknown>[];
 	lastMessage: string;
-	cultureCode: 'TR';
+	cultureCode: 'TR' | string;
 	cache: Record<string, unknown>;
 };
