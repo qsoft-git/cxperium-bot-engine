@@ -79,8 +79,11 @@ export default class {
 
 			await this.services.dialog.runWithFlow(
 				this,
-				this.activity.flow?.responseJson?.flow_token?.includes('&') ??
-					this.activity.flow?.responseJson?.flow_token?.split('&')[0],
+				this.activity.flow?.responseJson?.flow_token?.includes('&')
+					? this.activity.flow?.responseJson?.flow_token?.split(
+							'&',
+						)[0]
+					: this.activity.flow?.responseJson?.flow_token,
 			);
 			return;
 		}
