@@ -53,6 +53,8 @@ export default class {
 					// 	return await this.dataExchangeResponse(request);
 					case 'data_exchange':
 						return await this.dataExchangeResponse(request);
+					case 'INIT':
+						return await this.dataExchangeResponse(request);
 					default:
 						throw new Error(
 							'Error occurred when using flow for types of PING and DATA_EXCHANGE',
