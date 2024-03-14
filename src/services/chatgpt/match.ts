@@ -61,17 +61,18 @@ export default class {
 			`${enterpriseChatgptConfig.Username}:${enterpriseChatgptConfig.Password}`,
 		).toString('base64')}`;
 
-		const response = (await fetch(
-			`${enterpriseChatgptConfig.URL}/api/chat/${client}`,
-			{
-				method: 'POST',
-				headers: {
-					Authorization: auth,
-					'content-type': 'application/json',
-				},
-				body: JSON.stringify(body),
+		const fetchClient = client
+			? `${enterpriseChatgptConfig.URL}/api/chat/${client}`
+			: `${enterpriseChatgptConfig.URL}/api/chat`;
+
+		const response = (await fetch(fetchClient, {
+			method: 'POST',
+			headers: {
+				Authorization: auth,
+				'content-type': 'application/json',
 			},
-		).then((response) => response.json())) as any;
+			body: JSON.stringify(body),
+		}).then((response) => response.json())) as any;
 
 		if (response) {
 			prediction.isMatch = true;
