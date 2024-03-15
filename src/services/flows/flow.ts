@@ -49,8 +49,6 @@ export default class {
 				switch (request.decryptedBody.action) {
 					case 'ping':
 						return this.ping(request);
-					// case 'INIT':
-					// 	return await this.dataExchangeResponse(request);
 					case 'data_exchange':
 						return await this.dataExchangeResponse(request);
 					case 'INIT':
