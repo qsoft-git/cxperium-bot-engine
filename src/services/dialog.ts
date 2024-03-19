@@ -5,6 +5,9 @@ const { NODE_ENV, RESET_KEY } = process.env;
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Cache.
+import data from '../data/general';
+
 // Types.
 import { TBaseDialogCtor, TAppLocalsServices } from '../types/base-dialog';
 import BaseConversation from './conversation';
@@ -15,6 +18,7 @@ import ServiceDialogflow from './dialogflow/match';
 import ServiceChatGPT from './chatgpt/match';
 import { TCxperiumLiveConfig } from '../types/configuration/live';
 import { TButton } from '../types/whatsapp/message';
+import NodeCache from 'node-cache';
 
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
@@ -26,12 +30,14 @@ export default class {
 	private folderPathExternal!: string;
 	private folderPathInternal!: string;
 	private listAll: { name: string; path: string }[] = [];
+	public cache: NodeCache;
 
 	constructor(_dialogPath: string) {
 		this.folderPathExternal = _dialogPath;
 		this.folderPathInternal = path.join(__dirname, '../dialogs');
 		this.initList(this.folderPathExternal, 'EXTERNAL');
 		this.initList(this.folderPathInternal, 'INTERNAL');
+		this.cache = data.cache;
 	}
 
 	public get getListAll() {

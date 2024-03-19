@@ -77,6 +77,18 @@ export default class {
 				return;
 			}
 
+			const flow_token = this.services.dialog.cache.get(
+				`${this.contact.phone}-flow_token`,
+			);
+
+			if (flow_token) {
+				await this.services.dialog.runWithFlow(
+					this,
+					flow_token.toString().split('&')[0],
+				);
+				return;
+			}
+
 			await this.services.dialog.runWithFlow(
 				this,
 				this.activity.flow?.responseJson?.flow_token?.includes('&')
