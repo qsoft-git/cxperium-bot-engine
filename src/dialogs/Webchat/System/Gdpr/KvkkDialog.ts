@@ -31,6 +31,7 @@ export default class extends ServiceMicrosoftBaseDialog implements IDialog {
 							this,
 							'CXPerium.Dialogs.Webchat.WelcomeDialog',
 						);
+						return;
 					} catch (error: any) {
 						if (error?.message === 'end') {
 							return;
