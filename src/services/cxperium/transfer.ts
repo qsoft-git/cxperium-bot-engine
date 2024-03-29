@@ -67,8 +67,9 @@ export default class extends ServiceCxperium {
 					) {
 						const ticketId: string = msg.split('_')[2];
 						conversation.setCache('ticketId', ticketId);
-						dialog.runWithIntentName(
-							this,
+						//! TİCKET HATASI BURADA
+						dialog.services.dialog.runWithIntentName(
+							dialog,
 							'CXPerium.Dialogs.WhatsApp.System.TicketResponseDialog',
 						);
 					} else {
