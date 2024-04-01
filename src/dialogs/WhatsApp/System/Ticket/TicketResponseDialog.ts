@@ -19,7 +19,7 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 			)
 		) {
 			const message: string = this.activity.text;
-			const ticketId: any = 123; //this.conversation.getData('ticketId');
+			const ticketId: any = this.conversation.getCache('ticketId');
 
 			await this.services.cxperium.ticket.comment(ticketId, message);
 			await this.services.whatsapp.message.sendRegularMessage(
@@ -30,24 +30,13 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 				),
 			);
 
-			this.conversation.resetConversation();
+			return this.conversation.resetConversation();
 		}
-	}
 
-	public async RunDialogByTicketId(ticketId: string): Promise<void> {
-		// this.conversation.putData({ ticketId: ticketId });
-		console.log(ticketId);
-		await this.services.whatsapp.message.sendRegularMessage(
-			this.contact.phone,
-			await this.services.cxperium.language.getLanguageByKey(
-				this.conversation.conversation.languageId,
-				'reply_ticket_response',
-			),
+		this.sendMessage('Lütfen cevabınızı giriniz...');
+
+		this.conversation.addWaitAction(
+			`TicketResponse-${this.WAIT_TICKET_RESPONSE}`,
 		);
-
-		// this.conversation.addWaitAction(
-		// 	'TicketResponseDialog',
-		// 	this.WAIT_TICKET_RESPONSE,
-		// );
 	}
 }

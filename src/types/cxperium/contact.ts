@@ -16,6 +16,7 @@ export type TCxperiumContact = {
 	custom: object;
 	createdAt: Date;
 	updatedAt: Date;
+	language?: string;
 };
 
 type TCxperiumData = {

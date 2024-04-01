@@ -70,7 +70,7 @@ export default class extends ServiceCxperium {
 						//! TİCKET HATASI BURADA
 						dialog.services.dialog.runWithIntentName(
 							dialog,
-							'CXPerium.Dialogs.WhatsApp.System.TicketResponseDialog',
+							'CXPerium.Dialogs.WhatsApp.System.Ticket.TicketResponseDialog',
 						);
 					} else {
 						await this.startSurvey(msg, contact, dialog);
