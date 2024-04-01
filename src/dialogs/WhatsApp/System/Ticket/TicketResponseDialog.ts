@@ -33,7 +33,7 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 			return this.conversation.resetConversation();
 		}
 
-		this.sendMessage('Lütfen cevabınızı giriniz...');
+		this.sendMessage('✍️ Lütfen cevabınızı giriniz...');
 
 		this.conversation.addWaitAction(
 			`TicketResponse-${this.WAIT_TICKET_RESPONSE}`,
