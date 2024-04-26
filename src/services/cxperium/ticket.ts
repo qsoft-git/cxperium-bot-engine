@@ -28,7 +28,7 @@ export default class extends ServiceCxperium {
 		if (tags && tags.length > 0) {
 			body['tags'] = tags;
 		}
-
+//asdasd
 		const response = (await fetch(`${this.baseUrl}/api/ticket`, {
 			method: 'POST',
 			headers: {
