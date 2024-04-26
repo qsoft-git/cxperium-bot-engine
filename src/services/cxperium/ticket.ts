@@ -78,7 +78,7 @@ export default class extends ServiceCxperium {
 		const response = (await fetch(
 			`${this.baseUrl}/api/assignee-change/${ticketId}/SUB/${id}`,
 			{
-				method: 'POST',
+				method: 'PATCH',
 				headers: {
 					'content-type': 'application/json',
 					apikey: this.apiKey,
