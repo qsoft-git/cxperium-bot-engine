@@ -63,4 +63,16 @@ export default class extends ServiceCxperium {
 			},
 		).then((response) => response.json());
 	}
+
+	async getAllTickets(){
+		return await fetch(
+			`${this.baseUrl}/api/ticket`,{
+				method: 'GET',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
+			},
+		).then((response) => response.json());
+	}
 }
