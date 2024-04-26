@@ -64,15 +64,33 @@ export default class extends ServiceCxperium {
 		).then((response) => response.json());
 	}
 
-	async getAllTickets(){
-		return await fetch(
-			`${this.baseUrl}/api/ticket`,{
-				method: 'GET',
+	async getSubs() {
+		return await fetch(`${this.baseUrl}/api/subuser`, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json());
+	}
+
+	async assigneeTicketToSub(id: string, ticketId: string) {
+		const response = (await fetch(
+			`${this.baseUrl}/api/assignee-change/${ticketId}/SUB/${id}`,
+			{
+				method: 'POST',
 				headers: {
 					'content-type': 'application/json',
 					apikey: this.apiKey,
 				},
 			},
-		).then((response) => response.json());
+		).then((response) => response.json())) as any;
+
+		if (response.status == 201) {
+			return true;
+		}
+
+		console.error('Operation has a problem with ticket assignment.');
+		throw new Error('Problem occurred during with ticket assignment.');
 	}
 }
