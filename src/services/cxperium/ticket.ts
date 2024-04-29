@@ -74,6 +74,16 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json());
 	}
 
+	async getSubsWithAssigneeCount() {
+		return await fetch(`${this.baseUrl}/api/ticket/assignee-count`, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json());
+	}
+
 	async assigneeTicketToSub(id: string, ticketId: string) {
 		const response = (await fetch(
 			`${this.baseUrl}/api/assignee-change/${ticketId}/SUB/${id}`,
