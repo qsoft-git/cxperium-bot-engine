@@ -47,18 +47,13 @@ export default class extends ServiceWhatsApp {
 		return await this.wpRequest(body, 'v1/messages');
 	}
 
-	public async sendImageWithUrl(
-		to: string,
-		filename: string,
-		url: string,
-	): Promise<any> {
+	public async sendImageWithUrl(to: string, url: string): Promise<any> {
 		const body = {
 			recipient_type: 'individual',
 			to: to,
 			type: 'image',
 			image: {
 				link: url,
-				filename: filename,
 			},
 		};
 
