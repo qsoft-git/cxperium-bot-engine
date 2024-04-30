@@ -139,10 +139,9 @@ export default class {
 		return msg;
 	}
 
-	public async sendImageWithUrl(filename: string, url: string) {
+	public async sendImageWithUrl(url: string) {
 		const msg = await this.services.whatsapp.media.sendImageWithUrl(
 			this.contact.phone,
-			filename,
 			url,
 		);
 
