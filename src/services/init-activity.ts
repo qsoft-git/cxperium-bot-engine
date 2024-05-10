@@ -14,7 +14,8 @@ export default class {
 	}
 
 	public async initActivity(): Promise<TActivity> {
-		const data = this.that.req.body.messages[0];
+		const { data, body } = this.providerExtractor();
+
 		const type = data.type;
 
 		const schemaActivity:
@@ -25,7 +26,7 @@ export default class {
 			| TInteractiveMessage
 			| TLocationMessage = {
 			from: data.from,
-			message: this.that.req.body,
+			message: body,
 			userProfileName: '',
 			type: '',
 			text: '',
@@ -57,8 +58,7 @@ export default class {
 			isCxperiumMessage: false,
 		};
 
-		schemaActivity.userProfileName =
-			this.that.req.body.contacts[0].profile.name;
+		schemaActivity.userProfileName = body.contacts[0].profile.name;
 
 		if (type == 'text') {
 			schemaActivity.text = data.text.body;
@@ -116,7 +116,8 @@ export default class {
 	}
 
 	public initCxperiumMessage(): void {
-		const data = this.that.req.body.messages[0];
+		const { data } = this.providerExtractor();
+
 		const type = data.type;
 
 		if (type === 'interactive' || type === 'button') {
@@ -145,5 +146,23 @@ export default class {
 			this.that.conversation.lastMessage.includes('SID:')
 		)
 			this.that.activity.isCxperiumMessage = true;
+	}
+
+	public providerExtractor(): any {
+		const wabaDataBody = this.that.req.body;
+		const cloudApiDataBody =
+			this.that.req.body?.entry?.[0].changes?.[0].value;
+
+		let body: any;
+
+		if (wabaDataBody?.object == 'whatsapp_business_account')
+			body = cloudApiDataBody;
+		else body = wabaDataBody;
+
+		const data = body.messages?.[0];
+
+		if (!data) throw new Error('Request data is null!');
+
+		return { data, body };
 	}
 }

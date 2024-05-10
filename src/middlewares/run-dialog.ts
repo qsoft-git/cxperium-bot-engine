@@ -17,7 +17,7 @@ export default class {
 	static async executeWhatsapp(req: Request, res: Response): Promise<void> {
 		res.send();
 
-		if (!req.body.messages) return;
+		if (!req.body.messages && !req.body.object) return;
 
 		try {
 			const serviceRunDialog = new ServiceWhatsappRunDialog(req);
