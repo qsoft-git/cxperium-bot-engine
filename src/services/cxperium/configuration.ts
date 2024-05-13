@@ -159,7 +159,7 @@ export default class extends ServiceCxperium {
 				wabaUrl: response.data.wabaUrl,
 				namespace: response.data.namespace,
 				platform: response.data.platform,
-				provider: response.data.providers,
+				provider: response?.data?.providers || response?.data?.provider,
 			};
 		} else {
 			response = (await fetch(`${this.baseUrl}/api/waba`, {
@@ -177,7 +177,7 @@ export default class extends ServiceCxperium {
 				wabaUrl: response.data.wabaUrl,
 				namespace: response.data.namespace,
 				platform: response.data.platform,
-				provider: response.data.providers,
+				provider: response?.data?.providers || response?.data?.provider,
 			};
 		}
 
