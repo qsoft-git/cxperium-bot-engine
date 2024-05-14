@@ -51,28 +51,52 @@ export default class {
 		return response.media[0].id;
 	}
 
-	public async wpRequest(
-		body: string | Record<string, unknown>,
-		endpoint: string,
-	) {
-		if (typeof body === 'object') body = JSON.stringify(body);
+	public async wpRequest(body: any, endpoint: string) {
+		let response;
 
-		const env = await this.configuration.execute();
+		const env = (await this.configuration.execute()) as any;
 
-		const response = (await fetch(
-			`${env.whatsappConfig.wabaUrl}/${endpoint}`,
-			{
+		if (env.whatsappConfig.provider == 'DIALOG360') {
+			response = (await fetch(
+				`${env.whatsappConfig.wabaUrl}/${endpoint}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'D360-API-KEY': env.whatsappConfig.key,
+					},
+					body: JSON.stringify(body),
+				},
+			).then((response) => response.json())) as any;
+		} else if (env.whatsappConfig.provider == 'CLOUD') {
+			const phoneNumberId = env?.whatsappConfig?.phoneNumberId;
+
+			if (!phoneNumberId) {
+				throw new Error('WhatsApp phone number not found!');
+			}
+
+			if (!env.whatsappConfig?.key) {
+				throw new Error('WhatsApp key not found!');
+			}
+
+			const requestUrl = `https://graph.facebook.com/v19.0/${phoneNumberId}/messages`;
+			const reviveBody = { ...body, messaging_product: 'whatsapp' };
+			delete reviveBody?.recipient_type;
+
+			response = (await fetch(requestUrl, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'D360-API-KEY': env.whatsappConfig.key,
+					Authorization: 'Bearer ' + env.whatsappConfig.key,
 				},
-				body,
-			},
-		).then((response) => response.json())) as any;
+				body: JSON.stringify(reviveBody),
+			}).then((response) => response.json())) as any;
+		} else {
+			throw new Error('WhatsApp configuration provider not found');
+		}
 
-		if (response.meta.success === false) {
-			throw response.meta.developer_message;
+		if (response?.meta?.success === false) {
+			throw response?.meta?.developer_message;
 		}
 
 		return response;

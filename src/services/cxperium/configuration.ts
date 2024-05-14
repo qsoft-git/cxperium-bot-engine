@@ -1,5 +1,5 @@
 // Environment.
-const { NODE_ENV } = process.env;
+const { NODE_ENV, PROD_ENV } = process.env;
 
 // Node modules.
 import fetch from 'node-fetch';
@@ -140,7 +140,27 @@ export default class extends ServiceCxperium {
 		let response;
 		let whatsappConfig: TWhatsappConfig;
 
-		if (NODE_ENV === 'development') {
+		if (PROD_ENV === 'true' || NODE_ENV !== 'development') {
+			response = (await fetch(`${this.baseUrl}/api/waba`, {
+				method: 'GET',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
+			}).then((response) => response.json())) as any;
+
+			whatsappConfig = {
+				shoppingCatalogId: response.data.shoppingCatalogId,
+				key: response.data.key,
+				phone: response.data.phone,
+				wabaUrl: response.data.wabaUrl,
+				namespace: response.data.namespace,
+				platform: response.data.platform,
+				provider: response?.data?.providers || response?.data?.provider,
+				businessAccountId: response?.data?.businessAccountId,
+				phoneNumberId: response?.data?.phoneNumberId,
+			};
+		} else {
 			response = (await fetch(
 				`${this.baseUrl}/api/assistant/whatsapp-config`,
 				{
@@ -159,25 +179,9 @@ export default class extends ServiceCxperium {
 				wabaUrl: response.data.wabaUrl,
 				namespace: response.data.namespace,
 				platform: response.data.platform,
-				provider: response.data.providers,
-			};
-		} else {
-			response = (await fetch(`${this.baseUrl}/api/waba`, {
-				method: 'GET',
-				headers: {
-					'content-type': 'application/json',
-					apikey: this.apiKey,
-				},
-			}).then((response) => response.json())) as any;
-
-			whatsappConfig = {
-				shoppingCatalogId: response.data.shoppingCatalogId,
-				key: response.data.key,
-				phone: response.data.phone,
-				wabaUrl: response.data.wabaUrl,
-				namespace: response.data.namespace,
-				platform: response.data.platform,
-				provider: response.data.providers,
+				provider: response?.data?.providers || response?.data?.provider,
+				businessAccountId: response?.data?.businessAccountId,
+				phoneNumberId: response?.data?.phoneNumberId,
 			};
 		}
 
