@@ -6,4 +6,6 @@ export type TWhatsappConfig = {
 	provider: string;
 	phone: string;
 	platform: string;
+	businessAccountId?: string;
+	phoneNumberId?: string;
 };

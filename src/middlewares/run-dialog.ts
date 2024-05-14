@@ -18,6 +18,11 @@ export default class {
 		res.send();
 
 		if (!req.body.messages && !req.body.object) return;
+		if (
+			req.body.object === 'whatsapp_business_account' &&
+			!req?.body?.entry?.[0]?.changes?.[0]?.value?.messages
+		)
+			return;
 
 		try {
 			const serviceRunDialog = new ServiceWhatsappRunDialog(req);
