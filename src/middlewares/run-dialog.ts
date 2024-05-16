@@ -17,12 +17,10 @@ export default class {
 	static async executeWhatsapp(req: Request, res: Response): Promise<void> {
 		res.send();
 
-		if (!req.body.messages && !req.body.object) return;
-		if (
-			req.body.object === 'whatsapp_business_account' &&
-			!req?.body?.entry?.[0]?.changes?.[0]?.value?.messages
-		)
-			return;
+		const body = req.body;
+
+		if (!body?.contacts || !body?.messages)
+			throw new Error('Bad request!!!');
 
 		try {
 			const serviceRunDialog = new ServiceWhatsappRunDialog(req);
