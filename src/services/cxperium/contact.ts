@@ -174,7 +174,7 @@ export default class extends ServiceCxperium {
 				custom: response?.data?.custom,
 				tags: response?.data?.tags,
 				delete: response?.data?.delete,
-				language: response?.data?.language || 'EN',
+				language: response?.data?.language,
 			};
 
 			if (
