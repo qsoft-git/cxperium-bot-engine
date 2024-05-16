@@ -8,6 +8,7 @@ import DataGeneral from '../../data/general';
 import ServiceCxperium from '.';
 import ServiceCxperiumContact from './contact';
 import ServiceCxperiumConversation from './conversation';
+import ServiceCxperiumConfiguration from './configuration';
 
 // Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
@@ -18,12 +19,16 @@ export default class extends ServiceCxperium {
 	public cache: any;
 	serviceCxperiumContact!: ServiceCxperiumContact;
 	serviceCxperiumConversation!: ServiceCxperiumConversation;
+	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
 
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
 		this.cache = DataGeneral.cache;
 		this.serviceCxperiumContact = new ServiceCxperiumContact(data);
 		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
+			data,
+		);
+		this.serviceCxperiumConfiguration = new ServiceCxperiumConfiguration(
 			data,
 		);
 	}
@@ -155,5 +160,15 @@ export default class extends ServiceCxperium {
 		}
 
 		return new BaseConversation(dialog, conversation);
+	}
+
+	async closeActiveSessions() {
+		const sessionTimeout = (
+			await this.serviceCxperiumConfiguration.execute()
+		).sessionTimeoutConfig.Minutes;
+		const activeSessions = await this.getAllActiveSessions();
+
+		
+
 	}
 }
