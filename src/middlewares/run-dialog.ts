@@ -19,8 +19,10 @@ export default class {
 
 		const body = req.body;
 
-		if (!body?.contacts || !body?.messages)
-			throw new Error('Bad request!!!');
+		if (!body?.contacts || !body?.messages) {
+			console.error('Bad request!!!');
+			return;
+		}
 
 		try {
 			const serviceRunDialog = new ServiceWhatsappRunDialog(req);
