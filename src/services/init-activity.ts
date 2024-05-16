@@ -149,15 +149,7 @@ export default class {
 	}
 
 	public providerExtractor(): any {
-		const wabaDataBody = this.that.req.body;
-		const cloudApiDataBody =
-			this.that.req.body?.entry?.[0].changes?.[0].value;
-
-		let body: any;
-
-		if (wabaDataBody?.object == 'whatsapp_business_account')
-			body = cloudApiDataBody;
-		else body = wabaDataBody;
+		const body = this.that.req.body;
 
 		const data = body.messages?.[0];
 

@@ -1,5 +1,7 @@
 import NodeCache from 'node-cache';
 
+const { BASE_CXPERIUM_URL } = process.env;
+
 // Variables.
 const data: {
 	name: string;
@@ -9,7 +11,7 @@ const data: {
 } = {
 	name: '',
 	version: '',
-	cxperiumBaseUrl: 'https://api.cxperium.com',
+	cxperiumBaseUrl: BASE_CXPERIUM_URL || 'https://api.cxperium.com',
 	cache: new NodeCache(),
 };
 
