@@ -7,6 +7,7 @@ import ServiceCxperiumContact from './contact';
 
 // Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
+import { TCxperiumContact } from '../../types/cxperium/contact';
 
 export default class extends ServiceCxperium {
 	serviceContactService!: ServiceCxperiumContact;
@@ -30,6 +31,20 @@ export default class extends ServiceCxperium {
 		}
 
 		return null;
+	}
+
+	async closeLiveChat(contact: TCxperiumContact): Promise<void> {
+		const custom = contact.custom as any;
+		await fetch(
+			`${this.baseUrl}/api/chat/status-change/${custom.ChatId}/CLOSED`,
+			{
+				method: 'PATCH',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
+			},
+		).then((response) => response.json());
 	}
 
 	async getContactIdByChatId(chatId: string) {

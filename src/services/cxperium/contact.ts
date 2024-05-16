@@ -388,4 +388,19 @@ export default class extends ServiceCxperium {
 			},
 		}).then((response) => response.json());
 	}
+
+	async checkOpenChat(contactId: string): Promise<boolean> {
+		const result = await fetch(
+			`${this.baseUrl}/api/chat/active/${contactId}`,
+			{
+				method: 'GET',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
+			},
+		).then((response) => response.json());
+
+		return Boolean(result.data);
+	}
 }

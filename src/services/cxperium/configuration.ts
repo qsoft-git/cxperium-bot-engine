@@ -23,6 +23,7 @@ import { TDialogflowConfig } from '../../types/configuration/dialogflow';
 import { TGdprConfig } from '../../types/configuration/gdpr';
 import { TBotFrameworkConfig } from '../../types/configuration/botframework';
 import { TEnterpriseChatGPTConfig } from '../../types/configuration/enterpriseChatGPT';
+import { TSessionTimeoutConfig } from '../../types/configuration/sessionTimeout';
 
 export default class extends ServiceCxperium {
 	private cache = DataGeneral.cache;
@@ -47,6 +48,8 @@ export default class extends ServiceCxperium {
 			allEnv.EnterpriseChatGptConfig;
 		const gdprConfig: TGdprConfig = allEnv.GdprConfig;
 		const botframeworkConfig: TBotFrameworkConfig = allEnv.TeamsConfig;
+		const sessionTimeoutConfig: TSessionTimeoutConfig =
+			allEnv.SessionTimeoutConfig;
 		const extraFields: Record<string, unknown> = {};
 
 		for (const [k, v] of Object.entries(allEnv)) {
@@ -70,6 +73,7 @@ export default class extends ServiceCxperium {
 			whatsappConfig: whatsappConfig,
 			botframeworkConfig: botframeworkConfig,
 			enterpriseChatgptConfig: enterpriseChatGPTConfig,
+			sessionTimeoutConfig: sessionTimeoutConfig,
 			extraFields: extraFields,
 		};
 
