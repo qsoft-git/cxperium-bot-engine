@@ -9,6 +9,8 @@ import ServiceCxperium from '.';
 import ServiceCxperiumContact from './contact';
 import ServiceCxperiumConversation from './conversation';
 import ServiceCxperiumConfiguration from './configuration';
+import ServiceCxperiumLanguage from './language';
+import ServiceWhatsAppMessage from '../whatsapp/message';
 
 // Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
@@ -20,6 +22,8 @@ export default class extends ServiceCxperium {
 	serviceCxperiumContact!: ServiceCxperiumContact;
 	serviceCxperiumConversation!: ServiceCxperiumConversation;
 	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
+	serviceCxperiumLanguage!: ServiceCxperiumLanguage;
+	serviceWhatsAppMessage!: ServiceWhatsAppMessage;
 
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
@@ -30,6 +34,10 @@ export default class extends ServiceCxperium {
 		);
 		this.serviceCxperiumConfiguration = new ServiceCxperiumConfiguration(
 			data,
+		);
+		this.serviceCxperiumLanguage = new ServiceCxperiumLanguage(data);
+		this.serviceWhatsAppMessage = new ServiceWhatsAppMessage(
+			this.serviceCxperiumConfiguration,
 		);
 	}
 
@@ -162,13 +170,104 @@ export default class extends ServiceCxperium {
 		return new BaseConversation(dialog, conversation);
 	}
 
+	private async closeSession(
+		phone: string,
+		language: string,
+		message: string,
+	): Promise<void> {
+		const body = {
+			language,
+			phone,
+			data: [
+				{
+					message: message,
+					isLast: true,
+				},
+			],
+			isActive: false,
+		};
+
+		await fetch(`${this.baseUrl}/api/assistant/session`, {
+			method: 'POST',
+			body: JSON.stringify(body),
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		});
+	}
+
 	async closeActiveSessions() {
-		const sessionTimeout = (
-			await this.serviceCxperiumConfiguration.execute()
-		).sessionTimeoutConfig.Minutes;
+		const sessions = await this.getAllActiveSessions();
+
+		sessions.forEach(async (session: any) => {
+			await this.closeSession(session.phone, session.language, '');
+		});
+	}
+
+	async closeActiveSessionsWithTransfer() {
+		const sessionTimeout = Number(
+			(await this.serviceCxperiumConfiguration.execute())
+				.sessionTimeoutConfig.Minutes,
+		);
 		const activeSessions = await this.getAllActiveSessions();
 
-		
+		if (activeSessions) {
+			const date = Date.now();
 
+			for (const session of activeSessions?.data) {
+				if (session.isActive) {
+					const updateDifference = date - session.updatedAt;
+					const createDifference = date - session.createdAt;
+
+					if (
+						updateDifference >= sessionTimeout &&
+						createDifference >= sessionTimeout &&
+						session.isActive
+					) {
+						const message =
+							await this.serviceCxperiumLanguage.getLanguageByKey(
+								session.language,
+								'SessionTimeoutMessage',
+							);
+						const contact =
+							await this.serviceCxperiumContact.getContactByPhone(
+								session.phone,
+							);
+
+						await this.closeSession(
+							session.phone,
+							session.language,
+							'',
+						);
+
+						const hasOpenChat =
+							await this.serviceCxperiumContact.checkOpenChat(
+								String(contact._id),
+							);
+
+						if (hasOpenChat) {
+							await this.serviceCxperiumConversation.closeLiveChat(
+								contact,
+							);
+							await this.serviceCxperiumContact.updateLiveTransferStatus(
+								contact,
+								false,
+							);
+						} else {
+							await this.serviceWhatsAppMessage.sendRegularMessage(
+								session.phone,
+								message,
+							);
+						}
+
+						await this.serviceCxperiumContact.updateSurveyTransferStatus(
+							contact,
+							false,
+						);
+					}
+				}
+			}
+		}
 	}
 }
