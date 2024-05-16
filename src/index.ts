@@ -23,6 +23,7 @@ import ServiceMicrosoftBaseDialog from './services/microsoft/base-dialog';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
+import { UtilWorker } from './utils/worker';
 
 // Mixins.
 export interface Engine
@@ -31,7 +32,8 @@ export interface Engine
 		UtilCxperium,
 		UtilWhatsApp,
 		UtilAutomate,
-		UtilSentry {}
+		UtilSentry,
+		UtilWorker {}
 
 export class Engine {
 	constructor(srcPath: string) {
@@ -69,6 +71,9 @@ export class Engine {
 		// Initialize services.
 		this.initCxperiumService();
 		this.initWhatsAppService();
+
+		// Initialize worker services.
+		this.initWorkers(data);
 
 		// Initialize automate.
 		this.initAutomateService();
@@ -109,6 +114,7 @@ applyClassMixins.run(Engine, [
 	UtilWhatsApp,
 	UtilAutomate,
 	UtilSentry,
+	UtilWorker,
 ]);
 
 export {

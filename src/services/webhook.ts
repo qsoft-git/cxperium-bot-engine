@@ -76,7 +76,7 @@ export default class {
 					break;
 				}
 				case 'CHAT_ASSIGNEE_CHANGE': {
-					// ChatAssingChangeEvent(message);
+					this.chatAssignChange(contact);
 					break;
 				}
 			}
@@ -87,6 +87,10 @@ export default class {
 
 	private clearLanguageCache(): void {
 		this.services.cxperium.language.cache.del('ALL_LANGUAGES');
+	}
+
+	private chatAssignChange(contact: TCxperiumContact) {
+		this.services.cxperium.contact.updateLiveTransferStatus(contact, true);
 	}
 
 	private clearIntentCache(): void {
@@ -111,12 +115,13 @@ export default class {
 	}
 
 	private conversationClosed(contact: TCxperiumContact): void {
-		if (contact) {
-			this.services.cxperium.contact.updateLiveTransferStatus(
-				contact,
-				false,
-			);
-		}
+		this.services.cxperium.contact.updateLiveTransferStatus(contact, false);
+		this.services.cxperium.contact.updateSurveyTransferStatus(
+			contact,
+			false,
+		);
+
+		this.services.cxperium.session.closeActiveSessions();
 	}
 
 	private outsideBusinessHours(contact: TCxperiumContact): void {
@@ -127,9 +132,7 @@ export default class {
 		event: any,
 		contact: TCxperiumContact,
 	): void {
-		if (contact) {
-			this.messageCreatedEvent(event, contact);
-		}
+		this.messageCreatedEvent(event, contact);
 	}
 
 	private cxperiumCloseEvent(contact: TCxperiumContact) {
