@@ -8,6 +8,8 @@ import { UtilCxperium } from './utils/cxperium';
 import { UtilWhatsApp } from './utils/whatsapp';
 import { UtilAutomate } from './utils/automate';
 import { UtilSentry } from './utils/sentry';
+import { UtilWorker } from './utils/worker';
+import { UtilRouter } from './utils/router';
 
 // Interfaces.
 import { IDialog } from './interfaces/dialog';
@@ -23,7 +25,6 @@ import ServiceMicrosoftBaseDialog from './services/microsoft/base-dialog';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
-import { UtilWorker } from './utils/worker';
 
 // Mixins.
 export interface Engine
@@ -33,7 +34,8 @@ export interface Engine
 		UtilWhatsApp,
 		UtilAutomate,
 		UtilSentry,
-		UtilWorker {}
+		UtilWorker,
+		UtilRouter {}
 
 export class Engine {
 	constructor(srcPath: string) {
@@ -81,6 +83,8 @@ export class Engine {
 		// Initialize dialog.
 		this.initDialogService();
 
+		this.exportRouter();
+
 		// Initialize app services.
 		this.initAppService(
 			this.serviceCxperiumMain,
@@ -115,6 +119,7 @@ applyClassMixins.run(Engine, [
 	UtilAutomate,
 	UtilSentry,
 	UtilWorker,
+	UtilRouter,
 ]);
 
 export {
