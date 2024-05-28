@@ -1,5 +1,6 @@
 // Node modules.
 import fetch from 'node-fetch';
+import { TeamsInfo } from 'botbuilder';
 
 // Services.
 import ServiceCxperium from '.';
@@ -7,7 +8,6 @@ import ServiceCxperium from '.';
 // Types.
 import { TCxperiumContact } from '../../types/cxperium/contact';
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
-import { TurnContext, TeamsInfo } from 'botbuilder';
 
 export default class extends ServiceCxperium {
 	constructor(data: TCxperiumServiceParams) {
