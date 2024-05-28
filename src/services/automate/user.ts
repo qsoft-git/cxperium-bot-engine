@@ -58,4 +58,39 @@ export default class extends ServiceCxperium {
 
 		return response;
 	}
+
+	public async getUserByAdName(adName: string): Promise<any> {
+		const t = await this.serviceAutomateAuth.getAuthToken();
+		const token = 'Bearer ' + t;
+		const env = await this.serviceCxperiumConfiguration.execute();
+		const response = (await fetch(
+			`${env.automateConfig.ApiUrl}/user/sub/adname/${adName}`,
+			{
+				method: 'GET',
+				headers: {
+					Authorization: token,
+				},
+			},
+		).then((response) => response.json())) as any;
+
+		return response;
+	}
+
+	public async getUserByEmail(email: string): Promise<any> {
+		const t = await this.serviceAutomateAuth.getAuthToken();
+		const token = 'Bearer ' + t;
+		const env = await this.serviceCxperiumConfiguration.execute();
+
+		const response = (await fetch(
+			`${env.automateConfig.ApiUrl}/user/sub/email/${email}`,
+			{
+				method: 'GET',
+				headers: {
+					Authorization: token,
+				},
+			},
+		).then((response) => response.json())) as any;
+
+		return response;
+	}
 }
