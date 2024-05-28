@@ -61,6 +61,13 @@ export default class {
 			return;
 		}
 
+		if (this.context?.activity?.value?.keyIntent) {
+			return await this.services.dialog.runWithIntentName(
+				this,
+				this.context?.activity?.value?.keyIntent,
+			);
+		}
+
 		// Init EntryPoint.
 		try {
 			await initEntryPoint(this);
