@@ -7,6 +7,7 @@ import ServiceCxperium from '.';
 // Types.
 import { TCxperiumContact } from '../../types/cxperium/contact';
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
+import { TurnContext, TeamsInfo } from 'botbuilder';
 
 export default class extends ServiceCxperium {
 	constructor(data: TCxperiumServiceParams) {
@@ -233,7 +234,11 @@ export default class extends ServiceCxperium {
 
 	async getContactByBotframeworkId(dialog: any): Promise<TCxperiumContact> {
 		const phone = dialog.activity.from.id;
-
+		const context = dialog.context;
+		const userInfo = await TeamsInfo.getMember(
+			context,
+			context.activity.from.id,
+		);
 		const response = (await fetch(
 			`${this.baseUrl}/api/contacts/phone/${phone}`,
 			{
@@ -262,19 +267,22 @@ export default class extends ServiceCxperium {
 			return contact;
 		} else {
 			const attributes: Record<string, unknown> = {
-				FirstName: '',
-				LastName: '',
+				FirstName: userInfo.givenName,
+				LastName: userInfo.surname,
 				IsKvkkApproved: false,
 				KvkkApprovalDate: '',
 				KvkkNotApprovedDate: '',
 				IsCxLiveTransfer: false,
 				IsCxTransfer: false,
 				ChatId: '',
+				TenantId: userInfo.tenantId,
+				UserRole: userInfo.userRole,
+				Id: userInfo.id,
 			};
 
 			const result = await this.createContact(
 				phone,
-				'',
+				userInfo.email!,
 				dialog.activity.from.name,
 				attributes,
 			);
