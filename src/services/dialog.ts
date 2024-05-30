@@ -86,8 +86,11 @@ export default class {
 		const prediction: TIntentPrediction =
 			await this.intentPrediction(dialog);
 
-		dialog.contact =
-			await dialog.services.cxperium.contact.getContactByPhone(dialog);
+		if (dialog.place == 'WHATSAPP')
+			dialog.contact =
+				await dialog.services.cxperium.contact.getContactByPhone(
+					dialog,
+				);
 
 		if (prediction.isMatch && prediction.fulfillment) {
 			if (dialog.place == 'WHATSAPP') {
