@@ -188,14 +188,14 @@ export default class {
 
 						return;
 					}
-
-					conversation.increaseFaultCount();
 				}
+				conversation.increaseFaultCount();
 
 				await this.runWithIntentName(
 					dialog,
 					'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
 				);
+				// this.cache.set(dialog.contact.phone, dialog);
 			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
 				await this.runWithIntentName(
 					dialog,
