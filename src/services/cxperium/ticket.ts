@@ -84,6 +84,17 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json());
 	}
 
+	async getAllTicket(params: any = {}) {
+		//
+		return await fetch(`${this.baseUrl}/api/ticket`, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json());
+	}
+
 	async assigneeTicketToSub(id: string, ticketId: string) {
 		const response = (await fetch(
 			`${this.baseUrl}/api/assignee-change/${ticketId}/SUB/${id}`,
