@@ -51,7 +51,7 @@ export default class extends ServiceCxperium {
 			message: comment,
 		};
 
-		await fetch(
+		return await fetch(
 			`${this.baseUrl}/api/ticket/send-comment/phone/${ticketId}`,
 			{
 				method: 'POST',
@@ -76,6 +76,16 @@ export default class extends ServiceCxperium {
 
 	async getSubsWithAssigneeCount() {
 		return await fetch(`${this.baseUrl}/api/ticket/assignee-count`, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json());
+	}
+
+	async lastAnswer(ticketId: string) {
+		return await fetch(`${this.baseUrl}/api/last-answer/${ticketId}`, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
