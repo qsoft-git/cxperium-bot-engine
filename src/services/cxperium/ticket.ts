@@ -84,9 +84,32 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json());
 	}
 
-	async getAllTicket(params: any = {}) {
-		//
-		return await fetch(`${this.baseUrl}/api/ticket`, {
+	async getAll(params: any = {}) {
+		let url = `${this.baseUrl}/api/ticket`;
+		let strifyParams = '?';
+
+		if (Object.keys(params).length > 0) {
+			const entriesParams = Object.entries(params);
+
+			for (let i = 0; i < entriesParams.length; i++) {
+				const [key, value] = entriesParams[i];
+				const lastItem = i == entriesParams.length - 1;
+
+				if (value instanceof Object) {
+					strifyParams += `${key}=${JSON.stringify(value)}&`;
+				} else {
+					strifyParams += `${key}=${value}&`;
+				}
+
+				if (lastItem) {
+					strifyParams = strifyParams.slice(0, -1);
+				}
+			}
+
+			url += strifyParams;
+		}
+
+		return await fetch(url, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
