@@ -77,7 +77,10 @@ export default class {
 			}
 		}
 
-		await this.services.dialog.runWithMatch(this);
+		const conversationCheck: boolean =
+			await this.services.dialog.runWithConversationWaitAction(this);
+
+		!conversationCheck && (await this.services.dialog.runWithMatch(this));
 	}
 
 	private initActivity(): void {
