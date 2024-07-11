@@ -128,6 +128,36 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json());
 	}
 
+	async getTicketById(ticketId: string) {
+		return await fetch(`${this.baseUrl}/api/ticket/${ticketId}`, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json());
+	}
+
+	async getTicketByTask(taskId: string) {
+		return await fetch(`${this.baseUrl}/api/ticket/task/${taskId}`, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json());
+	}
+
+	async messageIdWithGetTicketId(messageId: string) {
+		return await fetch(`${this.baseUrl}/api/last-answer-get/${messageId}`, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json());
+	}
+
 	async assigneeTicketToSub(id: string, ticketId: string) {
 		const response = (await fetch(
 			`${this.baseUrl}/api/assignee-change/${ticketId}/SUB/${id}`,
