@@ -16,6 +16,9 @@ import ServiceCxperiumLanguage from '../cxperium/language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
 import { TAppLocalsServices } from '../../types/base-dialog';
 
+// Environments.
+const { OUT_TICKET } = process.env;
+
 export default class extends ServiceCxperium {
 	serviceCxperiumContact!: ServiceCxperiumContact;
 	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
@@ -68,10 +71,18 @@ export default class extends ServiceCxperium {
 						const ticketId: string = msg.split('_')[2];
 						conversation.setCache('ticketId', ticketId);
 						//! TİCKET HATASI BURADA
-						dialog.services.dialog.runWithIntentName(
-							dialog,
-							'CXPerium.Dialogs.WhatsApp.System.Ticket.TicketResponseDialog',
-						);
+
+						if (OUT_TICKET === 'true') {
+							dialog.services.dialog.runWithIntentName(
+								dialog,
+								'CXPerium.Dialogs.WhatsApp.Ticket.TicketResponseDialog',
+							);
+						} else {
+							dialog.services.dialog.runWithIntentName(
+								dialog,
+								'CXPerium.Dialogs.WhatsApp.System.Ticket.TicketResponseDialog',
+							);
+						}
 					} else {
 						await this.startSurvey(msg, contact, dialog);
 						await this.serviceCxperiumContact.updateSurveyTransferStatus(
