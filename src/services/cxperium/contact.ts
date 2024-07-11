@@ -30,9 +30,8 @@ export default class extends ServiceCxperium {
 
 			if (attributes && Object.entries(attributes).length > 0) {
 				for (const [key, value] of Object.entries(attributes)) {
-					let val = value;
-					if (val.length < 1) val = 'unknown';
-					body['custom'][key] = val;
+					if (!value) continue;
+					body['custom'][key] = value;
 				}
 			}
 
