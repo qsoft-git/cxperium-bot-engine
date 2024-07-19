@@ -5,6 +5,7 @@ export type TFlowMessage = {
 	interactive: {
 		type: 'flow';
 		header: {
+			type?: string;
 			text: string | null;
 		};
 		body: {
