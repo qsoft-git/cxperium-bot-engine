@@ -302,6 +302,9 @@ export default class extends ServiceWhatsApp {
 		screen: string,
 		data: object | null,
 	) {
+		const provider = (await this.configuration.execute()).whatsappConfig
+			.provider;
+
 		const msg: TFlowMessage = {
 			recipient_type: 'individual',
 			to,
@@ -332,6 +335,8 @@ export default class extends ServiceWhatsApp {
 				},
 			},
 		};
+
+		if (provider == 'CLOUD') msg.interactive.header['type'] = 'text';
 
 		if (data)
 			msg.interactive.action.parameters.flow_action_payload.data = data;
