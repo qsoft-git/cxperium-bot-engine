@@ -44,7 +44,7 @@
 		"nocache": "^4.0.0",
 		"node-cache": "^5.1.2",
 		"node-fetch": "^2.6.12",
-		"openai": "^4.24.7"
+		"openai": "^4.38.5"
 	},
 	"devDependencies": {
 		"@types/compression": "^1.7.5",
