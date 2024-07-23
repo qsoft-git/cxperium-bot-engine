@@ -101,7 +101,7 @@ export default class {
 		}
 
 		if (await this.services.cxperium.transfer.isSurveyTransfer(this)) {
-			if (!customAttributes.IsKvkkApproved) {
+			if (!customAttributes?.IsKvkkApproved) {
 				await this.services.cxperium.contact.updateGdprApprovalStatus(
 					this.contact,
 					true,
@@ -110,7 +110,7 @@ export default class {
 			return;
 		}
 
-		if (!customAttributes.IsKvkkApproved && isGdprActive) {
+		if (!customAttributes?.IsKvkkApproved && isGdprActive) {
 			await this.services.dialog.runWithIntentName(
 				this,
 				'CXPerium.Dialogs.WhatsApp.System.Gdpr.KvkkDialog',
