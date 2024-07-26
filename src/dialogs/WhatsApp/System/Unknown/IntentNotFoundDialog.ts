@@ -22,9 +22,9 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 			FIRST_CALLBACK_REDIRECT_MAIN_MENU_STATUS === 'true'
 		) {
 			await this.sendButtonMessage(
+				'💬',
+				'',
 				await this.getLocalizationText('understand_message'),
-				'',
-				'',
 				[
 					{
 						id: FIRST_CALLBACK_REDIRECT_MAIN_MENU_ID || 'main_menu',
