@@ -12,7 +12,7 @@
 	],
 	"main": "lib/index.js",
 	"types": "lib",
-	"scripts": {
+	"scripts": {	
 		"build": "tsc -p tsconfig.build.json",
 		"build:watch": "tsc -p tsconfig.build.json --watch"
 	},
