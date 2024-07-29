@@ -190,8 +190,7 @@ export default class {
 
 			async function sessionFinder(): Promise<string> {
 				if (sessionKey) {
-					const findOneNodeCacheSession: any =
-						cache.get('sessionKey');
+					const findOneNodeCacheSession: any = cache.get(sessionKey);
 
 					if (!findOneNodeCacheSession) {
 						const thread = await openai.beta.threads.create();
@@ -201,7 +200,7 @@ export default class {
 						threadId = findOneNodeCacheSession;
 					}
 
-					cache.set(sessionKey, threadId, 300);
+					cache.set(sessionKey, threadId);
 
 					return threadId;
 				} else {
