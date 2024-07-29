@@ -283,10 +283,16 @@ export default class {
 
 			prediction = result.chatgptMessage;
 		} else if (env.enterpriseChatgptConfig.IsEnabled) {
+			let from: string;
+
+			if (dialog?.activity?.from?.aadObjectId)
+				from = dialog.activity.from.aadObjectId;
+			else from = dialog.activity.from;
+
 			const chatgptService = new ServiceChatGPT(services);
 			const result = await chatgptService.chatgptAssistantChat(
 				activity,
-				dialog.activity.from,
+				from,
 			);
 
 			prediction = result;
