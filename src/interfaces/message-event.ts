@@ -1,7 +1,10 @@
+import { TIntentPrediction } from '../types/intent-prediction';
+
 interface IMessageEvent {
-	onFileReceived(): void;
-	onChatGPTMessage(): void;
-	onDialogflowMessage(): void;
+	onFileReceived?(messageObject: any): void;
+	onChatGPTMessage?(messageObject: TIntentPrediction): void;
+	onDialogflowMessage?(messageObject: TIntentPrediction): void;
+	onDidNotUnderstand(): void;
 }
 
-export default IMessageEvent;
+export { IMessageEvent };
