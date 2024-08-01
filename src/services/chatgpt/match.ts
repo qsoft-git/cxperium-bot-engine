@@ -4,6 +4,7 @@ import { OpenAI } from 'openai';
 // Types.
 import { TAppLocalsServices } from '../../types/base-dialog';
 import { TIntentPrediction } from '../../types/intent-prediction';
+import { TChatGPTResponse } from '../../types/chatgpt/response';
 
 // Datas.
 import DataGeneral from '../../data/general';
@@ -154,12 +155,14 @@ export default class {
 				},
 			);
 
-			const response = {
+			const response: TChatGPTResponse = {
 				status: false,
 				text: '',
+				files: [],
 			};
 
 			let replyAi = '';
+			let annotations: any;
 
 			if (run.status === 'completed') {
 				await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -169,10 +172,20 @@ export default class {
 				);
 
 				const messagesData: any = messages.data.reverse();
-
 				const lastMessage: any = messagesData[messagesData.length - 1];
 
 				replyAi = lastMessage?.content?.[0]?.text?.value;
+				annotations = lastMessage?.content?.[0].text?.annotations;
+
+				const files = await openai.files.list();
+
+				for (const annot of annotations) {
+					const file: any = files?.data?.find(
+						(x) => x?.id === annot?.file_citation?.file_id,
+					);
+
+					if (file) response.files.push(file);
+				}
 			}
 
 			if (replyAi && UNKNOWN_REGEX.test(replyAi)) {
@@ -186,7 +199,7 @@ export default class {
 					.trim();
 			}
 
-			return response.text;
+			return response;
 
 			async function sessionFinder(): Promise<string> {
 				if (sessionKey) {
