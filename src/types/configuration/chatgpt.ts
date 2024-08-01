@@ -4,4 +4,5 @@ export type TChatGPTConfig = {
 	Model: string;
 	MaxTokens: string;
 	Temperature: string;
+	AsistanId: string;
 };

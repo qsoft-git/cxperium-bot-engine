@@ -96,26 +96,15 @@ export default class {
 	public async chatgptAssistantChat(
 		text: string,
 		sessionKey: string,
+		env: any,
 	): Promise<any> {
 		try {
 			const cache = this.cache;
 
-			// Get environment variables.
-			const { OPENAI_API_KEY, OPENAI_ASSISTANT_ID } = process.env;
-
 			// OpenAI instance.
-			const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
-
-			if (!OPENAI_API_KEY) {
-				throw new Error(
-					'OPENAI_API_KEY is required for using the Chatgpt Assistant Feature!',
-				);
-			}
-			if (!OPENAI_ASSISTANT_ID) {
-				throw new Error(
-					'OPENAI_ASSISTANT_ID is required for using the Chatgpt Assistant Feature!',
-				);
-			}
+			const openai = new OpenAI({
+				apiKey: env.chatgptConfig.APIKey,
+			});
 
 			let threadId: string = '';
 
@@ -151,7 +140,7 @@ export default class {
 			const run: any = await openai.beta.threads.runs.createAndPoll(
 				threadId,
 				{
-					assistant_id: OPENAI_ASSISTANT_ID,
+					assistant_id: env.chatgptConfig.AsistanId,
 				},
 			);
 

@@ -269,47 +269,25 @@ export default class {
 	public async requestChatGPTResponse(
 		dialog: any,
 		activity: string,
-	): Promise<any> {
+	): Promise<TChatGPTResponse> {
 		const services: TAppLocalsServices = dialog.services;
 
-		let prediction: TChatGPTResponse;
 		const env = await services.cxperium.configuration.execute();
 
-		if (env.chatgptConfig.IsEnabled) {
-			const chatgptService = new ServiceChatGPT(services);
-			const result = await chatgptService.chatGPTMatch(
-				activity,
-				env.chatgptConfig,
-			);
+		let from: string;
 
-			const newPrediction: TChatGPTResponse = {
-				status: true,
-				text: result.chatgptMessage!,
-				files: [],
-			};
+		if (dialog?.activity?.from?.aadObjectId)
+			from = dialog.activity.from.aadObjectId;
+		else from = dialog.activity.from;
 
-			prediction = newPrediction;
-		} else if (env.enterpriseChatgptConfig.IsEnabled) {
-			let from: string;
+		const chatgptService = new ServiceChatGPT(services);
+		const result = await chatgptService.chatgptAssistantChat(
+			activity,
+			from,
+			env,
+		);
 
-			if (dialog?.activity?.from?.aadObjectId)
-				from = dialog.activity.from.aadObjectId;
-			else from = dialog.activity.from;
-
-			const chatgptService = new ServiceChatGPT(services);
-			const result = await chatgptService.chatgptAssistantChat(
-				activity,
-				from,
-			);
-
-			prediction = result;
-		} else {
-			prediction = {
-				status: false,
-				text: 'ERROR',
-				files: [],
-			};
-		}
+		const prediction: TChatGPTResponse = result;
 
 		return prediction;
 	}
