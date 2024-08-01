@@ -19,12 +19,15 @@ import ServiceChatGPT from './chatgpt/match';
 import { TCxperiumLiveConfig } from '../types/configuration/live';
 import { TButton } from '../types/whatsapp/message';
 import NodeCache from 'node-cache';
+import { EMessageEvent } from '../types/message-event';
 
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
 	TEAMS: '3',
 	WEBCHAT: '4',
 };
+
+const ENTRY_INTENT_NAME = 'CXPerium.Dialogs.WhatsApp.Entry';
 
 export default class {
 	private folderPathExternal!: string;
@@ -86,6 +89,18 @@ export default class {
 		const prediction: TIntentPrediction =
 			await this.intentPrediction(dialog);
 
+		const isFile =
+			dialog.activity.image.id.length > 1 ||
+			dialog.activity.document.id.length > 1;
+
+		if (isFile) {
+			return await this.runMessageEvent(
+				dialog,
+				prediction,
+				EMessageEvent.ON_FILE_RECEIVED,
+			);
+		}
+
 		if (dialog.place == 'WHATSAPP')
 			dialog.contact =
 				await dialog.services.cxperium.contact.getContactByPhone(
@@ -94,9 +109,10 @@ export default class {
 
 		if (prediction.isMatch && prediction.fulfillment) {
 			if (dialog.place == 'WHATSAPP') {
-				await dialog.services.whatsapp.message.sendRegularMessage(
-					dialog.contact.phone,
-					prediction.fulfillment,
+				await this.runMessageEvent(
+					dialog,
+					prediction,
+					EMessageEvent.ON_DIALOGFLOW_MESSAGE,
 				);
 			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
 				await dialog.context.sendActivity(prediction.fulfillment);
@@ -106,9 +122,14 @@ export default class {
 
 		if (prediction.isMatch && prediction.chatgptMessage) {
 			if (dialog.place == 'WHATSAPP') {
-				await dialog.services.whatsapp.message.sendRegularMessage(
-					dialog.contact.phone,
-					prediction.chatgptMessage,
+				// await dialog.services.whatsapp.message.sendRegularMessage(
+				// 	dialog.contact.phone,
+				// 	prediction.chatgptMessage,
+				// );
+				await this.runMessageEvent(
+					dialog,
+					prediction,
+					EMessageEvent.ON_CHATGPT_MESSAGE,
 				);
 			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
 				await dialog.context.sendActivity(prediction.chatgptMessage);
@@ -191,11 +212,18 @@ export default class {
 				}
 				conversation.increaseFaultCount();
 
-				await this.runWithIntentName(
-					dialog,
-					'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
-				);
-				// this.cache.set(dialog.contact.phone, dialog);
+				try {
+					await this.runMessageEvent(
+						dialog,
+						prediction,
+						EMessageEvent.ON_DID_NOT_UNDERSTAND,
+					);
+				} catch (error: any) {
+					await this.runWithIntentName(
+						dialog,
+						'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
+					);
+				}
 			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
 				await this.runWithIntentName(
 					dialog,
@@ -364,7 +392,11 @@ export default class {
 			return prediction;
 		}
 
-		if (!prediction.isMatch && env.dialogflowConfig.IsEnable) {
+		if (
+			!prediction.isMatch &&
+			env.dialogflowConfig.IsEnable &&
+			activity.length > 1
+		) {
 			const df = new ServiceDialogflow(services);
 			prediction = await df.dialogflowMatch(
 				activity,
@@ -373,7 +405,11 @@ export default class {
 			);
 		}
 
-		if (!prediction.isMatch && env.chatgptConfig.IsEnabled) {
+		if (
+			!prediction.isMatch &&
+			env.chatgptConfig.IsEnabled &&
+			activity.length > 1
+		) {
 			const chatgptService = new ServiceChatGPT(services);
 			prediction = await chatgptService.chatGPTMatch(
 				activity,
@@ -381,7 +417,11 @@ export default class {
 			);
 		}
 
-		if (!prediction.isMatch && env.enterpriseChatgptConfig.IsEnabled) {
+		if (
+			!prediction.isMatch &&
+			env.enterpriseChatgptConfig.IsEnabled &&
+			activity.length > 1
+		) {
 			const chatgptService = new ServiceChatGPT(services);
 			prediction = await chatgptService.enterpriseChatGPTMatch(
 				activity,
@@ -435,6 +475,64 @@ export default class {
 		};
 
 		await this.run(runParams);
+	}
+
+	public async runMessageEvent(
+		dialog: any,
+		prediction: TIntentPrediction,
+		event: EMessageEvent,
+	) {
+		const services: TAppLocalsServices = dialog.services;
+
+		let findOneDialog;
+
+		try {
+			findOneDialog = this.getListAll.find((item: any) => {
+				return item.name == ENTRY_INTENT_NAME;
+			}) as any;
+		} catch (error) {
+			console.error('RUN MESSAGE EVENT: NOT FOUND MESSAGE EVENT!!!');
+			throw error;
+		}
+
+		if (!findOneDialog)
+			throw new Error('RUN MESSAGE EVENT: IMPLEMENTATION NOT FOUND!');
+
+		const runParams: TBaseDialogCtor = {
+			contact: dialog.contact,
+			activity: dialog.activity,
+			conversation: dialog.conversation,
+			dialogFileParams: {
+				name: findOneDialog.name,
+				path: findOneDialog.path,
+				place: `RUN MESSAGE EVENT: ${event}`,
+			},
+			context: dialog.context,
+			services,
+		};
+
+		switch (event) {
+			case EMessageEvent.ON_FILE_RECEIVED: {
+				return await this.runOnFileReceived(runParams, event);
+			}
+			case EMessageEvent.ON_CHATGPT_MESSAGE: {
+				return await this.runOnChatGPTMessage(
+					runParams,
+					prediction,
+					event,
+				);
+			}
+			case EMessageEvent.ON_DIALOGFLOW_MESSAGE: {
+				return await this.runOnDialogflowMessage(
+					runParams,
+					prediction,
+					event,
+				);
+			}
+			case EMessageEvent.ON_DID_NOT_UNDERSTAND: {
+				return await this.runOnDidNotUnderstand(runParams, event);
+			}
+		}
 	}
 
 	public async runReturnFlowResponse(
@@ -528,6 +626,80 @@ export default class {
 		const dialogImport = await import(data.dialogFileParams.path);
 		const dialog = new dialogImport.default(data);
 		await dialog.recieveFlow();
+	}
+
+	public async runOnDidNotUnderstand(
+		data: TBaseDialogCtor,
+		event: EMessageEvent,
+	): Promise<void> {
+		console.info(`RUN MESSAGE EVENT: ${EMessageEvent[event]}`);
+
+		try {
+			data.conversation.dialogFileParams = data.dialogFileParams;
+			const dialogImport = await import(data.dialogFileParams.path);
+			const dialog = new dialogImport.default(data);
+			await dialog.onDidNotUnderstand(dialog);
+		} catch (error) {
+			console.error(
+				`${EMessageEvent[event]} is not implemented. Please implement IMessageEvent interface to your Entry.ts file!!!`,
+			);
+		}
+	}
+
+	public async runOnFileReceived(
+		data: TBaseDialogCtor,
+		event: EMessageEvent,
+	): Promise<void> {
+		console.info(`RUN MESSAGE EVENT: ${EMessageEvent[event]}`);
+
+		try {
+			data.conversation.dialogFileParams = data.dialogFileParams;
+			const dialogImport = await import(data.dialogFileParams.path);
+			const dialog = new dialogImport.default(data);
+			await dialog.onFileReceived(dialog);
+		} catch (error) {
+			console.error(
+				`${EMessageEvent[event]} is not implemented. Please implement IMessageEvent interface to your Entry.ts file!!!`,
+			);
+		}
+	}
+
+	public async runOnChatGPTMessage(
+		data: TBaseDialogCtor,
+		prediction: TIntentPrediction,
+		event: EMessageEvent,
+	): Promise<void> {
+		console.info(`RUN MESSAGE EVENT: ${EMessageEvent[event]}`);
+
+		try {
+			data.conversation.dialogFileParams = data.dialogFileParams;
+			const dialogImport = await import(data.dialogFileParams.path);
+			const dialog = new dialogImport.default(data);
+			await dialog.onChatGPTMessage(prediction);
+		} catch (error) {
+			console.error(
+				`${EMessageEvent[event]} is not implemented. Please implement IMessageEvent interface to your Entry.ts file!!!`,
+			);
+		}
+	}
+
+	public async runOnDialogflowMessage(
+		data: TBaseDialogCtor,
+		prediction: TIntentPrediction,
+		event: EMessageEvent,
+	): Promise<void> {
+		console.info(`RUN MESSAGE EVENT: ${EMessageEvent[event]}`);
+
+		try {
+			data.conversation.dialogFileParams = data.dialogFileParams;
+			const dialogImport = await import(data.dialogFileParams.path);
+			const dialog = new dialogImport.default(data);
+			await dialog.onDialogflowMessage(prediction);
+		} catch (error) {
+			console.error(
+				`${EMessageEvent[event]} is not implemented. Please implement IMessageEvent interface to your Entry.ts file!!!`,
+			);
+		}
 	}
 
 	public async run(data: TBaseDialogCtor): Promise<void> {
