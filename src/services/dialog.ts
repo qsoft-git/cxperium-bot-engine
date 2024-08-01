@@ -19,6 +19,7 @@ import ServiceChatGPT from './chatgpt/match';
 import { TCxperiumLiveConfig } from '../types/configuration/live';
 import { TButton } from '../types/whatsapp/message';
 import NodeCache from 'node-cache';
+import { TChatGPTResponse } from '../types/chatgpt/response';
 
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
@@ -271,7 +272,7 @@ export default class {
 	): Promise<any> {
 		const services: TAppLocalsServices = dialog.services;
 
-		let prediction: string | null;
+		let prediction: TChatGPTResponse;
 		const env = await services.cxperium.configuration.execute();
 
 		if (env.chatgptConfig.IsEnabled) {
@@ -281,7 +282,13 @@ export default class {
 				env.chatgptConfig,
 			);
 
-			prediction = result.chatgptMessage;
+			const newPrediction: TChatGPTResponse = {
+				status: true,
+				text: result.chatgptMessage!,
+				files: [],
+			};
+
+			prediction = newPrediction;
 		} else if (env.enterpriseChatgptConfig.IsEnabled) {
 			let from: string;
 
@@ -297,7 +304,11 @@ export default class {
 
 			prediction = result;
 		} else {
-			prediction = null;
+			prediction = {
+				status: false,
+				text: 'ERROR',
+				files: [],
+			};
 		}
 
 		return prediction;
