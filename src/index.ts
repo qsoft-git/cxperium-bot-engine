@@ -14,6 +14,7 @@ import { UtilRouter } from './utils/router';
 // Interfaces.
 import { IDialog } from './interfaces/dialog';
 import { IFlow } from './interfaces/flow';
+import { IMessageEvent } from './interfaces/message-event';
 
 // Types.
 import { TSrcIndexConfig } from './types/src-index';
@@ -126,6 +127,7 @@ export {
 	ServiceWhatsappBaseDialog,
 	ServiceMicrosoftBaseDialog,
 	IDialog,
+	IMessageEvent,
 	IFlow,
 	TBaseDialogCtor,
 };
