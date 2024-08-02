@@ -4,6 +4,7 @@ import { OpenAI } from 'openai';
 // Types.
 import { TAppLocalsServices } from '../../types/base-dialog';
 import { TIntentPrediction } from '../../types/intent-prediction';
+import { TChatGPTResponse } from '../../types/chatgpt/response';
 
 // Datas.
 import DataGeneral from '../../data/general';
@@ -95,26 +96,15 @@ export default class {
 	public async chatgptAssistantChat(
 		text: string,
 		sessionKey: string,
+		env: any,
 	): Promise<any> {
 		try {
 			const cache = this.cache;
 
-			// Get environment variables.
-			const { OPENAI_API_KEY, OPENAI_ASSISTANT_ID } = process.env;
-
 			// OpenAI instance.
-			const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
-
-			if (!OPENAI_API_KEY) {
-				throw new Error(
-					'OPENAI_API_KEY is required for using the Chatgpt Assistant Feature!',
-				);
-			}
-			if (!OPENAI_ASSISTANT_ID) {
-				throw new Error(
-					'OPENAI_ASSISTANT_ID is required for using the Chatgpt Assistant Feature!',
-				);
-			}
+			const openai = new OpenAI({
+				apiKey: env.chatgptConfig.APIKey,
+			});
 
 			let threadId: string = '';
 
@@ -150,16 +140,18 @@ export default class {
 			const run: any = await openai.beta.threads.runs.createAndPoll(
 				threadId,
 				{
-					assistant_id: OPENAI_ASSISTANT_ID,
+					assistant_id: env.chatgptConfig.AsistanId,
 				},
 			);
 
-			const response = {
+			const response: TChatGPTResponse = {
 				status: false,
 				text: '',
+				files: [],
 			};
 
 			let replyAi = '';
+			let annotations: any;
 
 			if (run.status === 'completed') {
 				await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -169,10 +161,20 @@ export default class {
 				);
 
 				const messagesData: any = messages.data.reverse();
-
 				const lastMessage: any = messagesData[messagesData.length - 1];
 
 				replyAi = lastMessage?.content?.[0]?.text?.value;
+				annotations = lastMessage?.content?.[0].text?.annotations;
+
+				const files = await openai.files.list();
+
+				for (const annot of annotations) {
+					const file: any = files?.data?.find(
+						(x) => x?.id === annot?.file_citation?.file_id,
+					);
+
+					if (file) response.files.push(file);
+				}
 			}
 
 			if (replyAi && UNKNOWN_REGEX.test(replyAi)) {
@@ -186,7 +188,7 @@ export default class {
 					.trim();
 			}
 
-			return response.text;
+			return response;
 
 			async function sessionFinder(): Promise<string> {
 				if (sessionKey) {

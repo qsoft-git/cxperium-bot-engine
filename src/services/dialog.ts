@@ -19,6 +19,7 @@ import ServiceChatGPT from './chatgpt/match';
 import { TCxperiumLiveConfig } from '../types/configuration/live';
 import { TButton } from '../types/whatsapp/message';
 import NodeCache from 'node-cache';
+import { TChatGPTResponse } from '../types/chatgpt/response';
 import { EMessageEvent } from '../types/message-event';
 
 const CHANNELS: Record<string, any> = {
@@ -296,37 +297,25 @@ export default class {
 	public async requestChatGPTResponse(
 		dialog: any,
 		activity: string,
-	): Promise<any> {
+	): Promise<TChatGPTResponse> {
 		const services: TAppLocalsServices = dialog.services;
 
-		let prediction: string | null;
 		const env = await services.cxperium.configuration.execute();
 
-		if (env.chatgptConfig.IsEnabled) {
-			const chatgptService = new ServiceChatGPT(services);
-			const result = await chatgptService.chatGPTMatch(
-				activity,
-				env.chatgptConfig,
-			);
+		let from: string;
 
-			prediction = result.chatgptMessage;
-		} else if (env.enterpriseChatgptConfig.IsEnabled) {
-			let from: string;
+		if (dialog?.activity?.from?.aadObjectId)
+			from = dialog.activity.from.aadObjectId;
+		else from = dialog.activity.from;
 
-			if (dialog?.activity?.from?.aadObjectId)
-				from = dialog.activity.from.aadObjectId;
-			else from = dialog.activity.from;
+		const chatgptService = new ServiceChatGPT(services);
+		const result = await chatgptService.chatgptAssistantChat(
+			activity,
+			from,
+			env,
+		);
 
-			const chatgptService = new ServiceChatGPT(services);
-			const result = await chatgptService.chatgptAssistantChat(
-				activity,
-				from,
-			);
-
-			prediction = result;
-		} else {
-			prediction = null;
-		}
+		const prediction: TChatGPTResponse = result;
 
 		return prediction;
 	}
