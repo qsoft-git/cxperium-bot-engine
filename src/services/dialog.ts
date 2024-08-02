@@ -95,11 +95,22 @@ export default class {
 			dialog.activity.document.id.length > 1;
 
 		if (isFile) {
-			return await this.runMessageEvent(
-				dialog,
-				prediction,
-				EMessageEvent.ON_FILE_RECEIVED,
-			);
+			try {
+				return await this.runMessageEvent(
+					dialog,
+					prediction,
+					EMessageEvent.ON_FILE_RECEIVED,
+				);
+			} catch (error: any) {
+				if (
+					error.message ===
+					'FILE_RECEIVED_EVENT_NOT_IMPLEMENTED_ERROR'
+				) {
+					console.info(
+						'You may want to add onFileReceived event on your Entry.ts file!',
+					);
+				}
+			}
 		}
 
 		if (dialog.place == 'WHATSAPP')
@@ -110,11 +121,23 @@ export default class {
 
 		if (prediction.isMatch && prediction.fulfillment) {
 			if (dialog.place == 'WHATSAPP') {
-				await this.runMessageEvent(
-					dialog,
-					prediction,
-					EMessageEvent.ON_DIALOGFLOW_MESSAGE,
-				);
+				try {
+					await this.runMessageEvent(
+						dialog,
+						prediction,
+						EMessageEvent.ON_DIALOGFLOW_MESSAGE,
+					);
+				} catch (error: any) {
+					if (
+						error.message ===
+						'DIALOGFLOW_EVENT_NOT_IMPLEMENTED_ERROR'
+					) {
+						await dialog.services.whatsapp.message.sendRegularMessage(
+							dialog.contact.phone,
+							prediction.fulfillment,
+						);
+					}
+				}
 			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
 				await dialog.context.sendActivity(prediction.fulfillment);
 			}
@@ -123,15 +146,22 @@ export default class {
 
 		if (prediction.isMatch && prediction.chatgptMessage) {
 			if (dialog.place == 'WHATSAPP') {
-				// await dialog.services.whatsapp.message.sendRegularMessage(
-				// 	dialog.contact.phone,
-				// 	prediction.chatgptMessage,
-				// );
-				await this.runMessageEvent(
-					dialog,
-					prediction,
-					EMessageEvent.ON_CHATGPT_MESSAGE,
-				);
+				try {
+					await this.runMessageEvent(
+						dialog,
+						prediction,
+						EMessageEvent.ON_CHATGPT_MESSAGE,
+					);
+				} catch (error: any) {
+					if (
+						error.message === 'CHATGPT_EVENT_NOT_IMPLEMENTED_ERROR'
+					) {
+						await dialog.services.whatsapp.message.sendRegularMessage(
+							dialog.contact.phone,
+							prediction.chatgptMessage,
+						);
+					}
+				}
 			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
 				await dialog.context.sendActivity(prediction.chatgptMessage);
 			}
@@ -146,7 +176,9 @@ export default class {
 					(item: any) => prediction.intent === item?.name,
 				) as any;
 			} catch (error) {
-				console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
+				console.error(
+					`RUN DIALOG: NOT FOUND ${prediction.intent} DIALOG FILE!!!`,
+				);
 				throw error;
 			}
 
@@ -220,10 +252,15 @@ export default class {
 						EMessageEvent.ON_DID_NOT_UNDERSTAND,
 					);
 				} catch (error: any) {
-					await this.runWithIntentName(
-						dialog,
-						'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
-					);
+					if (
+						error.message ===
+						'DID_NOT_UNDERSTAND_EVENT_NOT_IMPLEMENTED_ERROR'
+					) {
+						await this.runWithIntentName(
+							dialog,
+							'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
+						);
+					}
 				}
 			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
 				await this.runWithIntentName(
@@ -629,9 +666,10 @@ export default class {
 			const dialog = new dialogImport.default(data);
 			await dialog.onDidNotUnderstand(dialog);
 		} catch (error) {
-			console.error(
-				`${EMessageEvent[event]} is not implemented. Please implement IMessageEvent interface to your Entry.ts file!!!`,
+			console.info(
+				`${EMessageEvent[event]} is not implemented. You may want to implement IMessageEvent interface to your Entry.ts file if you require to customize the response! (NOT REQUIRED!)`,
 			);
+			throw new Error(`DID_NOT_UNDERSTAND_EVENT_NOT_IMPLEMENTED_ERROR`);
 		}
 	}
 
@@ -647,9 +685,10 @@ export default class {
 			const dialog = new dialogImport.default(data);
 			await dialog.onFileReceived(dialog);
 		} catch (error) {
-			console.error(
-				`${EMessageEvent[event]} is not implemented. Please implement IMessageEvent interface to your Entry.ts file!!!`,
+			console.info(
+				`${EMessageEvent[event]} is not implemented. You may want to IMessageEvent interface to your Entry.ts file if you require to customize the response! (NOT REQUIRED!)`,
 			);
+			throw new Error(`FILE_RECEIVED_EVENT_NOT_IMPLEMENTED_ERROR`);
 		}
 	}
 
@@ -666,9 +705,10 @@ export default class {
 			const dialog = new dialogImport.default(data);
 			await dialog.onChatGPTMessage(prediction);
 		} catch (error) {
-			console.error(
-				`${EMessageEvent[event]} is not implemented. Please implement IMessageEvent interface to your Entry.ts file!!!`,
+			console.info(
+				`${EMessageEvent[event]} is not implemented. You may want to IMessageEvent interface to your Entry.ts file if you require to customize the response! (NOT REQUIRED!)`,
 			);
+			throw new Error(`CHATGPT_EVENT_NOT_IMPLEMENTED_ERROR`);
 		}
 	}
 
@@ -685,9 +725,10 @@ export default class {
 			const dialog = new dialogImport.default(data);
 			await dialog.onDialogflowMessage(prediction);
 		} catch (error) {
-			console.error(
-				`${EMessageEvent[event]} is not implemented. Please implement IMessageEvent interface to your Entry.ts file!!!`,
+			console.info(
+				`${EMessageEvent[event]} is not implemented. You may want to IMessageEvent interface to your Entry.ts file if you require to customize the response! (NOT REQUIRED!)`,
 			);
+			throw new Error(`DIALOGFLOW_EVENT_NOT_IMPLEMENTED_ERROR`);
 		}
 	}
 
