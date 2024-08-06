@@ -1,5 +1,5 @@
-// Node modules.
-import fetch from 'node-fetch';
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Services.
 import ServiceCxperium from '.';
@@ -17,7 +17,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async chatExists(contactId: string) {
-		const response = (await fetch(`${this.baseUrl}/api/chat`, {
+		const response = (await fetchRetry(`${this.baseUrl}/api/chat`, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
@@ -35,7 +35,7 @@ export default class extends ServiceCxperium {
 
 	async closeLiveChat(contact: TCxperiumContact): Promise<void> {
 		const custom = contact.custom as any;
-		await fetch(
+		await fetchRetry(
 			`${this.baseUrl}/api/chat/status-change/${custom.ChatId}/CLOSED`,
 			{
 				method: 'PATCH',
@@ -48,7 +48,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async getContactIdByChatId(chatId: string) {
-		const response = (await fetch(`${this.baseUrl}/api/chat`, {
+		const response = (await fetchRetry(`${this.baseUrl}/api/chat`, {
 			method: 'POST',
 			headers: {
 				'content-type': 'application/json',
@@ -66,7 +66,7 @@ export default class extends ServiceCxperium {
 
 	async create(contactId: string) {
 		const body = { contactId: contactId };
-		const response = (await fetch(`${this.baseUrl}/api/chat`, {
+		const response = (await fetchRetry(`${this.baseUrl}/api/chat`, {
 			method: 'POST',
 			body: JSON.stringify(body),
 			headers: {
