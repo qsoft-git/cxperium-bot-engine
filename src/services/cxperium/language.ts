@@ -1,5 +1,5 @@
-// Node modules.
-import fetch from 'node-fetch';
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Services.
 import ServiceCxperium from '.';
@@ -33,7 +33,7 @@ export default class extends ServiceCxperium {
 
 		if (cached) return cached;
 
-		const response = (await fetch(
+		const response = (await fetchRetry(
 			`${this.baseUrl}/api/assistant/localization`,
 			{
 				method: 'GET',
