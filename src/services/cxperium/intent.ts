@@ -1,5 +1,5 @@
-// Node modules.
-import fetch from 'node-fetch';
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Services.
 import ServiceCxperium from '.';
@@ -24,13 +24,16 @@ export default class extends ServiceCxperium {
 
 		if (cached) return cached;
 
-		const response = (await fetch(this.baseUrl + '/api/assistant/intent', {
-			method: 'GET',
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
+		const response = (await fetchRetry(
+			this.baseUrl + '/api/assistant/intent',
+			{
+				method: 'GET',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
 			},
-		}).then((response) => response.json())) as any;
+		).then((response) => response.json())) as any;
 
 		const intents: TCxperiumIntent[] = [];
 
