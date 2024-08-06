@@ -1,6 +1,8 @@
 // Node modules.
-import fetch from 'node-fetch';
 import { TeamsInfo } from 'botbuilder';
+
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Services.
 import ServiceCxperium from '.';
@@ -35,7 +37,7 @@ export default class extends ServiceCxperium {
 				}
 			}
 
-			const response = (await fetch(this.baseUrl + '/api/contacts', {
+			const response = (await fetchRetry(this.baseUrl + '/api/contacts', {
 				method: 'POST',
 				body: JSON.stringify(body),
 				headers: {
@@ -73,7 +75,7 @@ export default class extends ServiceCxperium {
 				lastConversationDate: date.toISOString(),
 			};
 
-			await fetch(`${this.baseUrl}/api/contacts/${contactId}`, {
+			await fetchRetry(`${this.baseUrl}/api/contacts/${contactId}`, {
 				method: 'PUT',
 				body: JSON.stringify(body),
 				headers: {
@@ -87,7 +89,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async getContactIdByPhone(phone: string): Promise<unknown> {
-		const response = (await fetch(
+		const response = (await fetchRetry(
 			`${this.baseUrl}/api/contacts/phone/${phone}`,
 			{
 				method: 'GET',
@@ -101,7 +103,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async getContactByContactId(contactId: string): Promise<TCxperiumContact> {
-		const response = (await fetch(
+		const response = (await fetchRetry(
 			`${this.baseUrl}/api/contacts/${contactId}`,
 			{
 				method: 'GET',
@@ -139,7 +141,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async anonymizeContact(phone: string) {
-		await fetch(`${this.baseUrl}/api/contacts/anonymize/${phone}`, {
+		await fetchRetry(`${this.baseUrl}/api/contacts/anonymize/${phone}`, {
 			method: 'patch',
 			headers: {
 				'content-type': 'application/json',
@@ -151,7 +153,7 @@ export default class extends ServiceCxperium {
 	async getContactByPhone(dialog: any): Promise<TCxperiumContact> {
 		const phone = dialog.activity.from;
 
-		const response = (await fetch(
+		const response = (await fetchRetry(
 			`${this.baseUrl}/api/contacts/phone/${phone}`,
 			{
 				method: 'get',
@@ -195,7 +197,7 @@ export default class extends ServiceCxperium {
 
 				await this.updateContactByCustomFields(contact, attributes);
 
-				const result = (await fetch(
+				const result = (await fetchRetry(
 					`${this.baseUrl}/api/contacts/phone/${phone}`,
 					{
 						method: 'get',
@@ -238,7 +240,7 @@ export default class extends ServiceCxperium {
 			context,
 			context.activity.from.id,
 		);
-		const response = (await fetch(
+		const response = (await fetchRetry(
 			`${this.baseUrl}/api/contacts/phone/${phone}`,
 			{
 				method: 'get',
@@ -295,7 +297,7 @@ export default class extends ServiceCxperium {
 			email: email,
 		};
 
-		(await fetch(`${this.baseUrl}/api/contacts/${contactId}`, {
+		(await fetchRetry(`${this.baseUrl}/api/contacts/${contactId}`, {
 			method: 'PUT',
 			body: JSON.stringify(body),
 			headers: {
@@ -310,7 +312,7 @@ export default class extends ServiceCxperium {
 			language: language,
 		};
 
-		(await fetch(`${this.baseUrl}/api/contacts/${contactId}`, {
+		(await fetchRetry(`${this.baseUrl}/api/contacts/${contactId}`, {
 			method: 'PUT',
 			body: JSON.stringify(body),
 			headers: {
@@ -332,7 +334,7 @@ export default class extends ServiceCxperium {
 			}
 		}
 
-		await fetch(`${this.baseUrl}/api/contacts/${contact._id}`, {
+		await fetchRetry(`${this.baseUrl}/api/contacts/${contact._id}`, {
 			method: 'PUT',
 			body: JSON.stringify(body),
 			headers: {
@@ -349,7 +351,7 @@ export default class extends ServiceCxperium {
 
 		body['custom']['IsKvkkApproved'] = status;
 
-		await fetch(`${this.baseUrl}/api/contacts/${contact._id}`, {
+		await fetchRetry(`${this.baseUrl}/api/contacts/${contact._id}`, {
 			method: 'PUT',
 			body: JSON.stringify(body),
 			headers: {
@@ -369,7 +371,7 @@ export default class extends ServiceCxperium {
 
 		body['custom']['IsCxTransfer'] = status;
 
-		await fetch(`${this.baseUrl}/api/contacts/${contact._id}`, {
+		await fetchRetry(`${this.baseUrl}/api/contacts/${contact._id}`, {
 			method: 'PUT',
 			body: JSON.stringify(body),
 			headers: {
@@ -386,7 +388,7 @@ export default class extends ServiceCxperium {
 
 		body['custom']['IsCxLiveTransfer'] = status;
 
-		await fetch(`${this.baseUrl}/api/contacts/${contact._id}`, {
+		await fetchRetry(`${this.baseUrl}/api/contacts/${contact._id}`, {
 			method: 'PUT',
 			body: JSON.stringify(body),
 			headers: {
@@ -397,7 +399,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async checkOpenChat(contactId: string): Promise<boolean> {
-		const result = await fetch(
+		const result = await fetchRetry(
 			`${this.baseUrl}/api/chat/active/${contactId}`,
 			{
 				method: 'GET',
