@@ -1,5 +1,5 @@
-// Node modules.
-import fetch from 'node-fetch';
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Services.
 import ServiceCxperium from '.';
@@ -14,7 +14,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async isShoppingCartExists(cartKey: string): Promise<boolean> {
-		const response = await fetch(
+		const response = await fetchRetry(
 			`${this.baseUrl}/api/assistant/shopping-carts/${cartKey}`,
 			{
 				method: 'GET',
@@ -32,7 +32,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async getShoppingCartsByKey(cartKey: string): Promise<TShoppingCart[]> {
-		const response = await fetch(
+		const response = await fetchRetry(
 			`${this.baseUrl}/api/assistant/shopping-carts/${cartKey}`,
 			{
 				method: 'GET',
@@ -64,7 +64,7 @@ export default class extends ServiceCxperium {
 		if (quantity) body['quantity'] = quantity;
 		if (unitPrice) body['unitPrice'] = unitPrice;
 
-		await fetch(`${this.baseUrl}/api/assistant/shopping-carts`, {
+		await fetchRetry(`${this.baseUrl}/api/assistant/shopping-carts`, {
 			method: 'POST',
 			headers: {
 				'content-type': 'application/json',
@@ -75,7 +75,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async approveOrder(cartKey: string, contactId: string) {
-		await fetch(`${this.baseUrl}/api/assistant/shopping-carts`, {
+		await fetchRetry(`${this.baseUrl}/api/assistant/shopping-carts`, {
 			method: 'PUT',
 			headers: {
 				'content-type': 'application/json',
