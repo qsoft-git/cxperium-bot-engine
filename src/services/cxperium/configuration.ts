@@ -1,11 +1,11 @@
 // Environment.
 const { NODE_ENV, PROD_ENV } = process.env;
 
-// Node modules.
-import fetch from 'node-fetch';
-
 // Services.
 import ServiceCxperium from '.';
+
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Datas.
 import DataGeneral from '../../data/general';
@@ -82,7 +82,7 @@ export default class extends ServiceCxperium {
 	}
 
 	private async getAllEnv() {
-		const response = (await fetch(
+		const response = (await fetchRetry(
 			`${this.baseUrl}/api/assistant/configuration`,
 			{
 				method: 'GET',
@@ -145,7 +145,7 @@ export default class extends ServiceCxperium {
 		let whatsappConfig: TWhatsappConfig;
 
 		if (PROD_ENV === 'true' || NODE_ENV !== 'development') {
-			response = (await fetch(`${this.baseUrl}/api/waba`, {
+			response = (await fetchRetry(`${this.baseUrl}/api/waba`, {
 				method: 'GET',
 				headers: {
 					'content-type': 'application/json',
@@ -165,7 +165,7 @@ export default class extends ServiceCxperium {
 				phoneNumberId: response?.data?.phoneNumberId,
 			};
 		} else {
-			response = (await fetch(
+			response = (await fetchRetry(
 				`${this.baseUrl}/api/assistant/whatsapp-config`,
 				{
 					method: 'GET',
