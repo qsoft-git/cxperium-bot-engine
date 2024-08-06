@@ -1,5 +1,5 @@
-// Node modules.
-import fetch from 'node-fetch';
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Services.
 import ServiceCxperium from '.';
@@ -26,7 +26,7 @@ export default class extends ServiceCxperium {
 				nlp: nlpType,
 			};
 
-			await fetch(this.baseUrl + '/api/assistant/report', {
+			await fetchRetry(this.baseUrl + '/api/assistant/report', {
 				method: 'POST',
 				body: JSON.stringify(body),
 				headers: {
