@@ -1,5 +1,5 @@
-// Node modules.
-import fetch from 'node-fetch';
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Datas.
 import DataGeneral from '../../data/general';
@@ -62,7 +62,7 @@ export default class extends ServiceCxperium {
 			isActive: isActive,
 		};
 
-		await fetch(`${this.baseUrl}/api/assistant/session`, {
+		await fetchRetry(`${this.baseUrl}/api/assistant/session`, {
 			method: 'POST',
 			body: JSON.stringify(body),
 			headers: {
@@ -85,13 +85,16 @@ export default class extends ServiceCxperium {
 	}
 
 	async getAllActiveSessions() {
-		const response = (await fetch(this.baseUrl + '/api/assistant/session', {
-			method: 'GET',
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
+		const response = (await fetchRetry(
+			this.baseUrl + '/api/assistant/session',
+			{
+				method: 'GET',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
 			},
-		}).then((response) => response.json())) as any;
+		).then((response) => response.json())) as any;
 
 		return response;
 	}
@@ -99,7 +102,7 @@ export default class extends ServiceCxperium {
 	async getConversationWhatsapp(dialog: any) {
 		const phone: string = dialog.contact.phone;
 
-		const response = (await fetch(
+		const response = (await fetchRetry(
 			`${this.baseUrl}/api/assistant/session/${phone}`,
 			{
 				method: 'GET',
@@ -187,7 +190,7 @@ export default class extends ServiceCxperium {
 			isActive: false,
 		};
 
-		await fetch(`${this.baseUrl}/api/assistant/session`, {
+		await fetchRetry(`${this.baseUrl}/api/assistant/session`, {
 			method: 'POST',
 			body: JSON.stringify(body),
 			headers: {
