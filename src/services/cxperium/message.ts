@@ -1,5 +1,5 @@
-// Node modules.
-import fetch from 'node-fetch';
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Services.
 import ServiceCxperium from '.';
@@ -13,7 +13,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async assignChatToTeam(chatId: string, teamId: string) {
-		await fetch(
+		await fetchRetry(
 			`${this.baseUrl}/api/chat/team-change/${chatId}/${teamId}`,
 			{
 				method: 'PATCH',
@@ -26,31 +26,37 @@ export default class extends ServiceCxperium {
 	}
 
 	async checkBusinessHour(): Promise<boolean> {
-		const response = (await fetch(`${this.baseUrl}/api/business-hours`, {
-			method: 'GET',
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
+		const response = (await fetchRetry(
+			`${this.baseUrl}/api/business-hours`,
+			{
+				method: 'GET',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
 			},
-		}).then((response) => response.json())) as any;
+		).then((response) => response.json())) as any;
 		if (response.data.featureEnabled) return response.data.status;
 		else return true;
 	}
 
 	async getOutsideBusinessHoursMessage(cultureCode: string): Promise<string> {
-		const response = (await fetch(`${this.baseUrl}/api/business-hours`, {
-			method: 'GET',
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
+		const response = (await fetchRetry(
+			`${this.baseUrl}/api/business-hours`,
+			{
+				method: 'GET',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
 			},
-		}).then((response) => response.json())) as any;
+		).then((response) => response.json())) as any;
 
 		return response.data?.message[cultureCode];
 	}
 
 	async redirectWpMessage(message: object) {
-		await fetch(this.callbackUrl, {
+		await fetchRetry(this.callbackUrl, {
 			method: 'POST',
 			headers: {
 				'content-type': 'application/json',
@@ -65,14 +71,17 @@ export default class extends ServiceCxperium {
 			contactId: contactId,
 		};
 
-		const response = (await fetch(`${this.baseUrl}/api/chat/send-message`, {
-			method: 'POST',
-			body: JSON.stringify(body),
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
+		const response = (await fetchRetry(
+			`${this.baseUrl}/api/chat/send-message`,
+			{
+				method: 'POST',
+				body: JSON.stringify(body),
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
 			},
-		}).then((response) => response.json())) as any;
+		).then((response) => response.json())) as any;
 
 		return response.data;
 	}
@@ -87,7 +96,7 @@ export default class extends ServiceCxperium {
 			contactId: contactId,
 		};
 
-		await fetch(`${this.baseUrl}/api/chat/send-message/${chatId}`, {
+		await fetchRetry(`${this.baseUrl}/api/chat/send-message/${chatId}`, {
 			method: 'POST',
 			body: JSON.stringify(body),
 			headers: {
@@ -103,14 +112,17 @@ export default class extends ServiceCxperium {
 				text: message,
 			},
 		};
-		await fetch(`${this.baseUrl}/api/chat/send-message/phone/${chatId}`, {
-			method: 'POST',
-			body: JSON.stringify(body),
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
+		await fetchRetry(
+			`${this.baseUrl}/api/chat/send-message/phone/${chatId}`,
+			{
+				method: 'POST',
+				body: JSON.stringify(body),
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
 			},
-		});
+		);
 	}
 
 	async sendWhatsappMessageWithFile(
@@ -133,13 +145,16 @@ export default class extends ServiceCxperium {
 			},
 		};
 
-		await fetch(`${this.baseUrl}/api/chat/send-message/phone/${chatId}`, {
-			method: 'POST',
-			body: JSON.stringify(body),
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
+		await fetchRetry(
+			`${this.baseUrl}/api/chat/send-message/phone/${chatId}`,
+			{
+				method: 'POST',
+				body: JSON.stringify(body),
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
 			},
-		}).then((response) => response.json());
+		).then((response) => response.json());
 	}
 }
