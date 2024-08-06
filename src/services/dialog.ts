@@ -334,10 +334,30 @@ export default class {
 	public async requestChatGPTResponse(
 		dialog: any,
 		activity: string,
+	): Promise<TChatGPTResponse>;
+	public async requestChatGPTResponse(
+		dialog: any,
+		activity: string,
+		config?: { assistantId: string; apiKey: string },
+	): Promise<TChatGPTResponse>;
+	public async requestChatGPTResponse(
+		dialog: any,
+		activity: string,
+		config?: any,
 	): Promise<TChatGPTResponse> {
+		let env: { assistantId: string; apiKey: string };
 		const services: TAppLocalsServices = dialog.services;
 
-		const env = await services.cxperium.configuration.execute();
+		if (config) {
+			env = config;
+		} else {
+			const cx = await services.cxperium.configuration.execute();
+
+			env = {
+				assistantId: cx.chatgptConfig.AsistanId,
+				apiKey: cx.chatgptConfig.APIKey,
+			};
+		}
 
 		let from: string;
 

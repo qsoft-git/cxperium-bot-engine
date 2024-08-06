@@ -96,14 +96,14 @@ export default class {
 	public async chatgptAssistantChat(
 		text: string,
 		sessionKey: string,
-		env: any,
+		env: { assistantId: string; apiKey: string },
 	): Promise<any> {
 		try {
 			const cache = this.cache;
 
 			// OpenAI instance.
 			const openai = new OpenAI({
-				apiKey: env.chatgptConfig.APIKey,
+				apiKey: env.apiKey,
 			});
 
 			let threadId: string = '';
@@ -140,7 +140,7 @@ export default class {
 			const run: any = await openai.beta.threads.runs.createAndPoll(
 				threadId,
 				{
-					assistant_id: env.chatgptConfig.AsistanId,
+					assistant_id: env.assistantId,
 				},
 			);
 
