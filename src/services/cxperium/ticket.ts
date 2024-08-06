@@ -1,5 +1,5 @@
-// Node modules.
-import fetch from 'node-fetch';
+// Fetch Retry.
+import fetchRetry from '../fetch';
 
 // Services.
 import ServiceCxperium from '.';
@@ -29,7 +29,7 @@ export default class extends ServiceCxperium {
 			body['tags'] = tags;
 		}
 
-		const response = (await fetch(`${this.baseUrl}/api/ticket`, {
+		const response = (await fetchRetry(`${this.baseUrl}/api/ticket`, {
 			method: 'POST',
 			headers: {
 				'content-type': 'application/json',
@@ -51,7 +51,7 @@ export default class extends ServiceCxperium {
 			message: comment,
 		};
 
-		return await fetch(
+		return await fetchRetry(
 			`${this.baseUrl}/api/ticket/send-comment/phone/${ticketId}`,
 			{
 				method: 'POST',
@@ -65,7 +65,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async getSubs() {
-		return await fetch(`${this.baseUrl}/api/subuser`, {
+		return await fetchRetry(`${this.baseUrl}/api/subuser`, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
@@ -75,7 +75,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async getSubsWithAssigneeCount() {
-		return await fetch(`${this.baseUrl}/api/ticket/assignee-count`, {
+		return await fetchRetry(`${this.baseUrl}/api/ticket/assignee-count`, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
@@ -85,7 +85,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async lastAnswer(ticketId: string) {
-		return await fetch(`${this.baseUrl}/api/last-answer/${ticketId}`, {
+		return await fetchRetry(`${this.baseUrl}/api/last-answer/${ticketId}`, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
@@ -119,7 +119,7 @@ export default class extends ServiceCxperium {
 			url += strifyParams;
 		}
 
-		return await fetch(url, {
+		return await fetchRetry(url, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
@@ -129,7 +129,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async getTicketById(ticketId: string) {
-		return await fetch(`${this.baseUrl}/api/ticket/${ticketId}`, {
+		return await fetchRetry(`${this.baseUrl}/api/ticket/${ticketId}`, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
@@ -139,7 +139,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async getTicketByTask(taskId: string) {
-		return await fetch(`${this.baseUrl}/api/ticket/task/${taskId}`, {
+		return await fetchRetry(`${this.baseUrl}/api/ticket/task/${taskId}`, {
 			method: 'GET',
 			headers: {
 				'content-type': 'application/json',
@@ -149,17 +149,20 @@ export default class extends ServiceCxperium {
 	}
 
 	async messageIdWithGetTicketId(messageId: string) {
-		return await fetch(`${this.baseUrl}/api/last-answer-get/${messageId}`, {
-			method: 'GET',
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
+		return await fetchRetry(
+			`${this.baseUrl}/api/last-answer-get/${messageId}`,
+			{
+				method: 'GET',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
 			},
-		}).then((response) => response.json());
+		).then((response) => response.json());
 	}
 
 	async assigneeTicketToSub(id: string, ticketId: string) {
-		const response = (await fetch(
+		const response = (await fetchRetry(
 			`${this.baseUrl}/api/assignee-change/${ticketId}/SUB/${id}`,
 			{
 				method: 'PATCH',
