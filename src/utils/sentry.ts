@@ -42,13 +42,11 @@ export class UtilSentry implements IUtilsSentry {
 		process.on('uncaughtException', (error) => {
 			this.sentry.captureException(error);
 			console.error('Uncaught Exception:', error);
-			process.exit(1);
 		});
 
 		process.on('unhandledRejection', (reason) => {
 			this.sentry.captureException(reason);
 			console.error('Unhandled Rejection at:', reason);
-			process.exit(1);
 		});
 	}
 }
