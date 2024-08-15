@@ -33,8 +33,18 @@ export default class extends ServiceWhatsApp {
 		to: string,
 		filename: string,
 		url: string,
+		id?: string,
 	): Promise<any> {
-		const body = {
+		const body: {
+			recipient_type: string;
+			to: string;
+			type: string;
+			document: {
+				link: string;
+				filename: string;
+				id?: string;
+			};
+		} = {
 			recipient_type: 'individual',
 			to: to,
 			type: 'document',
@@ -43,6 +53,10 @@ export default class extends ServiceWhatsApp {
 				filename: filename,
 			},
 		};
+
+		if (id) {
+			body.document.id = id;
+		}
 
 		return await this.wpRequest(body, 'v1/messages');
 	}
