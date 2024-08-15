@@ -6,7 +6,6 @@ import { UtilApp } from './utils/app';
 import { UtilDialog } from './utils/dialog';
 import { UtilCxperium } from './utils/cxperium';
 import { UtilWhatsApp } from './utils/whatsapp';
-import { UtilAutomate } from './utils/automate';
 import { UtilSentry } from './utils/sentry';
 import { UtilWorker } from './utils/worker';
 import { UtilRouter } from './utils/router';
@@ -22,7 +21,6 @@ import { TBaseDialogCtor } from './types/base-dialog';
 
 // Services.
 import ServiceWhatsappBaseDialog from './services/whatsapp/base-dialog';
-import ServiceMicrosoftBaseDialog from './services/microsoft/base-dialog';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
@@ -33,7 +31,6 @@ export interface Engine
 		UtilDialog,
 		UtilCxperium,
 		UtilWhatsApp,
-		UtilAutomate,
 		UtilSentry,
 		UtilWorker,
 		UtilRouter {}
@@ -78,9 +75,6 @@ export class Engine {
 		// Initialize worker services.
 		this.initWorkers(data);
 
-		// Initialize automate.
-		this.initAutomateService();
-
 		// Initialize dialog.
 		this.initDialogService();
 
@@ -104,8 +98,6 @@ export class Engine {
 			this.serviceWhatsApp,
 			this.serviceWhatsAppMessage,
 			this.serviceWhatsAppMedia,
-			this.serviceAutomateUser,
-			this.serviceAutomateApi,
 			this.serviceDialog,
 			this.sentry,
 		);
@@ -117,7 +109,6 @@ applyClassMixins.run(Engine, [
 	UtilDialog,
 	UtilCxperium,
 	UtilWhatsApp,
-	UtilAutomate,
 	UtilSentry,
 	UtilWorker,
 	UtilRouter,
@@ -125,7 +116,6 @@ applyClassMixins.run(Engine, [
 
 export {
 	ServiceWhatsappBaseDialog,
-	ServiceMicrosoftBaseDialog,
 	IDialog,
 	IMessageEvent,
 	IFlow,

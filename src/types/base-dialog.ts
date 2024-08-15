@@ -8,13 +8,11 @@ import { TurnContext } from 'botbuilder';
 import ServiceDialog from '../services/dialog';
 import BaseConversation from '../services/conversation';
 import { TWhatsAppServices } from './whatsapp/service';
-import { TAutomateServices } from './automate/automate';
 
 // Types.
 export type TAppLocalsServices = {
 	cxperium: TCxperiumServices;
 	whatsapp: TWhatsAppServices;
-	automate: TAutomateServices;
 	dialog: ServiceDialog;
 };
 

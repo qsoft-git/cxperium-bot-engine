@@ -39,8 +39,6 @@ import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
 import ServiceCxperiumTransfer from '../services/cxperium/transfer';
 import ServiceCxperiumShoppingCart from '../services/cxperium/shopping-cart';
 import ServiceDialog from '../services/dialog';
-import ServiceAutomateUser from '../services/automate/user';
-import ServiceAutomateApi from '../services/automate/api';
 import ServiceWhatsAppMessage from '../services/whatsapp/message';
 import ServiceWhatsAppMain from '../services/whatsapp/main';
 import ServiceWhatsAppMedia from '../services/whatsapp/media';
@@ -142,8 +140,6 @@ export class UtilApp implements IUtilsApp {
 		serviceWhatsAppMain: ServiceWhatsAppMain,
 		serviceWhatsAppMessage: ServiceWhatsAppMessage,
 		serviceWhatsAppMedia: ServiceWhatsAppMedia,
-		serviceAutomateUser: ServiceAutomateUser,
-		serviceAutomateApi: ServiceAutomateApi,
 		serviceDialog: ServiceDialog,
 		sentry: typeof Sentry,
 	): void {
@@ -167,8 +163,6 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.whatsapp.main = serviceWhatsAppMain;
 		appLocalsServices.whatsapp.message = serviceWhatsAppMessage;
 		appLocalsServices.whatsapp.media = serviceWhatsAppMedia;
-		appLocalsServices.automate.user = serviceAutomateUser;
-		appLocalsServices.automate.api = serviceAutomateApi;
 		appLocalsServices.sentry = sentry;
 
 		this.app.locals.service = appLocalsServices;
