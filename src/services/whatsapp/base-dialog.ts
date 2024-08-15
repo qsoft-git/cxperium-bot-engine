@@ -148,16 +148,11 @@ export default class {
 		return msg;
 	}
 
-	public async sendDocumentWithUrl(
-		filename: string,
-		url: string,
-		id?: string,
-	) {
+	public async sendDocumentWithUrl(filename: string, url: string) {
 		const msg = await this.services.whatsapp.media.sendDocumentWithUrl(
 			this.contact.phone,
 			filename,
 			url,
-			id,
 		);
 
 		return msg;
