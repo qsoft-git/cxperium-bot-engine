@@ -1,11 +1,4 @@
-import {
-	TActivity,
-	TDocumentMessage,
-	TImageMessage,
-	TInteractiveMessage,
-	TLocationMessage,
-	TTextMessage,
-} from '../types/whatsapp/activity';
+import { TActivity } from '../types/whatsapp/activity';
 
 export default class {
 	private that!: any;
@@ -18,33 +11,34 @@ export default class {
 
 		const type = data.type;
 
-		const schemaActivity:
-			| TActivity
-			| TTextMessage
-			| TImageMessage
-			| TDocumentMessage
-			| TInteractiveMessage
-			| TLocationMessage = {
+		const schemaActivity: TActivity = {
 			from: data.from,
 			message: body,
+			type: type,
 			userProfileName: '',
-			type: '',
 			text: '',
 			document: {
-				id: '',
+				id: null,
 				byteContent: Buffer.from(''),
-				mimeType: '',
-				sha256: '',
+				mimeType: null,
+				sha256: null,
+			},
+			video: {
+				id: null,
+				mime_type: null,
+				sha256: null,
+				status: null,
+				byteContent: Buffer.from(''),
 			},
 			location: {
-				latitude: '',
-				longitude: '',
+				latitude: null,
+				longitude: null,
 			},
 			image: {
-				id: '',
-				byteContent: Buffer.from(''),
-				mimeType: '',
-				sha256: '',
+				id: null,
+				byteContent: null,
+				mimeType: null,
+				sha256: null,
 			},
 			value: {
 				id: '',
@@ -101,6 +95,17 @@ export default class {
 			schemaActivity.type = 'location';
 			schemaActivity.location.latitude = data.location.latitude;
 			schemaActivity.location.longitude = data.location.longitude;
+		} else if (type == 'video') {
+			schemaActivity.type = 'video';
+			schemaActivity.video.id = data.video.id;
+			schemaActivity.video.mime_type = data.video.mime_type;
+			schemaActivity.video.sha256 = data.video.sha256;
+			schemaActivity.video.status = data.video.status;
+			schemaActivity.video.byteContent =
+				await this.that.services.whatsapp.media.getMediaWithId(
+					data.video.id,
+					data.video.mime_type,
+				);
 		}
 
 		this.that.activity = schemaActivity;
