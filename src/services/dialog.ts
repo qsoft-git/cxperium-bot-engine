@@ -76,7 +76,6 @@ export default class {
 				path: findOneDialog.path,
 				place: 'RUN_WITH_CONVERSATION_WAIT_ACTION',
 			},
-			context: dialog.context,
 			services: dialog.services,
 		};
 
@@ -91,8 +90,9 @@ export default class {
 			await this.intentPrediction(dialog);
 
 		const isFile =
-			dialog.activity.image.id.length > 1 ||
-			dialog.activity.document.id.length > 1;
+			dialog.activity.image.id ||
+			dialog.activity.document.id ||
+			dialog.activity.video.id;
 
 		if (isFile) {
 			try {
@@ -193,7 +193,6 @@ export default class {
 					path: findOneDialog.path,
 					place: 'RUN_WITH_MATCH',
 				},
-				context: dialog.context,
 				services,
 			};
 
@@ -516,7 +515,6 @@ export default class {
 				path: findOneDialog.path,
 				place: 'RUN_WITH_INTENT_NAME',
 			},
-			context: dialog.context,
 			services,
 		};
 
@@ -553,7 +551,6 @@ export default class {
 				path: findOneDialog.path,
 				place: `RUN MESSAGE EVENT: ${event}`,
 			},
-			context: dialog.context,
 			services,
 		};
 
@@ -610,7 +607,6 @@ export default class {
 				path: findOneDialog.path,
 				place: 'RETURN_FLOW_RESPONSE',
 			},
-			context: dialog.context,
 			services,
 		};
 
@@ -642,7 +638,6 @@ export default class {
 				path: findOneDialog.path,
 				place: 'RUN_WITH_FLOW',
 			},
-			context: dialog.context,
 			services,
 		};
 
