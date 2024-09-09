@@ -10,8 +10,8 @@ import { decryptRequest, encryptResponse } from '../flows/encrypt';
 import ServiceInitActivity from '../init-activity';
 import {
 	TActivity,
-	TDocumentMessage,
-	TImageMessage,
+	TDocument,
+	TImage,
 	TInteractiveMessage,
 	TTextMessage,
 } from '../../types/whatsapp/activity';
@@ -26,8 +26,8 @@ export default class {
 	private activity!:
 		| TActivity
 		| TTextMessage
-		| TImageMessage
-		| TDocumentMessage
+		| TImage
+		| TDocument
 		| TInteractiveMessage
 		| any;
 	public place = 'WHATSAPP';

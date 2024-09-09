@@ -141,14 +141,13 @@ export default class extends ServiceCxperium {
 		const contact: TCxperiumContact = dialog.contact;
 		const activity: TActivity = dialog.activity;
 		const customAttributes = contact.custom as any;
-		const env = await this.serviceCxperiumConfiguration.execute();
 
 		//if (!env.cxperiumLiveConfig?.IsActive) return false;
 
 		if (JSON.parse(customAttributes?.IsCxLiveTransfer || false)) {
 			if (activity.type === 'document') {
 				const base64string = Buffer.from(
-					activity.document.byteContent,
+					activity.document.byteContent!,
 				).toString('base64');
 
 				await this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
@@ -156,11 +155,11 @@ export default class extends ServiceCxperium {
 					activity.text,
 					contact.phone,
 					base64string,
-					activity.document.mimeType,
+					activity.document.mimeType!,
 				);
 			} else if (activity.type === 'image') {
 				const base64string = Buffer.from(
-					activity.image.byteContent,
+					activity.image.byteContent!,
 				).toString('base64');
 
 				this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
@@ -168,7 +167,7 @@ export default class extends ServiceCxperium {
 					activity.text,
 					contact.phone,
 					base64string,
-					activity.image.mimeType,
+					activity.image.mimeType!,
 				);
 			} else {
 				const chatExists =

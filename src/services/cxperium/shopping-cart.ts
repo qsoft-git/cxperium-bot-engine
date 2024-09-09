@@ -14,7 +14,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async isShoppingCartExists(cartKey: string): Promise<boolean> {
-		const response = await fetchRetry(
+		const response: any = await fetchRetry(
 			`${this.baseUrl}/api/assistant/shopping-carts/${cartKey}`,
 			{
 				method: 'GET',
@@ -32,7 +32,7 @@ export default class extends ServiceCxperium {
 	}
 
 	async getShoppingCartsByKey(cartKey: string): Promise<TShoppingCart[]> {
-		const response = await fetchRetry(
+		const response: any = await fetchRetry(
 			`${this.baseUrl}/api/assistant/shopping-carts/${cartKey}`,
 			{
 				method: 'GET',
