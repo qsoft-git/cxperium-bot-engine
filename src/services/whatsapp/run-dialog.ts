@@ -6,8 +6,8 @@ import { TAppLocalsServices } from '../../types/base-dialog';
 import {
 	TActivity,
 	TTextMessage,
-	TImageMessage,
-	TDocumentMessage,
+	TImage,
+	TDocument,
 	TInteractiveMessage,
 } from '../../types/whatsapp/activity';
 import initEntryPoint from './init-entry-point';
@@ -18,8 +18,8 @@ export default class {
 	private activity!:
 		| TActivity
 		| TTextMessage
-		| TImageMessage
-		| TDocumentMessage
+		| TImage
+		| TDocument
 		| TInteractiveMessage
 		| any;
 	private conversation!: any;
