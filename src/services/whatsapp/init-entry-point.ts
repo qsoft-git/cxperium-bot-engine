@@ -1,3 +1,5 @@
+import Logger from '../../helpers/winston-loki';
+
 export default async (dialog: any) => {
 	try {
 		// Init custom needs dialog.
@@ -9,9 +11,8 @@ export default async (dialog: any) => {
 		if (error?.message === 'end') {
 			throw new Error('end');
 		}
-		console.error(
-			'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel file.',
-		);
-		process.exit(137);
+
+		console.error(error);
+		Logger.instance.logger.error(error);
 	}
 };
