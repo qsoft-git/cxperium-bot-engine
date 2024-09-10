@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 
 // Helpers.
 import getPackageJson from '../helpers/get-package-json';
+import Logger from '../helpers/winston-loki';
 
 // Constants.
 const UP_TIME = new Date();
@@ -15,6 +16,9 @@ export default class {
 	): void {
 		try {
 			const packageJson = getPackageJson.getJsonParse();
+			const message = `description: ${packageJson.description}\nversion: ${packageJson.version}\nlicense: ${packageJson.license}\nauthor: ${packageJson?.author}\nuptime: ${UP_TIME}`;
+			Logger.instance.logger.info(message);
+
 			return res.render('home-page', {
 				description: packageJson.description,
 				version: packageJson.version,
