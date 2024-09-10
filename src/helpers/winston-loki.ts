@@ -52,7 +52,6 @@ export default class Logger {
 	}
 
 	public processOn(): void {
-		this.logger.info('ZART');
 		process.on('unhandledRejection', (reason, promise) => {
 			this.logger.error(
 				'Unhandled Rejection at:',
