@@ -120,11 +120,20 @@ export default class {
 
 		// Init EntryPoint.
 		try {
+			const entryExists = this.services.dialog.getListAll.find((x: any) =>
+				x.name.includes('Entry'),
+			);
+
+			if (!entryExists) {
+				console.error(
+					'Entry.ts has to be created to initialize project. Add Entry.ts class inside your channel file.',
+				);
+				process.exit(137);
+			}
+
 			await initEntryPoint(this);
 		} catch (error: any) {
-			if (error?.message === 'end') {
-				return;
-			}
+			if (error?.message === 'end') return;
 		}
 
 		if (await this.services.cxperium.transfer.isLiveTransfer(this)) return;

@@ -1,5 +1,6 @@
 // Node modules.
 import { Request, Response, NextFunction } from 'express';
+import Logger from '../helpers/winston-loki';
 
 export default class {
 	public static errorHandler(
@@ -12,6 +13,7 @@ export default class {
 		try {
 			const sentry: any = res.app.locals.service.sentry;
 			sentry.captureException(error);
+			Logger.instance.logger.error(error);
 			console.error(error);
 			const serverMode = req.app.get('env');
 			const notFoundStatus = res.locals.notFoundStatus;

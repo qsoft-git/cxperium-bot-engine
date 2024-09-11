@@ -24,6 +24,7 @@ import ServiceWhatsappBaseDialog from './services/whatsapp/base-dialog';
 
 // Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
+import Logger from './helpers/winston-loki';
 
 // Mixins.
 export interface Engine
@@ -36,6 +37,8 @@ export interface Engine
 		UtilRouter {}
 
 export class Engine {
+	logger: Logger = Logger.instance;
+
 	constructor(srcPath: string) {
 		// Config.
 		const data: TSrcIndexConfig | any = {
@@ -56,6 +59,7 @@ export class Engine {
 
 		// Process on.
 		this.processOn();
+		this.logger.processOn();
 
 		// Set App properties.
 		this.initAppProperties(data);

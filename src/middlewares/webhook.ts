@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 
 // Services.
 import ServiceWebhook from '../services/webhook';
+import Logger from '../helpers/winston-loki';
 
 // Services.
 export default class {
@@ -13,6 +14,9 @@ export default class {
 
 			await serviceWebhook.execute();
 		} catch (error) {
+			const sentry = res.app.locals.service.sentry;
+			sentry.captureException(error);
+			Logger.instance.logger.error(error);
 			console.error(error);
 		}
 	}

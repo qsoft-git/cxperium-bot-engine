@@ -180,6 +180,23 @@ export class UtilApp implements IUtilsApp {
 			'listening',
 			this.serverOnListening(this.mode, this.host, this.port),
 		);
+
+		const cache: NodeCache = this.app.get('nodeCache');
+
+		const pathDirection = String(process.platform).startsWith('win')
+			? '\\'
+			: '/';
+
+		const projectNamespace =
+			this.publicPath.split(pathDirection)[
+				this.publicPath.split(pathDirection).length - 3
+			];
+
+		cache.set('projectNamespace', projectNamespace);
+		cache.set('host', this.host);
+
+		cache.ttl('projectNamespace', 5000);
+		cache.ttl('host', 5000);
 	}
 
 	private serverOnListening(
