@@ -1,4 +1,3 @@
-import { TAutomateConfig } from './automate';
 import { TChatGPTConfig } from './chatgpt';
 import { TDialogflowConfig } from './dialogflow';
 import { TGdprConfig } from './gdpr';
@@ -14,7 +13,6 @@ export type TCxperiumEnvironment = {
 	dialogflowConfig: TDialogflowConfig;
 	chatgptConfig: TChatGPTConfig;
 	gdprConfig: TGdprConfig;
-	automateConfig: TAutomateConfig;
 	botframeworkConfig: TBotFrameworkConfig;
 	enterpriseChatgptConfig: TEnterpriseChatGPTConfig;
 	sessionTimeoutConfig: TSessionTimeoutConfig;

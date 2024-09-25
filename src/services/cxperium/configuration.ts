@@ -15,7 +15,6 @@ import { TCxperiumServiceParams } from '../../types/cxperium/service';
 import { TCxperiumEnvironment } from '../../types/configuration/environment';
 
 // Utils.
-import { TAutomateConfig } from '../../types/configuration/automate';
 import { TWhatsappConfig } from '../../types/configuration/whatsapp';
 import { TChatGPTConfig } from '../../types/configuration/chatgpt';
 import { TCxperiumLiveConfig } from '../../types/configuration/live';
@@ -40,7 +39,6 @@ export default class extends ServiceCxperium {
 		const allEnv = (await this.getAllEnv()) as any;
 
 		const whatsappConfig: TWhatsappConfig = allEnv.WhatsAppConfig;
-		const automateConfig: TAutomateConfig = allEnv.AutomateConfig;
 		const chatgptConfig: TChatGPTConfig = allEnv.ChatGPTConfig;
 		const liveConfig: TCxperiumLiveConfig = allEnv.CxperiumLiveConfig;
 		const dialogflowConfig: TDialogflowConfig = allEnv.DialogFlowConfig;
@@ -54,7 +52,6 @@ export default class extends ServiceCxperium {
 
 		for (const [k, v] of Object.entries(allEnv)) {
 			if (
-				k !== 'AutomateConfig' &&
 				k !== 'ChatGPTConfig' &&
 				k !== 'CxperiumLiveConfig' &&
 				k !== 'DialogFlowConfig' &&
@@ -65,7 +62,6 @@ export default class extends ServiceCxperium {
 		}
 
 		const env: TCxperiumEnvironment = {
-			automateConfig: automateConfig,
 			chatgptConfig: chatgptConfig,
 			cxperiumLiveConfig: liveConfig,
 			dialogflowConfig: dialogflowConfig,
@@ -96,11 +92,6 @@ export default class extends ServiceCxperium {
 		const result = response.data.data.data;
 		result.WhatsAppConfig = await this.getWhatsappConfig();
 
-		if (!result.AutomateConfig) {
-			throw new Error(
-				'AutomateConfig is required to continue to run this project',
-			);
-		}
 		if (!result.ChatGPTConfig) {
 			throw new Error(
 				'ChatGPTConfig is required to continue to run this project',
