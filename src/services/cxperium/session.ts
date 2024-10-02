@@ -220,29 +220,71 @@ export default class extends ServiceCxperium {
 
 			for (const session of activeSessions?.data) {
 				if (session.isActive) {
-					const updateDifference = date - session.updatedAt;
-					const createDifference = date - session.createdAt;
+					const parsedUpdatedAt = new Date(
+						session.updatedAt,
+					).getTime();
+
+					const parsedCreatedAt = new Date(
+						session.createdAt,
+					).getTime();
+
+					const updateDifference = date - parsedUpdatedAt;
+					const createDifference = date - parsedCreatedAt;
 
 					if (
 						updateDifference >= sessionTimeout &&
 						createDifference >= sessionTimeout &&
 						session.isActive
 					) {
+						let languageId: number;
+
+						console.log(
+							`${session.phone} user has active session to be closed!`,
+						);
+
+						switch (session.language.toUpperCase()) {
+							case 'TR':
+								languageId = 1;
+								break;
+							case 'EN':
+								languageId = 2;
+							case 'AR':
+								languageId = 3;
+							case 'RU':
+								languageId = 4;
+							case 'GE':
+								languageId = 5;
+							default:
+								throw new Error(
+									`${session.language.toUpperCase()} is not available to send messages. Please implement necessary language to continue without error!`,
+								);
+						}
+
 						const message =
 							await this.serviceCxperiumLanguage.getLanguageByKey(
-								session.language,
+								languageId,
 								'SessionTimeoutMessage',
 							);
 						const contact =
-							await this.serviceCxperiumContact.getContactByPhone(
+							await this.serviceCxperiumContact.getContactWithPhone(
 								session.phone,
 							);
+
+						console.log(`Closing ${session.phone} user's session!`);
 
 						await this.closeSession(
 							session.phone,
 							session.language,
-							'',
+							'SESSION_CLOSED',
 						);
+
+						console.log(
+							`${session.phone} user's session is closed!`,
+						);
+
+						this.cache.del(`CONVERSATION-${contact.phone}`);
+
+						console.log(`Closing ${session.phone}`);
 
 						const hasOpenChat =
 							await this.serviceCxperiumContact.checkOpenChat(
@@ -250,6 +292,9 @@ export default class extends ServiceCxperium {
 							);
 
 						if (hasOpenChat) {
+							console.log(
+								`${session.phone} user has active live support chat. Closing now!`,
+							);
 							await this.serviceCxperiumConversation.closeLiveChat(
 								contact,
 							);
