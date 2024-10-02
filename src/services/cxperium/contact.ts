@@ -147,6 +147,21 @@ export default class extends ServiceCxperium {
 		});
 	}
 
+	async getContactWithPhone(phone: string): Promise<TCxperiumContact> {
+		const response = (await fetchRetry(
+			`${this.baseUrl}/api/contacts/phone/${phone}`,
+			{
+				method: 'get',
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
+			},
+		).then((response) => response.json())) as any;
+
+		return response?.data;
+	}
+
 	async getContactByPhone(dialog: any): Promise<TCxperiumContact> {
 		const phone = dialog.activity.from;
 
