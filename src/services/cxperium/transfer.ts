@@ -141,14 +141,21 @@ export default class extends ServiceCxperium {
 		const contact: TCxperiumContact = dialog.contact;
 		const activity: TActivity = dialog.activity;
 		const customAttributes = contact.custom as any;
+		const env = await this.serviceCxperiumConfiguration.execute();
 
-		//if (!env.cxperiumLiveConfig?.IsActive) return false;
+		if (!env.cxperiumLiveConfig?.IsActive) {
+			return false;
+		}
 
 		if (JSON.parse(customAttributes?.IsCxLiveTransfer || false)) {
 			if (activity.type === 'document') {
-				const base64string = Buffer.from(
-					activity.document.byteContent!,
-				).toString('base64');
+				const byteContent = activity.document.byteContent as
+					| Uint8Array
+					| Buffer;
+
+				const base64string = Buffer.isBuffer(byteContent)
+					? byteContent.toString('base64')
+					: Buffer.from(byteContent).toString('base64');
 
 				await this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
 					customAttributes.ChatId,
@@ -158,9 +165,13 @@ export default class extends ServiceCxperium {
 					activity.document.mimeType!,
 				);
 			} else if (activity.type === 'image') {
-				const base64string = Buffer.from(
-					activity.image.byteContent!,
-				).toString('base64');
+				const byteContent = activity.document.byteContent as
+					| Uint8Array
+					| Buffer;
+
+				const base64string = Buffer.isBuffer(byteContent)
+					? byteContent.toString('base64')
+					: Buffer.from(byteContent).toString('base64');
 
 				this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
 					customAttributes.ChatId,
