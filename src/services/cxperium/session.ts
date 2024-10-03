@@ -96,7 +96,7 @@ export default class extends ServiceCxperium {
 			},
 		).then((response) => response.json())) as any;
 
-		return response.data.find((x: any) => x.isActive == true);
+		return response.data.filter((x: any) => x.isActive == true);
 	}
 
 	async getConversationWhatsapp(dialog: any) {
@@ -213,87 +213,89 @@ export default class extends ServiceCxperium {
 			(await this.serviceCxperiumConfiguration.execute())
 				.sessionTimeoutConfig.Minutes,
 		);
-		const activeSession = await this.getAllActiveSessions();
+		const activeSessions = await this.getAllActiveSessions();
 
-		if (activeSession) {
-			const date = Date.now();
-			const parsedUpdatedAt = new Date(activeSession.updatedAt).getTime();
-			const updateDifference = (date - parsedUpdatedAt) / (1000 * 60);
+		if (activeSessions) {
+			for (const session of activeSessions) {
+				const date = Date.now();
+				const parsedUpdatedAt = new Date(session.updatedAt).getTime();
+				const updateDifference = (date - parsedUpdatedAt) / (1000 * 60);
 
-			if (updateDifference >= sessionTimeout) {
-				let languageId: number;
+				if (updateDifference >= sessionTimeout) {
+					let languageId: number;
 
-				console.log(
-					`${activeSession.phone} user has active session to be closed!`,
-				);
-
-				switch (activeSession.language.toUpperCase()) {
-					case 'TR':
-						languageId = 1;
-						break;
-					case 'EN':
-						languageId = 2;
-					case 'AR':
-						languageId = 3;
-					case 'RU':
-						languageId = 4;
-					case 'DE':
-						languageId = 5;
-					default:
-						throw new Error(
-							`${activeSession.language.toUpperCase()} is not available to send messages. Please implement necessary language to continue without error!`,
-						);
-				}
-
-				const message =
-					await this.serviceCxperiumLanguage.getLanguageByKey(
-						languageId,
-						'SessionTimeoutMessage',
-					);
-				const contact =
-					await this.serviceCxperiumContact.getContactWithPhone(
-						activeSession.phone,
-					);
-
-				console.log(`Closing ${activeSession.phone} user's session!`);
-
-				await this.closeSession(
-					activeSession.phone,
-					activeSession.language,
-					'SESSION_CLOSED',
-				);
-
-				console.log(`${activeSession.phone} user's session is closed!`);
-
-				this.cache.del(`CONVERSATION-${contact.phone}`);
-
-				const hasOpenChat =
-					await this.serviceCxperiumContact.checkOpenChat(
-						String(contact._id),
-					);
-
-				if (hasOpenChat) {
 					console.log(
-						`${activeSession.phone} user has active live support chat. Closing now!`,
+						`${session.phone} user has active session to be closed!`,
 					);
-					await this.serviceCxperiumConversation.closeLiveChat(
-						contact,
+
+					switch (session.language.toUpperCase()) {
+						case 'TR':
+							languageId = 1;
+							break;
+						case 'EN':
+							languageId = 2;
+						case 'AR':
+							languageId = 3;
+						case 'RU':
+							languageId = 4;
+						case 'DE':
+							languageId = 5;
+						default:
+							throw new Error(
+								`${session.language.toUpperCase()} is not available to send messages. Please implement necessary language to continue without error!`,
+							);
+					}
+
+					const message =
+						await this.serviceCxperiumLanguage.getLanguageByKey(
+							languageId,
+							'SessionTimeoutMessage',
+						);
+					const contact =
+						await this.serviceCxperiumContact.getContactWithPhone(
+							session.phone,
+						);
+
+					console.log(`Closing ${session.phone} user's session!`);
+
+					await this.closeSession(
+						session.phone,
+						session.language,
+						'SESSION_CLOSED',
 					);
-					await this.serviceCxperiumContact.updateLiveTransferStatus(
+
+					console.log(`${session.phone} user's session is closed!`);
+
+					this.cache.del(`CONVERSATION-${contact.phone}`);
+
+					const hasOpenChat =
+						await this.serviceCxperiumContact.checkOpenChat(
+							String(contact._id),
+						);
+
+					if (hasOpenChat) {
+						console.log(
+							`${session.phone} user has active live support chat. Closing now!`,
+						);
+						await this.serviceCxperiumConversation.closeLiveChat(
+							contact,
+						);
+						await this.serviceCxperiumContact.updateLiveTransferStatus(
+							contact,
+							false,
+						);
+					} else {
+						await this.serviceWhatsAppMessage.sendRegularMessage(
+							session.phone,
+							message,
+						);
+					}
+
+					await this.serviceCxperiumContact.updateSurveyTransferStatus(
 						contact,
 						false,
 					);
-				} else {
-					await this.serviceWhatsAppMessage.sendRegularMessage(
-						activeSession.phone,
-						message,
-					);
 				}
-
-				await this.serviceCxperiumContact.updateSurveyTransferStatus(
-					contact,
-					false,
-				);
 			}
 		}
 	}
