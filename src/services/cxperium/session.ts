@@ -102,26 +102,6 @@ export default class extends ServiceCxperium {
 	async getConversationWhatsapp(dialog: any) {
 		const phone: string = dialog.contact.phone;
 
-		const response = (await fetchRetry(
-			`${this.baseUrl}/api/assistant/session/${phone}`,
-			{
-				method: 'GET',
-				headers: {
-					'content-type': 'application/json',
-					apikey: this.apiKey,
-				},
-			},
-		).then((response) => response.json())) as any;
-
-		let lastMessage;
-
-		for (const message of response?.data[0]?.data) {
-			if (Boolean(message.isLast)) {
-				lastMessage = message.message;
-				break;
-			}
-		}
-
 		let conversation: TConversation | undefined = this.cache.get(
 			`CONVERSATION-${phone}`,
 		);
@@ -134,13 +114,43 @@ export default class extends ServiceCxperium {
 					className: '',
 					functionName: '',
 				},
-				sessionData: response.data[0].data,
-				lastMessage: lastMessage,
+				sessionData: [],
+				lastMessage: dialog.activity.text,
 				cultureCode: 'TR',
 				cache: {},
 			};
 
 			this.cache.set(`CONVERSATION-${phone}`, conversation);
+		} else {
+			const response = (await fetchRetry(
+				`${this.baseUrl}/api/assistant/session/${phone}`,
+				{
+					method: 'GET',
+					headers: {
+						'content-type': 'application/json',
+						apikey: this.apiKey,
+					},
+				},
+			).then((response) => response.json())) as any;
+
+			if (response.data.length > 0) {
+				const lastMessage = response.data[0]?.data?.find(
+					(message: any) => Boolean(message.isLast),
+				)?.message;
+
+				conversation = {
+					languageId: 1,
+					conversationData: conversation.conversationData,
+					waitData: conversation.waitData,
+					sessionData: response.data[0].data,
+					lastMessage: lastMessage,
+					cultureCode: 'TR',
+					cache: conversation.cache,
+				};
+
+				this.cache.del(`CONVERSATION-${phone}`);
+				this.cache.set(`CONVERSATION-${phone}`, conversation);
+			}
 		}
 
 		return new BaseConversation(dialog, conversation);
@@ -225,7 +235,7 @@ export default class extends ServiceCxperium {
 					let languageId: number;
 
 					console.log(
-						`${session.phone} user has active session to be closed!`,
+						`${session.phone} user has active session to be closed! Last updated on ${session.updatedAt}, will be ended on ${date}`,
 					);
 
 					switch (session.language.toUpperCase()) {
