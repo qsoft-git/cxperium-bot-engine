@@ -79,7 +79,9 @@ export default class {
 				throw new Error('WhatsApp key not found!');
 			}
 
-			const requestUrl = `https://graph.facebook.com/v19.0/${phoneNumberId}/messages`;
+			const requestUrl = `https://graph.facebook.com/${
+				process.env.VERSION || 'v19.0'
+			}}/${phoneNumberId}/messages`;
 			const reviveBody = { ...body, messaging_product: 'whatsapp' };
 			delete reviveBody?.recipient_type;
 
