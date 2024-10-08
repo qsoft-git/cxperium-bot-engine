@@ -81,7 +81,7 @@ export default class {
 
 			const requestUrl = `https://graph.facebook.com/${
 				process.env.VERSION || 'v19.0'
-			}}/${phoneNumberId}/messages`;
+			}/${phoneNumberId}/messages`;
 			const reviveBody = { ...body, messaging_product: 'whatsapp' };
 			delete reviveBody?.recipient_type;
 
