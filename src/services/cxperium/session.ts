@@ -47,7 +47,9 @@ export default class extends ServiceCxperium {
 		message: string,
 		dialog: any,
 	) {
-		if (!language) language = 'TR';
+		if (!language) {
+			language = 'TR';
+		}
 
 		const phone = dialog.contact.phone;
 		const body = {
@@ -62,14 +64,14 @@ export default class extends ServiceCxperium {
 			isActive: isActive,
 		};
 
-		await fetchRetry(`${this.baseUrl}/api/assistant/session`, {
+		(await fetchRetry(`${this.baseUrl}/api/assistant/session`, {
 			method: 'POST',
 			body: JSON.stringify(body),
 			headers: {
 				'content-type': 'application/json',
 				apikey: this.apiKey,
 			},
-		});
+		}).then((response) => response.json())) as any;
 
 		await this.updateConversationSessionTime(dialog);
 	}
