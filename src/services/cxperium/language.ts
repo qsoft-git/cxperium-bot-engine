@@ -75,17 +75,11 @@ export default class extends ServiceCxperium {
 	}
 
 	async getLanguageByKey(languageId: number, key: string) {
-		const languages = await this.getAllLanguage();
+		const language = (await this.getAllLanguage()).find(
+			(lang) => Number(lang.id) === languageId && key === lang.data.key,
+		);
 
-		for (const language of languages) {
-			if (Number(language.id) === languageId) {
-				if (key === language.data.key) {
-					return language.data.value;
-				}
-			}
-		}
-
-		return null;
+		return language ? language.data.value : null;
 	}
 
 	async getDefaultLanguage() {
