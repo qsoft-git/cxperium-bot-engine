@@ -225,89 +225,93 @@ export default class extends ServiceCxperium {
 		);
 		const activeSessions = await this.getAllActiveSessions();
 
-		if (activeSessions && activeSessions.length > 0) {
-			const date = Date.now();
+		if (!activeSessions || activeSessions.length === 0) {
+			return;
+		}
 
-			for (const session of activeSessions) {
+		const date = Date.now();
+		const languageMap: { [key: string]: number } = {
+			TR: 1,
+			EN: 2,
+			AR: 3,
+			RU: 4,
+			DE: 5,
+		};
+
+		await Promise.all(
+			activeSessions.map(async (session: any) => {
 				const parsedUpdatedAt = new Date(session.updatedAt).getTime();
 				const updateDifference = (date - parsedUpdatedAt) / (1000 * 60);
 
-				if (updateDifference >= sessionTimeout) {
-					const languageMap: { [key: string]: number } = {
-						TR: 1,
-						EN: 2,
-						AR: 3,
-						RU: 4,
-						DE: 5,
-					};
+				if (updateDifference < sessionTimeout) {
+					return;
+				}
 
-					const languageId =
-						languageMap[session.language.toUpperCase()];
+				const languageId = languageMap[session.language.toUpperCase()];
 
-					if (!languageId) {
-						throw new Error(
-							`${session.language.toUpperCase()} is not available to send messages. Please implement necessary language to continue without error!`,
-						);
-					}
+				if (!languageId) {
+					throw new Error(
+						`${session.language.toUpperCase()} is not available to send messages. Please implement necessary language to continue without error!`,
+					);
+				}
 
-					console.log(
-						`${session.phone} user has active session to be closed! Last updated on ${session.updatedAt}, will be ended on ${date}`,
+				console.log(
+					`${session.phone} user has active session to be closed! Last updated on ${session.updatedAt}, will be ended on ${date}`,
+				);
+
+				const [message, contact] = await Promise.all([
+					this.serviceCxperiumLanguage.getLanguageByKey(
+						languageId,
+						'SessionTimeoutMessage',
+					),
+					this.serviceCxperiumContact.getContactWithPhone(
+						session.phone,
+					),
+				]);
+
+				this.cache.del(`CONVERSATION-${contact.phone}`);
+
+				const hasOpenChat =
+					await this.serviceCxperiumContact.checkOpenChat(
+						String(contact._id),
 					);
 
-					const message =
-						await this.serviceCxperiumLanguage.getLanguageByKey(
-							languageId,
-							'SessionTimeoutMessage',
-						);
-					const contact =
-						await this.serviceCxperiumContact.getContactWithPhone(
-							session.phone,
-						);
+				if (hasOpenChat) {
+					console.log(
+						`${session.phone} user has active live support chat. Closing now!`,
+					);
 
-					this.cache.del(`CONVERSATION-${contact.phone}`);
-
-					const hasOpenChat =
-						await this.serviceCxperiumContact.checkOpenChat(
-							String(contact._id),
-						);
-
-					if (hasOpenChat) {
-						console.log(
-							`${session.phone} user has active live support chat. Closing now!`,
-						);
-
-						await this.serviceCxperiumConversation.closeLiveChat(
-							contact,
-						);
-						await this.serviceCxperiumContact.updateLiveTransferStatus(
-							contact,
-							false,
-						);
-					} else {
-						if (updateDifference < sessionTimeout * 2)
-							await this.serviceWhatsAppMessage.sendRegularMessage(
-								session.phone,
-								message,
-							);
-					}
-
-					console.log(`Closing ${session.phone} user's session!`);
-
-					Promise.all([
-						this.closeSession(
-							session.phone,
-							session.language,
-							'SESSION_CLOSED',
-						),
-						this.serviceCxperiumContact.updateSurveyTransferStatus(
+					await Promise.all([
+						this.serviceCxperiumConversation.closeLiveChat(contact),
+						this.serviceCxperiumContact.updateLiveTransferStatus(
 							contact,
 							false,
 						),
 					]);
-
-					console.log(`${session.phone} user's session is closed!`);
+				} else {
+					if (updateDifference < sessionTimeout * 2)
+						await this.serviceWhatsAppMessage.sendRegularMessage(
+							session.phone,
+							message,
+						);
 				}
-			}
-		}
+
+				console.log(`Closing ${session.phone} user's session!`);
+
+				await Promise.all([
+					this.closeSession(
+						session.phone,
+						session.language,
+						'SESSION_CLOSED',
+					),
+					this.serviceCxperiumContact.updateSurveyTransferStatus(
+						contact,
+						false,
+					),
+				]);
+
+				console.log(`${session.phone} user's session is closed!`);
+			}),
+		);
 	}
 }
