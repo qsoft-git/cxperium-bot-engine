@@ -118,6 +118,8 @@ export default class {
 			return;
 		}
 
+		if (await this.services.cxperium.transfer.isLiveTransfer(this)) return;
+
 		// Init EntryPoint.
 		try {
 			const entryExists = this.services.dialog.getListAll.find((x: any) =>
@@ -135,8 +137,6 @@ export default class {
 		} catch (error: any) {
 			if (error?.message === 'end') return;
 		}
-
-		if (await this.services.cxperium.transfer.isLiveTransfer(this)) return;
 
 		const conversationCheck: boolean =
 			await this.services.dialog.runWithConversationWaitAction(this);
