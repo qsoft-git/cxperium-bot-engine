@@ -165,7 +165,7 @@ export default class extends ServiceCxperium {
 					activity.document.mimeType!,
 				);
 			} else if (activity.type === 'image') {
-				const byteContent = activity.document.byteContent as
+				const byteContent = activity.image.byteContent as
 					| Uint8Array
 					| Buffer;
 
@@ -173,7 +173,7 @@ export default class extends ServiceCxperium {
 					? byteContent.toString('base64')
 					: Buffer.from(byteContent).toString('base64');
 
-				this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
+				await this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
 					customAttributes.ChatId,
 					activity.text,
 					contact.phone,
