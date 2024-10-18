@@ -67,9 +67,15 @@ export default class {
 			} else if (data.interactive?.button_reply?.payload) {
 				schemaActivity.value = data.interactive.button_reply.payload;
 			} else {
-				schemaActivity.value = data.interactive.list_reply
-					? data.interactive.list_reply
-					: data.interactive.button_reply;
+				if (data?.interactive?.button_reply) {
+					schemaActivity.value.id =
+						data?.interactive?.button_reply.id;
+					schemaActivity.value.text =
+						data?.interactive?.button_reply.title;
+				}
+				if (data?.interactive?.list_reply) {
+					schemaActivity.value = data.interactive.list_reply;
+				}
 			}
 		} else if (type == 'image') {
 			schemaActivity.type = 'image';
