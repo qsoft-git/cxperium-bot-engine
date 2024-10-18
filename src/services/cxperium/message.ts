@@ -36,8 +36,13 @@ export default class extends ServiceCxperium {
 				},
 			},
 		).then((response) => response.json())) as any;
-		if (response.data.featureEnabled) return response.data.status;
-		else return true;
+		if (!response.data.featureEnabled) {
+			return false;
+		}
+
+		// if status is true, business hour feature means available. If customer message during business hours
+		// then, will get support from live representative.
+		return response.data.status;
 	}
 
 	async getOutsideBusinessHoursMessage(cultureCode: string): Promise<string> {

@@ -261,7 +261,10 @@ export default class extends ServiceCxperium {
 		conversation: BaseConversation,
 		teamId: string,
 	): Promise<boolean> {
-		if (await this.serviceCxperiumMessage.checkBusinessHour()) {
+		const isBusinessHourAvailable =
+			await this.serviceCxperiumMessage.checkBusinessHour();
+
+		if (!isBusinessHourAvailable) {
 			const message =
 				await this.serviceCxperiumMessage.getOutsideBusinessHoursMessage(
 					conversation.conversation.cultureCode,
