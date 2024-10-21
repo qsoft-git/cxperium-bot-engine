@@ -150,7 +150,7 @@ export default class extends ServiceCxperium {
 			},
 		};
 
-		await fetchRetry(
+		return await fetchRetry(
 			`${this.baseUrl}/api/chat/send-message/phone/${chatId}`,
 			{
 				method: 'POST',
