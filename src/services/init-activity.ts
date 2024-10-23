@@ -122,6 +122,7 @@ export default class {
 	public activityToText(): string {
 		if (this.that.activity?.text) return this.that.activity?.text;
 		else if (this.that.activity?.value) return this.that.activity?.value.id;
+		else if (this.that.activity?.payload) return this.that.activity.payload;
 
 		throw new Error('Activity problem occurred, text and value is null');
 	}
