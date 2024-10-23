@@ -231,13 +231,11 @@ export default class extends ServiceCxperium {
 			ChatId: id,
 		});
 
-		const lastMessage = conversation?.conversation?.sessionData[
-			conversation?.conversation?.sessionData?.length - 1
-		] as any;
+		const lastMessage = conversation.getLastMessage();
 
 		await this.serviceCxperiumMessage.sendWhatsappMessage(
 			id,
-			lastMessage?.message,
+			lastMessage,
 			contact.phone,
 		);
 
@@ -308,6 +306,7 @@ export default class extends ServiceCxperium {
 			contact,
 			true,
 		);
+
 		return true;
 	}
 }
