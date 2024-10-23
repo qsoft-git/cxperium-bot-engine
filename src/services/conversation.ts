@@ -91,6 +91,11 @@ export default class BaseConversation {
 	}
 
 	public getLastMessage(): any {
+		if (!this.conversation.lastMessage.length) {
+			const last = this.conversation.sessionData.at(-2) as any['message'];
+			this.conversation.lastMessage = last.message;
+		}
+
 		return this.conversation.lastMessage;
 	}
 }
