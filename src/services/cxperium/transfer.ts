@@ -283,11 +283,7 @@ export default class extends ServiceCxperium {
 			ChatId: id,
 		});
 
-		const message = conversation.conversation.sessionData[
-			conversation.conversation.sessionData.length - 2
-		] as any['message'];
-
-		const lastMessage = message ? message : conversation.getLastMessage();
+		const lastMessage = conversation.getLastMessage();
 
 		await this.serviceCxperiumMessage.sendWhatsappMessage(
 			id,
@@ -295,15 +291,19 @@ export default class extends ServiceCxperium {
 			contact.phone,
 		);
 
-		await this.serviceWhatsAppMessage.sendRegularMessage(
-			contact.phone,
+		const transferingToRepresentativeMessage =
 			await this.serviceCxperiumLanguage.getLanguageByKey(
 				conversation.conversation.languageId,
 				'transfer_to_represantative',
-			),
+			);
+
+		await this.serviceWhatsAppMessage.sendRegularMessage(
+			contact.phone,
+			transferingToRepresentativeMessage,
 		);
 
 		await this.serviceCxperiumMessage.assignChatToTeam(id, teamId);
+
 		await this.serviceCxperiumContact.updateLiveTransferStatus(
 			contact,
 			true,
