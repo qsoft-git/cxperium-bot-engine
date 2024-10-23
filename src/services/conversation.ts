@@ -91,9 +91,18 @@ export default class BaseConversation {
 	}
 
 	public getLastMessage(): any {
-		if (!this.conversation.lastMessage.length) {
-			const last = this.conversation.sessionData.at(-2) as any['message'];
-			this.conversation.lastMessage = last.message;
+		let index = -2;
+		while (true) {
+			const last = this.conversation.sessionData.at(
+				index,
+			) as any['message'];
+
+			if (last.message.length) {
+				this.conversation.lastMessage = last.message;
+				break;
+			}
+
+			index++;
 		}
 
 		return this.conversation.lastMessage;
