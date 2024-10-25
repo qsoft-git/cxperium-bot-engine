@@ -52,7 +52,7 @@ export default class extends ServiceCxperium {
 		};
 
 		return await fetchRetry(
-			`${this.baseUrl}/api/ticket/send-comment/phone/${ticketId}`,
+			`${this.baseUrl}/api/ticket/${ticketId}/wa/comments`,
 			{
 				method: 'POST',
 				body: JSON.stringify(body),
