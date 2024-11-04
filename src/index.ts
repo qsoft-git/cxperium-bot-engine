@@ -7,7 +7,6 @@ import { UtilDialog } from './utils/dialog';
 import { UtilCxperium } from './utils/cxperium';
 import { UtilWhatsApp } from './utils/whatsapp';
 import { UtilSentry } from './utils/sentry';
-import { UtilWorker } from './utils/worker';
 import { UtilRouter } from './utils/router';
 
 // Interfaces.
@@ -33,7 +32,6 @@ export interface Engine
 		UtilCxperium,
 		UtilWhatsApp,
 		UtilSentry,
-		UtilWorker,
 		UtilRouter {}
 
 export class Engine {
@@ -76,9 +74,6 @@ export class Engine {
 		this.initCxperiumService();
 		this.initWhatsAppService();
 
-		// Initialize worker services.
-		this.initWorkers(data);
-
 		// Initialize dialog.
 		this.initDialogService();
 
@@ -114,7 +109,6 @@ applyClassMixins.run(Engine, [
 	UtilCxperium,
 	UtilWhatsApp,
 	UtilSentry,
-	UtilWorker,
 	UtilRouter,
 ]);
 
