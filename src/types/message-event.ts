@@ -3,6 +3,7 @@ enum EMessageEvent {
 	ON_CHATGPT_MESSAGE,
 	ON_DIALOGFLOW_MESSAGE,
 	ON_DID_NOT_UNDERSTAND,
+	ON_END_OF_CHAT_SESSION,
 }
 
 export { EMessageEvent };

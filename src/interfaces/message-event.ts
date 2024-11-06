@@ -5,6 +5,7 @@ interface IMessageEvent {
 	onChatGPTMessage(messageObject: TIntentPrediction): void;
 	onDialogflowMessage(messageObject: TIntentPrediction): void;
 	onDidNotUnderstand(): void;
+	endOfChatSession(): void;
 }
 
 export { IMessageEvent };
