@@ -1,15 +1,15 @@
-// Node modules.
+// ? Node modules.
 import { OpenAI } from 'openai';
 
-// Types.
+// ? Types.
 import { TAppLocalsServices } from '../../types/base-dialog';
 import { TIntentPrediction } from '../../types/intent-prediction';
 import { TChatGPTResponse } from '../../types/chatgpt/response';
 
-// Datas.
+// ? Datas.
 import DataGeneral from '../../data/general';
 
-// Constants.
+// ? Constants.
 const UNKNOWN_REGEX = new RegExp('bilmiyorum', 'gi');
 
 export default class {

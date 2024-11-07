@@ -1,11 +1,11 @@
-// Services.
-import router from '../routes/index';
+// ? Types.
+import { Router } from 'express';
 
-// Interfaces.
+// ? Interfaces.
 import { IUtilsRouter } from '../interfaces/utils/router';
 
-// Types.
-import { Router } from 'express';
+// ? Services.
+import router from '../routes/index';
 
 export class UtilRouter implements IUtilsRouter {
 	router!: Router;

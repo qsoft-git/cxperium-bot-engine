@@ -1,8 +1,10 @@
+// ? Node modules.
 import NodeCache from 'node-cache';
 
+// ? Environments.
 const { BASE_CXPERIUM_URL } = process.env;
 
-// Variables.
+// ? Variables.
 const data: {
 	name: string;
 	cxperiumBaseUrl: string;

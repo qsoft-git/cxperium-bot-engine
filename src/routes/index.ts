@@ -1,16 +1,16 @@
-// Node modules.
+// ? Node modules.
 import express from 'express';
 
-// Express router.
+// ? Express router.
 const router = express.Router();
 
-// Controllers.
+// ? Controllers.
 import mainController from '../controllers/main';
 
-// Import routes.
+// ? Import routes.
 import routerApi from './api';
 
-// Routes.
+// ? Routes.
 router.use('/api', routerApi);
 router.get('/error-test', mainController.errorTest);
 router.get('/', mainController.homePage);

@@ -1,4 +1,4 @@
-// Types.
+// ? Types.
 import {
 	IDialog,
 	ServiceWhatsappBaseDialog,

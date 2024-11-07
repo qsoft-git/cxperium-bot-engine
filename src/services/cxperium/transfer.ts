@@ -1,13 +1,13 @@
-// Services.
+// ? Services.
 import ServiceCxperium from '.';
 import { TCxperiumContact } from '../../types/cxperium/contact';
 
-// Types.
+// ? Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 import { TActivity } from '../../types/whatsapp/activity';
 import BaseConversation from '../conversation';
 
-// Services.
+// ? Services.
 import ServiceCxperiumContact from '../cxperium/contact';
 import ServiceCxperiumConfiguration from '../cxperium/configuration';
 import ServiceCxperiumMessage from '../cxperium/message';
@@ -16,7 +16,7 @@ import ServiceCxperiumLanguage from '../cxperium/language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
 import { TAppLocalsServices } from '../../types/base-dialog';
 
-// Environments.
+// ? Environments.
 const { OUT_TICKET } = process.env;
 
 export default class extends ServiceCxperium {
@@ -43,7 +43,7 @@ export default class extends ServiceCxperium {
 		);
 	}
 
-	async isSurveyTransfer(dialog: any) {
+	async isSurveyTransfer(dialog: any): Promise<boolean> {
 		const activity = dialog.activity;
 		const contact = dialog.contact;
 		const conversation: BaseConversation = dialog.conversation;
@@ -137,7 +137,7 @@ export default class extends ServiceCxperium {
 		await this.serviceCxperiumMessage.redirectWpMessage(messages);
 	}
 
-	async isLiveTransfer(dialog: any) {
+	async isLiveTransfer(dialog: any): Promise<boolean> {
 		const contact: TCxperiumContact = dialog.contact;
 		const activity: TActivity = dialog.activity;
 		const customAttributes = contact.custom as any;

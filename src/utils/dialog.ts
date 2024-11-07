@@ -1,14 +1,14 @@
-// Node modules.
+// ? Node modules.
 import * as path from 'path';
 
-// Services.
-import ServiceDialog from '../services/dialog';
+// ? Types.
+import { TSrcIndexConfig } from '../types/src-index';
 
-// Interfaces.
+// ? Interfaces.
 import { IUtilsDialog } from '../interfaces/utils/dialog';
 
-// Types.
-import { TSrcIndexConfig } from '../types/src-index';
+// ? Services.
+import ServiceDialog from '../services/dialog';
 
 export class UtilDialog implements IUtilsDialog {
 	dialogPath!: string;

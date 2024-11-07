@@ -1,7 +1,7 @@
-// Node modules.
+// ? Node modules.
 import * as df from '@google-cloud/dialogflow';
 
-// Types.
+// ? Types.
 import { TAppLocalsServices } from '../../types/base-dialog';
 import { TIntentPrediction } from '../../types/intent-prediction';
 

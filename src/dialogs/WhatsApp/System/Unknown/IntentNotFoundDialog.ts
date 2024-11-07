@@ -1,11 +1,11 @@
-// Types.
+// ? Types.
 import {
 	IDialog,
 	ServiceWhatsappBaseDialog,
 	TBaseDialogCtor,
 } from '../../../../index';
 
-// Environments.
+// ? Environments.
 const {
 	FIRST_CALLBACK_REDIRECT_MAIN_MENU_STATUS,
 	FIRST_CALLBACK_REDIRECT_MAIN_MENU_ID,

@@ -1,21 +1,21 @@
-// Fetch Retry.
+// ? Fetch Retry.
 import fetchRetry from '../fetch';
 
-// Datas.
+// ? Datas.
 import DataGeneral from '../../data/general';
 
-// Services.
+// ? Types.
+import { TCxperiumServiceParams } from '../../types/cxperium/service';
+import { TConversation } from '../../types/conversation';
+import BaseConversation from '../conversation';
+
+// ? Services.
 import ServiceCxperium from '.';
 import ServiceCxperiumContact from './contact';
 import ServiceCxperiumConversation from './conversation';
 import ServiceCxperiumConfiguration from './configuration';
 import ServiceCxperiumLanguage from './language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
-
-// Types.
-import { TCxperiumServiceParams } from '../../types/cxperium/service';
-import { TConversation } from '../../types/conversation';
-import BaseConversation from '../conversation';
 
 export default class extends ServiceCxperium {
 	public cache: any;

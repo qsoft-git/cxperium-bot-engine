@@ -1,12 +1,12 @@
-// Fetch Retry.
+// ? Fetch Retry.
 import fetchRetry from '../fetch';
 
-// Services.
-import ServiceCxperium from '.';
-
-// Types.
+// ? Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 import { TShoppingCart } from '../../types/cxperium/shopping-cart';
+
+// ? Services.
+import ServiceCxperium from '.';
 
 export default class extends ServiceCxperium {
 	constructor(data: TCxperiumServiceParams) {

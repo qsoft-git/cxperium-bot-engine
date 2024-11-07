@@ -1,26 +1,25 @@
-// Environment.
+// ? Environment.
 const { NODE_ENV, PROD_ENV } = process.env;
 
-// Services.
+// ? Services.
 import ServiceCxperium from '.';
 
-// Fetch Retry.
+// ? Fetch Retry.
 import fetchRetry from '../fetch';
 
-// Datas.
+// ? Datas.
 import DataGeneral from '../../data/general';
 
-// Types.
+// ? Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 import { TCxperiumEnvironment } from '../../types/configuration/environment';
 
-// Utils.
+// ? Utils.
 import { TWhatsappConfig } from '../../types/configuration/whatsapp';
 import { TChatGPTConfig } from '../../types/configuration/chatgpt';
 import { TCxperiumLiveConfig } from '../../types/configuration/live';
 import { TDialogflowConfig } from '../../types/configuration/dialogflow';
 import { TGdprConfig } from '../../types/configuration/gdpr';
-import { TBotFrameworkConfig } from '../../types/configuration/botframework';
 import { TEnterpriseChatGPTConfig } from '../../types/configuration/enterpriseChatGPT';
 import { TSessionTimeoutConfig } from '../../types/configuration/sessionTimeout';
 
@@ -45,7 +44,6 @@ export default class extends ServiceCxperium {
 		const enterpriseChatGPTConfig: TEnterpriseChatGPTConfig =
 			allEnv.EnterpriseChatGptConfig;
 		const gdprConfig: TGdprConfig = allEnv.GdprConfig;
-		const botframeworkConfig: TBotFrameworkConfig = allEnv.TeamsConfig;
 		const sessionTimeoutConfig: TSessionTimeoutConfig =
 			allEnv.SessionTimeoutConfig;
 		const extraFields: Record<string, unknown> = {};
@@ -67,7 +65,6 @@ export default class extends ServiceCxperium {
 			dialogflowConfig: dialogflowConfig,
 			gdprConfig: gdprConfig,
 			whatsappConfig: whatsappConfig,
-			botframeworkConfig: botframeworkConfig,
 			enterpriseChatgptConfig: enterpriseChatGPTConfig,
 			sessionTimeoutConfig: sessionTimeoutConfig,
 			extraFields: extraFields,
@@ -114,7 +111,7 @@ export default class extends ServiceCxperium {
 		}
 		if (!result.DialogFlowConfig) {
 			throw new Error(
-				'Automate config is required to continue to run this project',
+				'Dialogflow config is required to continue to run this project',
 			);
 		}
 		if (!result.WhatsAppConfig) {

@@ -1,3 +1,4 @@
+// ? Types.
 import { TActivity } from '../types/whatsapp/activity';
 
 export default class {

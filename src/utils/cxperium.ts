@@ -1,14 +1,14 @@
-// Datas.
+// ? Datas.
 import DataGeneral from '../data/general';
 
-// Interfaces.
+// ? Types.
+import { TSrcIndexConfig } from '../types/src-index';
+
+// ? Interfaces.
 import { IUtilsCxperium } from '../interfaces/utils/cxperium';
 import { TCxperiumServiceParams } from '../types/cxperium/service';
 
-// Types.
-import { TSrcIndexConfig } from '../types/src-index';
-
-// Services.
+// ? Services.
 import ServiceCxperiumMain from '../services/cxperium/main';
 import ServiceCxperiumContact from '../services/cxperium/contact';
 import ServiceCxperiumUser from '../services/cxperium/user';
@@ -23,7 +23,7 @@ import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
 import ServiceCxperiumTransfer from '../services/cxperium/transfer';
 import ServiceCxperiumShoppingCart from '../services/cxperium/shopping-cart';
 
-// Export default module.
+// ? Export default module.
 export class UtilCxperium implements IUtilsCxperium {
 	apiKey!: string;
 	callbackUrl!: string;

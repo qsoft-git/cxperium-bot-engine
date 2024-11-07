@@ -1,4 +1,4 @@
-// Types.
+// ? Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 
 export default class {

@@ -1,37 +1,35 @@
-// Envrionments.
+// ? Environments.
 const { PORT, HOST, API_KEY, CALLBACK_URL, SENTRY_DSN, NODE_ENV } = process.env;
 
-// Utils.
-import { UtilApp } from './utils/app';
-import { UtilDialog } from './utils/dialog';
-import { UtilCxperium } from './utils/cxperium';
-import { UtilWhatsApp } from './utils/whatsapp';
-import { UtilSentry } from './utils/sentry';
-import { UtilRouter } from './utils/router';
+// ? Types.
+import { TSrcIndexConfig } from './types/src-index';
+import { TBaseDialogCtor } from './types/base-dialog';
 
-// Interfaces.
+// ? Interfaces.
 import { IDialog } from './interfaces/dialog';
 import { IFlow } from './interfaces/flow';
 import { IMessageEvent } from './interfaces/message-event';
 
-// Types.
-import { TSrcIndexConfig } from './types/src-index';
-import { TBaseDialogCtor } from './types/base-dialog';
+// ? Utils.
+import { UtilApp } from './utils/app';
+import { UtilDialog } from './utils/dialog';
+import { UtilCxperium } from './utils/cxperium';
+import { UtilWhatsApp } from './utils/whatsapp';
+import { UtilRouter } from './utils/router';
 
-// Services.
-import ServiceWhatsappBaseDialog from './services/whatsapp/base-dialog';
-
-// Helpers.
+// ? Helpers.
 import applyClassMixins from './helpers/apply-class-mixins';
 import Logger from './helpers/winston-loki';
 
-// Mixins.
+// ? Services.
+import ServiceWhatsappBaseDialog from './services/whatsapp/base-dialog';
+
+// ? Mixins.
 export interface Engine
 	extends UtilApp,
 		UtilDialog,
 		UtilCxperium,
 		UtilWhatsApp,
-		UtilSentry,
 		UtilRouter {}
 
 export class Engine {
@@ -52,18 +50,14 @@ export class Engine {
 		// Initialize express application.
 		this.initExpress();
 
-		// Initialize sentry properties.
-		this.initSentryProperties(data, this.app);
-
 		// Process on.
-		this.processOn();
 		this.logger.processOn();
 
 		// Set App properties.
 		this.initAppProperties(data);
 
 		// Initialize middlewares.
-		this.initMiddlewares(this.sentry);
+		this.initMiddlewares();
 
 		// Initialize properties.
 		this.initCxperiumProperties(data);
@@ -98,7 +92,6 @@ export class Engine {
 			this.serviceWhatsAppMessage,
 			this.serviceWhatsAppMedia,
 			this.serviceDialog,
-			this.sentry,
 		);
 	}
 }
@@ -108,7 +101,6 @@ applyClassMixins.run(Engine, [
 	UtilDialog,
 	UtilCxperium,
 	UtilWhatsApp,
-	UtilSentry,
 	UtilRouter,
 ]);
 

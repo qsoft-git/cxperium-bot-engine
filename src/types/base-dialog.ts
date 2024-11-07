@@ -1,14 +1,13 @@
-// Types.
+// ? Types.
 import { TActivity } from './whatsapp/activity';
 import { TCxperiumContact } from '../types/cxperium/contact';
 import { TCxperiumServices } from '../types/cxperium/service';
 
-// Services.
+// ? Services.
 import ServiceDialog from '../services/dialog';
 import BaseConversation from '../services/conversation';
 import { TWhatsAppServices } from './whatsapp/service';
 
-// Types.
 export type TAppLocalsServices = {
 	cxperium: TCxperiumServices;
 	whatsapp: TWhatsAppServices;

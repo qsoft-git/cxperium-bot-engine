@@ -1,11 +1,10 @@
-// Types.
-import {
-	IDialog,
-	ServiceWhatsappBaseDialog,
-	TBaseDialogCtor,
-} from '../../../../index';
-import initEntryPoint from '../../../../services/whatsapp/init-entry-point';
+// ? Types.
+import { IDialog, TBaseDialogCtor } from '../../../../index';
 import { TButton } from '../../../../types/whatsapp/message';
+
+// ? Services.
+import initEntryPoint from '../../../../services/whatsapp/init-entry-point';
+import { ServiceWhatsappBaseDialog } from '../../../../index';
 
 export default class extends ServiceWhatsappBaseDialog implements IDialog {
 	constructor(data: TBaseDialogCtor) {

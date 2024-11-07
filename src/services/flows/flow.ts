@@ -1,11 +1,11 @@
-// Node modules.
+// ? Node modules.
 import { Request } from 'express';
 
-// Types.
+// ? Types.
 import { TCxperiumContact } from '../../types/cxperium/contact';
 import { TAppLocalsServices } from '../../types/base-dialog';
 
-// Services.
+// ? Services.
 import { decryptRequest, encryptResponse } from '../flows/encrypt';
 import ServiceInitActivity from '../init-activity';
 import {

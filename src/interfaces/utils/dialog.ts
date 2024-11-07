@@ -1,7 +1,7 @@
-// Types.
+// ? Types.
 import { TSrcIndexConfig } from '../../types/src-index';
 
-// Services.
+// ? Services.
 import ServiceDialog from '../../services/dialog';
 
 export interface IUtilsDialog {

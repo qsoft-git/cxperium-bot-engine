@@ -1,3 +1,4 @@
+// ? Node modules.
 import crypto from 'crypto';
 
 const passphrase = process.argv[2];
