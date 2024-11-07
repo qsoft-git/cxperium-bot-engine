@@ -1,13 +1,13 @@
-// Node modules.
+// ? Node modules.
 import * as Sentry from '@sentry/node';
 import { ProfilingIntegration } from '@sentry/profiling-node';
 import { Application } from 'express';
 
-// Interfaces.
-import { IUtilsSentry } from '../interfaces/utils/sentry';
-
-// Types.
+// ? Types.
 import { TSrcIndexConfig } from '../types/src-index';
+
+// ? Interfaces.
+import { IUtilsSentry } from '../interfaces/utils/sentry';
 
 export class UtilSentry implements IUtilsSentry {
 	public sentry!: typeof Sentry;

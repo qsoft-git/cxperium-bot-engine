@@ -1,4 +1,4 @@
-// Node modules.
+// ? Node modules.
 import express, { Application } from 'express';
 import * as path from 'path';
 import cors from 'cors';
@@ -9,22 +9,21 @@ import expressFileUpload from 'express-fileupload';
 import noCache from 'nocache';
 import cookieParser from 'cookie-parser';
 import http from 'http';
-import * as Sentry from '@sentry/node';
 
-// Routes.
+// ? Routes.
 import routes from '../routes';
 
-// Middlewares.
+// ? Middlewares.
 import middlewareMain from '../middlewares/main';
 
-// Interfaces.
+// ? Interfaces.
 import { IUtilsApp } from '../interfaces/utils/app';
 
-// Types.
+// ? Types.
 import { TSrcIndexConfig } from '../types/src-index';
 import { TAppLocalsServices } from '../types/base-dialog';
 
-// Services.
+// ? Services.
 import ServiceCxperiumMain from '../services/cxperium/main';
 import ServiceCxperiumContact from '../services/cxperium/contact';
 import ServiceCxperiumUser from '../services/cxperium/user';
@@ -44,7 +43,7 @@ import ServiceWhatsAppMain from '../services/whatsapp/main';
 import ServiceWhatsAppMedia from '../services/whatsapp/media';
 import NodeCache from 'node-cache';
 
-// Init services.
+// ? Init services.
 const appLocalsServices: TAppLocalsServices | any = {};
 
 export class UtilApp implements IUtilsApp {
@@ -71,21 +70,14 @@ export class UtilApp implements IUtilsApp {
 		this.mode = _mode || 'development';
 	}
 
-	public initMiddlewares(sentry: typeof Sentry): void {
-		// Set sentry request handler.
-		this.app.use(sentry.Handlers.requestHandler());
-
+	public initMiddlewares(): void {
 		// Set general middlewares.
 		this.initGeneralMiddlewares();
-
-		// Set sentry tracing handler.
-		this.app.use(sentry.Handlers.tracingHandler());
 
 		// Set routes.
 		this.app.use(routes);
 
 		// Set error middlewares.
-		this.app.use(sentry.Handlers.errorHandler());
 		this.app.use(middlewareMain.notFoundHandler);
 		this.app.use(middlewareMain.errorHandler);
 	}
@@ -141,12 +133,10 @@ export class UtilApp implements IUtilsApp {
 		serviceWhatsAppMessage: ServiceWhatsAppMessage,
 		serviceWhatsAppMedia: ServiceWhatsAppMedia,
 		serviceDialog: ServiceDialog,
-		sentry: typeof Sentry,
 	): void {
 		appLocalsServices.dialog = serviceDialog;
 		appLocalsServices.cxperium = {};
 		appLocalsServices.whatsapp = {};
-		appLocalsServices.automate = {};
 		appLocalsServices.cxperium.main = serviceCxperiumMain;
 		appLocalsServices.cxperium.contact = serviceCxperiumContact;
 		appLocalsServices.cxperium.user = serviceCxperiumUser;
@@ -163,7 +153,6 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.whatsapp.main = serviceWhatsAppMain;
 		appLocalsServices.whatsapp.message = serviceWhatsAppMessage;
 		appLocalsServices.whatsapp.media = serviceWhatsAppMedia;
-		appLocalsServices.sentry = sentry;
 
 		this.app.locals.service = appLocalsServices;
 	}
