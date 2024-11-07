@@ -23,6 +23,7 @@ import Logger from './helpers/winston-loki';
 
 // ? Services.
 import ServiceWhatsappBaseDialog from './services/whatsapp/base-dialog';
+import { UtilLogger } from './utils/logger';
 
 // ? Mixins.
 export interface Engine
@@ -101,6 +102,7 @@ applyClassMixins.run(Engine, [
 	UtilDialog,
 	UtilCxperium,
 	UtilWhatsApp,
+	UtilLogger,
 	UtilRouter,
 ]);
 

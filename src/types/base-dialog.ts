@@ -7,11 +7,13 @@ import { TCxperiumServices } from '../types/cxperium/service';
 import ServiceDialog from '../services/dialog';
 import BaseConversation from '../services/conversation';
 import { TWhatsAppServices } from './whatsapp/service';
+import Logger from '../helpers/winston-loki';
 
 export type TAppLocalsServices = {
 	cxperium: TCxperiumServices;
 	whatsapp: TWhatsAppServices;
 	dialog: ServiceDialog;
+	loki: Logger;
 };
 
 export type TBaseDialogDialogFileParams = {

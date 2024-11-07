@@ -42,6 +42,7 @@ import ServiceWhatsAppMessage from '../services/whatsapp/message';
 import ServiceWhatsAppMain from '../services/whatsapp/main';
 import ServiceWhatsAppMedia from '../services/whatsapp/media';
 import NodeCache from 'node-cache';
+import Logger from '../helpers/winston-loki';
 
 // ? Init services.
 const appLocalsServices: TAppLocalsServices | any = {};
@@ -153,6 +154,7 @@ export class UtilApp implements IUtilsApp {
 		appLocalsServices.whatsapp.main = serviceWhatsAppMain;
 		appLocalsServices.whatsapp.message = serviceWhatsAppMessage;
 		appLocalsServices.whatsapp.media = serviceWhatsAppMedia;
+		appLocalsServices.loki = Logger;
 
 		this.app.locals.service = appLocalsServices;
 	}
