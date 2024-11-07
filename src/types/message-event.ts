@@ -4,6 +4,7 @@ enum EMessageEvent {
 	ON_DIALOGFLOW_MESSAGE,
 	ON_DID_NOT_UNDERSTAND,
 	ON_END_OF_CHAT_SESSION,
+	ON_LIVE_CHAT_CLOSING,
 }
 
 export { EMessageEvent };
