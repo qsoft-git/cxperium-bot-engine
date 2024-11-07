@@ -1,19 +1,19 @@
-// Environment.
+// ? Environment.
 const { NODE_ENV, RESET_KEY } = process.env;
 
-// Node modules.
+// ? Node modules.
 import * as fs from 'fs';
 import * as path from 'path';
 
-// Cache.
+// ? Cache.
 import data from '../data/general';
 
-// Types.
+// ? Types.
 import { TBaseDialogCtor, TAppLocalsServices } from '../types/base-dialog';
 import BaseConversation from './conversation';
 import { TIntentPrediction } from '../types/intent-prediction';
 
-// Services.
+// ? Services.
 import ServiceDialogflow from './dialogflow/match';
 import ServiceChatGPT from './chatgpt/match';
 import { TCxperiumLiveConfig } from '../types/configuration/live';
@@ -575,9 +575,6 @@ export default class {
 			case EMessageEvent.ON_DID_NOT_UNDERSTAND: {
 				return await this.runOnDidNotUnderstand(runParams, event);
 			}
-			case EMessageEvent.ON_END_OF_CHAT_SESSION: {
-				return await this.runOnEndOfChatSession(runParams, event);
-			}
 		}
 	}
 
@@ -683,25 +680,6 @@ export default class {
 			const dialogImport = await import(data.dialogFileParams.path);
 			const dialog = new dialogImport.default(data);
 			await dialog.onDidNotUnderstand(dialog);
-		} catch (error) {
-			console.info(
-				`${EMessageEvent[event]} is not implemented. You may want to implement IMessageEvent interface to your Entry.ts file if you require to customize the response! (NOT REQUIRED!)`,
-			);
-			throw new Error(`DID_NOT_UNDERSTAND_EVENT_NOT_IMPLEMENTED_ERROR`);
-		}
-	}
-
-	public async runOnEndOfChatSession(
-		data: TBaseDialogCtor,
-		event: EMessageEvent,
-	): Promise<void> {
-		console.info(`RUN MESSAGE EVENT: ${EMessageEvent[event]}`);
-
-		try {
-			data.conversation.dialogFileParams = data.dialogFileParams;
-			const dialogImport = await import(data.dialogFileParams.path);
-			const dialog = new dialogImport.default(data);
-			await dialog.onEndOfChatSession(dialog);
 		} catch (error) {
 			console.info(
 				`${EMessageEvent[event]} is not implemented. You may want to implement IMessageEvent interface to your Entry.ts file if you require to customize the response! (NOT REQUIRED!)`,
