@@ -6,7 +6,7 @@ interface IMessageEvent {
 	onChatGPTMessage?(messageObject: TIntentPrediction): void;
 	onDialogflowMessage?(messageObject: TIntentPrediction): void;
 	onDidNotUnderstand?(): void;
-	onEndOfChatSession?(): void;
+	onSessionTimeout?(): void;
 	onClosingOfLiveChat?(): void;
 }
 

@@ -56,7 +56,7 @@ export default class {
 				case 'CLOSED': {
 					if (eventStatusChange === 'CHAT_STATUS_CHANGE') {
 						return await this.eventHandler(
-							EMessageEvent.ON_LIVE_CHAT_CLOSING,
+							EMessageEvent.ON_CLOSING_OF_LIVE_CHAT,
 						);
 					}
 
@@ -72,7 +72,7 @@ export default class {
 				}
 				case 'ASSISTANT_SESSION_TIMEOUT': {
 					return await this.eventHandler(
-						EMessageEvent.ON_END_OF_CHAT_SESSION,
+						EMessageEvent.ON_SESSION_TIMEOUT,
 					);
 				}
 				case 'ASSISTANT_INTENT_CHANGE': {
@@ -102,7 +102,7 @@ export default class {
 		}
 	}
 
-	private getDialogRunParams(): TBaseDialogCtor {
+	private getDialogRunParams(event: EMessageEvent): TBaseDialogCtor {
 		const findOneDialog = this.services.dialog.getListAll.find(
 			(item: any) => {
 				return item.name == 'CXPerium.Dialogs.WhatsApp.Entry';
@@ -167,7 +167,7 @@ export default class {
 			dialogFileParams: {
 				name: findOneDialog.name,
 				path: findOneDialog.path,
-				place: `RUN MESSAGE EVENT: ${EMessageEvent.ON_END_OF_CHAT_SESSION}`,
+				place: `RUN MESSAGE EVENT: ${event}`,
 			},
 			services: this.services,
 		};
@@ -184,11 +184,11 @@ export default class {
 				1: 'NOT_AVAILABLE',
 				2: 'NOT_AVAILABLE',
 				3: 'NOT_AVAILABLE',
-				4: 'onEndOfChatSession',
+				4: 'onSessionTimeout',
 				5: 'onClosingOfLiveChat',
 			};
 
-			const data: TBaseDialogCtor = this.getDialogRunParams();
+			const data: TBaseDialogCtor = this.getDialogRunParams(event);
 			const eventFunc: string = mapping[event];
 			const dialogImport = await import(data.dialogFileParams.path);
 			const dialog = new dialogImport.default(data);
