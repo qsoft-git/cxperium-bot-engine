@@ -12,9 +12,7 @@ export default class {
 			const response = await serviceFlows.execute();
 			res.send(response);
 		} catch (error) {
-			const sentry = res.app.locals.service.sentry;
-			sentry.captureException(error);
-			Logger.instance.logger.error(error);
+			Logger?.instance?.logger?.error(error);
 			console.error(error);
 		}
 	}

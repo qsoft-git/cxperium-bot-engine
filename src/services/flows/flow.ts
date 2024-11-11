@@ -61,7 +61,7 @@ export default class {
 			}
 
 			throw new Error(
-				'PRIVATE_PEM_KEY environment variable is not set to anything. Please defined PRIVATE_PEM_KEY',
+				'PRIVATE_PEM_KEY environment variable is not set . Please defined PRIVATE_PEM_KEY',
 			);
 		} catch (error) {
 			console.error(error);

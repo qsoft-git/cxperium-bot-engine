@@ -19,9 +19,7 @@ export default class {
 			const serviceRunDialog = new ServiceWhatsappRunDialog(req);
 			await serviceRunDialog.execute();
 		} catch (error) {
-			const sentry = res.app.locals.service.sentry;
-			sentry.captureException(error);
-			Logger.instance.logger.error(error);
+			Logger?.instance?.logger?.error(error);
 			console.error(error);
 		}
 	}

@@ -14,6 +14,6 @@ export default async (dialog: any) => {
 		}
 
 		console.error(error);
-		Logger.instance.logger.error(error.message);
+		Logger?.instance?.logger?.error(error.message);
 	}
 };
