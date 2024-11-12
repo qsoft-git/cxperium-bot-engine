@@ -17,7 +17,7 @@ export default class {
 		try {
 			const packageJson = getPackageJson.getJsonParse();
 			const message = `description: ${packageJson.description}\nversion: ${packageJson.version}\nlicense: ${packageJson.license}\nauthor: ${packageJson?.author}\nuptime: ${UP_TIME}`;
-			Logger.instance.logger.info(message);
+			Logger?.instance?.logger?.info(message);
 
 			return res.render('home-page', {
 				description: packageJson.description,
