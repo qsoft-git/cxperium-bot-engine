@@ -118,7 +118,9 @@ export default class {
 			return;
 		}
 
-		if (await this.services.cxperium.transfer.isLiveTransfer(this)) return;
+		if (await this.services.cxperium.transfer.isLiveTransfer(this)) {
+			return;
+		}
 
 		// Init EntryPoint.
 		try {
