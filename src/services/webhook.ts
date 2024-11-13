@@ -55,6 +55,7 @@ export default class {
 				}
 				case 'CLOSED': {
 					if (eventStatusChange === 'CHAT_STATUS_CHANGE') {
+						this.conversationClosed();
 						return await this.eventHandler(
 							EMessageEvent.ON_CLOSING_OF_LIVE_CHAT,
 						);
@@ -71,6 +72,7 @@ export default class {
 					break;
 				}
 				case 'ASSISTANT_SESSION_TIMEOUT': {
+					this.conversationClosed();
 					return await this.eventHandler(
 						EMessageEvent.ON_SESSION_TIMEOUT,
 					);
