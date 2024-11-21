@@ -182,12 +182,12 @@ export default class {
 	private async eventHandler(event: EMessageEvent) {
 		try {
 			const mapping: Record<EMessageEvent, string> = {
-				0: 'NOT_AVAILABLE',
-				1: 'NOT_AVAILABLE',
-				2: 'NOT_AVAILABLE',
-				3: 'NOT_AVAILABLE',
-				4: 'onSessionTimeout',
-				5: 'onClosingOfLiveChat',
+				ON_FILE_RECEIVED: 'NOT_AVAILABLE',
+				ON_CHATGPT_MESSAGE: 'NOT_AVAILABLE',
+				ON_DIALOGFLOW_MESSAGE: 'NOT_AVAILABLE',
+				ON_DID_NOT_UNDERSTAND: 'NOT_AVAILABLE',
+				ON_SESSION_TIMEOUT: 'onSessionTimeout',
+				ON_CLOSING_OF_LIVE_CHAT: 'onClosingOfLiveChat',
 			};
 
 			const data: TBaseDialogCtor = this.getDialogRunParams(event);
