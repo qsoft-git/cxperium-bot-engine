@@ -90,6 +90,29 @@ export default class {
 		return response.media[0].id;
 	}
 
+	private isValidNumber(input: string): boolean {
+		const regex = /^\d{15}$/;
+		return regex.test(input);
+	}
+
+	private async checkAccessToken(token: string): Promise<boolean> {
+		const response = await fetch('https://graph.facebook.com', {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		if (
+			response?.status == 401 ||
+			response?.statusText === 'Unauthorized'
+		) {
+			return false;
+		}
+
+		return true;
+	}
+
 	public async wpRequest(body: any, endpoint: string) {
 		let response;
 
@@ -110,15 +133,24 @@ export default class {
 		} else if (env.whatsappConfig.provider == 'CLOUD') {
 			const phoneNumberId = env?.whatsappConfig?.phoneNumberId;
 
-			if (!phoneNumberId) {
-				throw new Error('WhatsApp phone number not found!');
+			if (!phoneNumberId || !this.isValidNumber(phoneNumberId)) {
+				console.error(
+					'Phone number id is incorrect. Check it under the Cxperium/Whatsapp Configuration menu!',
+				);
+				process.exit(137);
 			}
 
-			if (!env.whatsappConfig?.key) {
-				throw new Error('WhatsApp key not found!');
+			if (
+				!env?.whatsappConfig?.key ||
+				!(await this.checkAccessToken(env?.whatsappConfig?.key))
+			) {
+				console.error(
+					'Access token is invalid. Check it under the Cxperium/Whatsapp Configuration menu!',
+				);
+				process.exit(137);
 			}
 
-			const requestUrl = `https://graph.facebook.com/${
+			const requestUrl = `https://sinan-api.qsoft.space/${
 				process.env.VERSION || 'v19.0'
 			}/${phoneNumberId}/messages`;
 			const reviveBody = { ...body, messaging_product: 'whatsapp' };
