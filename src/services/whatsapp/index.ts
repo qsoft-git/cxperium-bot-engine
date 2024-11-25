@@ -74,13 +74,15 @@ export default class {
 		const env = await this.configuration.execute();
 		const url = env.whatsappConfig.wabaUrl;
 
+		const uint8Array = new Uint8Array(body);
+
 		const response = (await fetch(`${url}/${endpoint}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': contentType,
 				'D360-API-KEY': env.whatsappConfig.key,
 			},
-			body,
+			body: uint8Array,
 		}).then((response) => response.json())) as any;
 
 		if (response.meta.success === false) {
@@ -150,7 +152,7 @@ export default class {
 				process.exit(137);
 			}
 
-			const requestUrl = `https://sinan-api.qsoft.space/${
+			const requestUrl = `https://graph.facebook.com/${
 				process.env.VERSION || 'v19.0'
 			}/${phoneNumberId}/messages`;
 			const reviveBody = { ...body, messaging_product: 'whatsapp' };
@@ -168,10 +170,10 @@ export default class {
 			throw new Error('WhatsApp configuration provider not found');
 		}
 
-		if (response?.meta?.success === false) {
-			throw response?.meta?.developer_message;
-		}
+		console.log(
+			`Message with ${response.botMessageId} id is sent to Meta! 🚀`,
+		);
 
-		return response;
+		return response?.botMessageId;
 	}
 }
