@@ -150,7 +150,7 @@ export default class {
 				process.exit(137);
 			}
 
-			const requestUrl = `https://sinan-api.qsoft.space/${
+			const requestUrl = `https://graph.facebook.com/${
 				process.env.VERSION || 'v19.0'
 			}/${phoneNumberId}/messages`;
 			const reviveBody = { ...body, messaging_product: 'whatsapp' };
