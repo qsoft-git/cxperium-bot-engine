@@ -133,7 +133,7 @@ export default class extends ServiceCxperium {
 		let whatsappConfig: TWhatsappConfig;
 
 		if (PROD_ENV === 'true' || NODE_ENV !== 'development') {
-			response = (await fetchRetry(`${this.baseUrl}/api/waba`, {
+			const response = (await fetchRetry(`${this.baseUrl}/api/waba`, {
 				method: 'GET',
 				headers: {
 					'content-type': 'application/json',
