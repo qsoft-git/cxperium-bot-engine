@@ -36,26 +36,18 @@ export default class {
 		// Init activity.
 		await this.serviceInitActivity.initActivity();
 
-		// Init activity text.
-		const text = this.activity.text;
-
 		// Init contact.
 		this.contact =
 			await this.services.cxperium.contact.getContactByPhone(this);
 
 		const customAttributes = this.contact.custom as any;
 
-		// Init conversation.
-		await this.services.cxperium.session.createOrUpdateSession(
-			true,
-			'TR',
-			text,
-			this,
-		);
+		// Update last message time.
+		await this.services.cxperium.session.updateLastMessageTime(this);
 
 		// Init conversation.
 		this.conversation =
-			await this.services.cxperium.session.getConversationWhatsapp(this);
+			await this.services.cxperium.session.getConversation(this);
 
 		const isGdprActive = (
 			await this.services.cxperium.configuration.execute()
@@ -69,10 +61,6 @@ export default class {
 				await this.services.whatsapp.message.sendRegularMessage(
 					this.activity.from,
 					'İşleminiz tamamlanmıştır.',
-					// await this.services.cxperium.language.getLanguageByKey(
-					// 	this.contact.languageId,
-					// 	'key',
-					// ),
 				);
 				return;
 			}
