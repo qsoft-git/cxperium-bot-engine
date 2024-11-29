@@ -294,7 +294,7 @@ export default class extends ServiceCxperium {
 				'content-type': 'application/json',
 				apikey: this.apiKey,
 			},
-		}).then((response) => response.json());
+		});
 	}
 
 	async updateGdprApprovalStatus(contact: TCxperiumContact, status: boolean) {
