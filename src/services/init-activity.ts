@@ -120,14 +120,6 @@ export default class {
 		return this.that.activity;
 	}
 
-	public activityToText(): string {
-		if (this.that.activity?.text) return this.that.activity?.text;
-		else if (this.that.activity?.value) return this.that.activity?.value.id;
-		else if (this.that.activity?.payload) return this.that.activity.payload;
-
-		throw new Error('Activity problem occurred, text and value is null');
-	}
-
 	public initCxperiumMessage(): void {
 		const { data } = this.providerExtractor();
 
@@ -171,3 +163,13 @@ export default class {
 		return { data, body };
 	}
 }
+
+function activityToText(activity: TActivity): string {
+	if (activity?.text) return activity.text;
+	else if (activity?.value) return activity?.value?.id;
+	else if (activity?.value?.payload) return activity.value.payload;
+
+	throw new Error('Activity problem occurred, text and value is null');
+}
+
+export { activityToText };
