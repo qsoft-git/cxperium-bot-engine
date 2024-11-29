@@ -239,12 +239,14 @@ export default class extends ServiceCxperium {
 			contact.phone,
 		);
 
+		const message = await this.serviceCxperiumLanguage.getLanguageByKey(
+			conversation.conversation.languageId,
+			'transfer_to_represantative',
+		);
+
 		await this.serviceWhatsAppMessage.sendRegularMessage(
 			contact.phone,
-			await this.serviceCxperiumLanguage.getLanguageByKey(
-				conversation.conversation.languageId,
-				'transfer_to_represantative',
-			),
+			message,
 		);
 
 		await this.serviceCxperiumContact.updateLiveTransferStatus(
