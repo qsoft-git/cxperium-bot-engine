@@ -81,12 +81,12 @@ export default class Logger {
 		});
 
 		process.on('uncaughtException', (err, origin) => {
-			this.logger.error('Uncaught Exception:', err, 'origin:', origin);
+			this?.logger?.error('Uncaught Exception:', err, 'origin:', origin);
 			// Application specific logging, throwing an error, or other logic here
 		});
 
 		process.on('warning', (warning) => {
-			this.logger.warn('Warning:', warning);
+			this?.logger?.warn('Warning:', warning);
 			// Application specific logging, throwing an error, or other logic here
 		});
 	}
