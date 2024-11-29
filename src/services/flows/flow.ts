@@ -97,7 +97,7 @@ export default class {
 		this.contact =
 			await this.services.cxperium.contact.getContactByPhone(this);
 		this.conversation =
-			await this.services.cxperium.session.getConversationWhatsapp(this);
+			await this.services.cxperium.session.getConversation(this);
 
 		const res = await this.services.dialog.runReturnFlowResponse(
 			this,
