@@ -25,7 +25,7 @@ export default class extends ServiceWhatsApp {
 	public async sendLocationRequest(
 		to: string,
 		message: string,
-	): Promise<void> {
+	): Promise<any> {
 		try {
 			const body = {
 				recipient_type: 'individual',
@@ -49,7 +49,7 @@ export default class extends ServiceWhatsApp {
 		}
 	}
 
-	public async sendRegularMessage(to: string, body: string): Promise<void> {
+	public async sendRegularMessage(to: string, body: string): Promise<any> {
 		try {
 			const msg = {
 				recipient_type: 'individual',
