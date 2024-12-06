@@ -27,6 +27,9 @@ export default class extends ServiceCxperium {
 	serviceCxperiumLanguage!: ServiceCxperiumLanguage;
 	serviceWhatsAppMessage!: ServiceWhatsAppMessage;
 
+	private TRANSFER_TO_REPRESENTATIVE_KEY =
+		'transfer_to_represantative' as const;
+
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
 		this.serviceCxperiumConfiguration = new ServiceCxperiumConfiguration(
@@ -209,10 +212,45 @@ export default class extends ServiceCxperium {
 		contact: TCxperiumContact,
 		conversation: BaseConversation,
 	): Promise<boolean> {
-		const isAvailable =
-			await this.serviceCxperiumMessage.checkBusinessHour();
+		try {
+			const isAvailable =
+				await this.serviceCxperiumMessage.checkBusinessHour();
 
-		if (!isAvailable) {
+			if (!isAvailable) {
+				await this.handleOutsideBusinessHours(contact, conversation);
+				return true;
+			}
+
+			const id = await this.createConversation(contact);
+
+			await this.updateContactWithChatId(contact, id);
+
+			const lastMessage = conversation.getLastMessage();
+
+			await this.sendLastMessageToWhatsapp(
+				id,
+				lastMessage,
+				contact.phone,
+			);
+
+			await this.sendTransferMessage(contact, conversation);
+
+			await this.serviceCxperiumContact.updateLiveTransferStatus(
+				contact,
+				true,
+			);
+			return true;
+		} catch (error) {
+			console.error('Error during transfer to representative:', error);
+			return false;
+		}
+	}
+
+	private async handleOutsideBusinessHours(
+		contact: TCxperiumContact,
+		conversation: BaseConversation,
+	): Promise<void> {
+		try {
 			const message =
 				await this.serviceCxperiumMessage.getOutsideBusinessHoursMessage(
 					conversation.conversation.cultureCode,
@@ -222,38 +260,75 @@ export default class extends ServiceCxperium {
 				contact.phone,
 				message,
 			);
-			return true;
+		} catch (error) {
+			console.error('Error handling outside business hours:', error);
+			throw error;
 		}
+	}
 
-		const id = await this.serviceCxperiumConversation.create(contact._id);
+	private async createConversation(
+		contact: TCxperiumContact,
+	): Promise<string> {
+		try {
+			return await this.serviceCxperiumConversation.create(contact._id);
+		} catch (error) {
+			console.error('Error creating conversation:', error);
+			throw error;
+		}
+	}
 
-		await this.serviceCxperiumContact.updateContactByCustomFields(contact, {
-			ChatId: id,
-		});
+	private async updateContactWithChatId(
+		contact: TCxperiumContact,
+		chatId: string,
+	): Promise<void> {
+		try {
+			await this.serviceCxperiumContact.updateContactByCustomFields(
+				contact,
+				{
+					ChatId: chatId,
+				},
+			);
+		} catch (error) {
+			console.error('Error updating contact with chat ID:', error);
+			throw error;
+		}
+	}
 
-		const lastMessage = conversation.getLastMessage();
+	private async sendLastMessageToWhatsapp(
+		chatId: string,
+		lastMessage: string,
+		phone: string,
+	): Promise<void> {
+		try {
+			await this.serviceCxperiumMessage.sendWhatsappMessage(
+				chatId,
+				lastMessage,
+				phone,
+			);
+		} catch (error) {
+			console.error('Error sending last message to WhatsApp:', error);
+			throw error;
+		}
+	}
 
-		await this.serviceCxperiumMessage.sendWhatsappMessage(
-			id,
-			lastMessage,
-			contact.phone,
-		);
+	private async sendTransferMessage(
+		contact: TCxperiumContact,
+		conversation: BaseConversation,
+	): Promise<void> {
+		try {
+			const message = await this.serviceCxperiumLanguage.getLanguageByKey(
+				conversation.conversation.languageId,
+				this.TRANSFER_TO_REPRESENTATIVE_KEY,
+			);
 
-		const message = await this.serviceCxperiumLanguage.getLanguageByKey(
-			conversation.conversation.languageId,
-			'transfer_to_represantative',
-		);
-
-		await this.serviceWhatsAppMessage.sendRegularMessage(
-			contact.phone,
-			message,
-		);
-
-		await this.serviceCxperiumContact.updateLiveTransferStatus(
-			contact,
-			true,
-		);
-		return true;
+			await this.serviceWhatsAppMessage.sendRegularMessage(
+				contact.phone,
+				message,
+			);
+		} catch (error) {
+			console.error('Error sending transfer message:', error);
+			throw error;
+		}
 	}
 
 	async transferToRepresentatives(
