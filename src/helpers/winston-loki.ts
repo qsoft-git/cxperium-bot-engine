@@ -71,7 +71,7 @@ export default class Logger {
 
 	public processOn(): void {
 		process.on('unhandledRejection', (reason, promise) => {
-			this.logger.error(
+			this?.logger?.error(
 				'Unhandled Rejection at:',
 				promise,
 				'reason:',
