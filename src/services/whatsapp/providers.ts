@@ -36,8 +36,8 @@ export const cloudProvider = async (
 		);
 	}
 
-	const requestUrl = `https://sinan-provider.qsoft.space/${
-		process.env.VERSION || 'v19.0'
+	const requestUrl = `https://provider.cxperium.dev/${
+		process.env.VERSION || 'v21.0'
 	}/${phoneNumberId}/messages`;
 	const reviveBody = { ...body, messaging_product: 'whatsapp' };
 	delete reviveBody?.recipient_type;
@@ -47,6 +47,7 @@ export const cloudProvider = async (
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: 'Bearer ' + config.key,
+			'X-Forwarded-for': 'CXPERIUM_BOT',
 		},
 		body: JSON.stringify(reviveBody),
 	});
