@@ -36,9 +36,10 @@ export const cloudProvider = async (
 		);
 	}
 
-	const requestUrl = `https://provider.cxperium.dev/${
-		process.env.VERSION || 'v21.0'
-	}/${phoneNumberId}/messages`;
+	const requestUrl = `${
+		process.env.PROVIDER_BASE_URL || 'https://provider.cxperium.com'
+	}/${process.env.VERSION || 'v21.0'}/${phoneNumberId}/messages`;
+
 	const reviveBody = { ...body, messaging_product: 'whatsapp' };
 	delete reviveBody?.recipient_type;
 
