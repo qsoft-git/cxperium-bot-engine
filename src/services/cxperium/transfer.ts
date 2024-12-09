@@ -146,7 +146,7 @@ export default class extends ServiceCxperium {
 		const customAttributes = contact.custom as any;
 		const env = await this.serviceCxperiumConfiguration.execute();
 
-		if (!env.cxperiumLiveConfig?.IsActive) {
+		if (!env?.cxperiumLiveConfig?.IsActive) {
 			return false;
 		}
 
