@@ -21,6 +21,7 @@ import { TButton } from '../types/whatsapp/message';
 import NodeCache from 'node-cache';
 import { TChatGPTResponse } from '../types/chatgpt/response';
 import { EMessageEvent } from '../types/message-event';
+import { activityToText } from './init-activity';
 
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
@@ -392,7 +393,7 @@ export default class {
 		let activity: any;
 
 		if (dialog.place == 'WHATSAPP') {
-			activity = dialog.serviceInitActivity.activityToText();
+			activity = activityToText(dialog.activity);
 		} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
 			if (dialog.activity.value)
 				activity = Object.values(dialog.activity.value)[0];
