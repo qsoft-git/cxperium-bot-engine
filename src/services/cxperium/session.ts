@@ -16,6 +16,8 @@ import ServiceCxperiumConversation from './conversation';
 import ServiceCxperiumConfiguration from './configuration';
 import ServiceCxperiumLanguage from './language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
+import { TCxperiumContact } from '../../types/cxperium/contact';
+import { activityToText } from '../init-activity';
 
 export default class extends ServiceCxperium {
 	public cache: any;
@@ -41,49 +43,16 @@ export default class extends ServiceCxperium {
 		);
 	}
 
-	async createOrUpdateSession(
-		isActive: boolean,
-		language: string,
-		message: string,
-		dialog: any,
-	) {
-		if (!language) {
-			language = 'TR';
-		}
-
-		const phone = dialog.contact.phone;
-		const body = {
-			language: language,
-			phone: phone,
-			data: [
-				{
-					message: message,
-					isLast: true,
-				},
-			],
-			isActive: isActive,
-		};
-
-		(await fetchRetry(`${this.baseUrl}/api/assistant/session`, {
-			method: 'POST',
-			body: JSON.stringify(body),
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
-			},
-		}).then((response) => response.json())) as any;
-
+	async updateLastMessageTime(dialog: any) {
 		await this.updateConversationSessionTime(dialog);
 	}
 
 	async updateConversationSessionTime(dialog: any) {
-		const contact =
-			await this.serviceCxperiumContact.getContactByPhone(dialog);
+		const contact = dialog.contact as TCxperiumContact;
 
-		if (contact)
-			await this.serviceCxperiumContact.updateContactConversationDateByContactId(
-				contact._id,
-			);
+		await this.serviceCxperiumContact.updateContactConversationDateByContactId(
+			contact._id,
+		);
 	}
 
 	async getAllActiveSessions() {
@@ -101,8 +70,9 @@ export default class extends ServiceCxperium {
 		return response.data.filter((x: any) => x.isActive == true);
 	}
 
-	async getConversationWhatsapp(dialog: any) {
+	async getConversation(dialog: any) {
 		const phone: string = dialog.contact.phone;
+		const message: string = activityToText(dialog.activity);
 
 		let conversation: TConversation | undefined = this.cache.get(
 			`CONVERSATION-${phone}`,
@@ -117,69 +87,25 @@ export default class extends ServiceCxperium {
 					functionName: '',
 				},
 				sessionData: [],
-				lastMessage: dialog.activity.text,
+				lastMessage: message,
 				cultureCode: 'TR',
 				cache: {},
 			};
 
 			this.cache.set(`CONVERSATION-${phone}`, conversation);
 		} else {
-			const response = (await fetchRetry(
-				`${this.baseUrl}/api/assistant/session/${phone}`,
-				{
-					method: 'GET',
-					headers: {
-						'content-type': 'application/json',
-						apikey: this.apiKey,
-					},
-				},
-			).then((response) => response.json())) as any;
-
-			if (response.data.length > 0) {
-				const lastMessage = response.data[0]?.data?.find(
-					(message: any) => Boolean(message.isLast),
-				)?.message;
-
-				conversation = {
-					languageId: 1,
-					conversationData: conversation.conversationData,
-					waitData: conversation.waitData,
-					sessionData: response.data[0].data,
-					lastMessage: lastMessage,
-					cultureCode: 'TR',
-					cache: conversation.cache,
-				};
-
-				this.cache.del(`CONVERSATION-${phone}`);
-				this.cache.set(`CONVERSATION-${phone}`, conversation);
-			}
-		}
-
-		return new BaseConversation(dialog, conversation);
-	}
-
-	async getConversationMicrosoft(dialog: any) {
-		const id: string = dialog.activity.from.id;
-
-		let conversation: TConversation | undefined = this.cache.get(
-			`CONVERSATION-${id}`,
-		);
-
-		if (!conversation) {
 			conversation = {
 				languageId: 1,
-				conversationData: [],
-				waitData: {
-					className: '',
-					functionName: '',
-				},
+				conversationData: conversation.conversationData,
+				waitData: conversation.waitData,
 				sessionData: [],
-				lastMessage: '',
+				lastMessage: message,
 				cultureCode: 'TR',
-				cache: {},
+				cache: conversation.cache,
 			};
 
-			this.cache.set(`CONVERSATION-${id}`, conversation);
+			this.cache.del(`CONVERSATION-${phone}`);
+			this.cache.set(`CONVERSATION-${phone}`, conversation);
 		}
 
 		return new BaseConversation(dialog, conversation);

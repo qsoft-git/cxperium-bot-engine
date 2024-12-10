@@ -46,18 +46,20 @@ export default class extends ServiceCxperium {
 	}
 
 	async getOutsideBusinessHoursMessage(cultureCode: string): Promise<string> {
-		const response = (await fetchRetry(
-			`${this.baseUrl}/api/business-hours`,
-			{
+		let response: any;
+		try {
+			response = (await fetchRetry(`${this.baseUrl}/api/business-hours`, {
 				method: 'GET',
 				headers: {
 					'content-type': 'application/json',
 					apikey: this.apiKey,
 				},
-			},
-		).then((response) => response.json())) as any;
+			}).then((response) => response.json())) as any;
 
-		return response.data?.message[cultureCode];
+			return response.data?.message[cultureCode];
+		} catch (error: unknown) {
+			return response?.data?.message;
+		}
 	}
 
 	async redirectWpMessage(message: object) {

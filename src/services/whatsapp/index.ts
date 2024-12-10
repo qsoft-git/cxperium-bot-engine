@@ -3,6 +3,8 @@ import axios from 'axios';
 
 // ? Services.
 import ServiceCxperiumConfiguration from '../cxperium/configuration';
+import { getConfig } from './config';
+import { cloudProvider, dialog360Provider } from './providers';
 
 export default class {
 	private CONFIGURATION: ServiceCxperiumConfiguration;
@@ -74,13 +76,15 @@ export default class {
 		const env = await this.configuration.execute();
 		const url = env.whatsappConfig.wabaUrl;
 
+		const uint8Array = new Uint8Array(body);
+
 		const response = (await fetch(`${url}/${endpoint}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': contentType,
 				'D360-API-KEY': env.whatsappConfig.key,
 			},
-			body,
+			body: uint8Array,
 		}).then((response) => response.json())) as any;
 
 		if (response.meta.success === false) {
@@ -90,88 +94,31 @@ export default class {
 		return response.media[0].id;
 	}
 
-	private isValidNumber(input: string): boolean {
-		const regex = /^\d{15}$/;
-		return regex.test(input);
-	}
+	public async wpRequest(body: any, endpoint: string): Promise<string> {
+		const env = await getConfig(this.CONFIGURATION);
 
-	private async checkAccessToken(token: string): Promise<boolean> {
-		const response = await fetch('https://graph.facebook.com', {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
+		const providerMap: { [key: string]: any } = {
+			DIALOG360: dialog360Provider,
+			CLOUD: cloudProvider,
+		};
 
-		if (
-			response?.status == 401 ||
-			response?.statusText === 'Unauthorized'
-		) {
-			return false;
-		}
+		const providerFunction = providerMap[env.whatsappConfig.provider];
 
-		return true;
-	}
-
-	public async wpRequest(body: any, endpoint: string) {
-		let response;
-
-		const env = (await this.configuration.execute()) as any;
-
-		if (env.whatsappConfig.provider == 'DIALOG360') {
-			response = (await fetch(
-				`${env.whatsappConfig.wabaUrl}/${endpoint}`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'D360-API-KEY': env.whatsappConfig.key,
-					},
-					body: JSON.stringify(body),
-				},
-			).then((response) => response.json())) as any;
-		} else if (env.whatsappConfig.provider == 'CLOUD') {
-			const phoneNumberId = env?.whatsappConfig?.phoneNumberId;
-
-			if (!phoneNumberId || !this.isValidNumber(phoneNumberId)) {
-				console.error(
-					'Phone number id is incorrect. Check it under the Cxperium/Whatsapp Configuration menu!',
-				);
-				process.exit(137);
-			}
-
-			if (
-				!env?.whatsappConfig?.key ||
-				!(await this.checkAccessToken(env?.whatsappConfig?.key))
-			) {
-				console.error(
-					'Access token is invalid. Check it under the Cxperium/Whatsapp Configuration menu!',
-				);
-				process.exit(137);
-			}
-
-			const requestUrl = `https://graph.facebook.com/${
-				process.env.VERSION || 'v19.0'
-			}/${phoneNumberId}/messages`;
-			const reviveBody = { ...body, messaging_product: 'whatsapp' };
-			delete reviveBody?.recipient_type;
-
-			response = (await fetch(requestUrl, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: 'Bearer ' + env.whatsappConfig.key,
-				},
-				body: JSON.stringify(reviveBody),
-			}).then((response) => response.json())) as any;
-		} else {
+		if (!providerFunction) {
 			throw new Error('WhatsApp configuration provider not found');
 		}
 
-		if (response?.meta?.success === false) {
-			throw response?.meta?.developer_message;
-		}
+		try {
+			return await providerFunction(body, endpoint, env.whatsappConfig);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				console.error('Error in wpRequest:', error.message);
+				console.log("Your message couldn't be sent to Meta! 🚫");
+			} else {
+				console.error('Unknown error in wpRequest:', error);
+			}
 
-		return response;
+			return '360DIALOG response id is not implemented!';
+		}
 	}
 }

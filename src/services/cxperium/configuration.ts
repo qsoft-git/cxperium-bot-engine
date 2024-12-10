@@ -129,53 +129,25 @@ export default class extends ServiceCxperium {
 	}
 
 	private async getWhatsappConfig(): Promise<TWhatsappConfig> {
-		let response;
-		let whatsappConfig: TWhatsappConfig;
+		const response = (await fetchRetry(`${this.baseUrl}/api/waba`, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json())) as any;
 
-		if (PROD_ENV === 'true' || NODE_ENV !== 'development') {
-			response = (await fetchRetry(`${this.baseUrl}/api/waba`, {
-				method: 'GET',
-				headers: {
-					'content-type': 'application/json',
-					apikey: this.apiKey,
-				},
-			}).then((response) => response.json())) as any;
-
-			whatsappConfig = {
-				shoppingCatalogId: response.data.shoppingCatalogId,
-				key: response.data.key,
-				phone: response.data.phone,
-				wabaUrl: response.data.wabaUrl,
-				namespace: response.data.namespace,
-				platform: response.data.platform,
-				provider: response?.data?.providers || response?.data?.provider,
-				businessAccountId: response?.data?.businessAccountId,
-				phoneNumberId: response?.data?.phoneNumberId,
-			};
-		} else {
-			response = (await fetchRetry(
-				`${this.baseUrl}/api/assistant/whatsapp-config`,
-				{
-					method: 'GET',
-					headers: {
-						'content-type': 'application/json',
-						apikey: this.apiKey,
-					},
-				},
-			).then((response) => response.json())) as any;
-
-			whatsappConfig = {
-				shoppingCatalogId: response.data.shoppingCatalogId,
-				key: response.data.key,
-				phone: response.data.phone,
-				wabaUrl: response.data.wabaUrl,
-				namespace: response.data.namespace,
-				platform: response.data.platform,
-				provider: response?.data?.providers || response?.data?.provider,
-				businessAccountId: response?.data?.businessAccountId,
-				phoneNumberId: response?.data?.phoneNumberId,
-			};
-		}
+		const whatsappConfig = {
+			shoppingCatalogId: response.data.shoppingCatalogId,
+			key: response.data.key,
+			phone: response.data.phone,
+			wabaUrl: response.data.wabaUrl,
+			namespace: response.data.namespace,
+			platform: response.data.platform,
+			provider: response?.data?.providers || response?.data?.provider,
+			businessAccountId: response?.data?.businessAccountId,
+			phoneNumberId: response?.data?.phoneNumberId,
+		};
 
 		return whatsappConfig;
 	}

@@ -15,4 +15,6 @@ router.use('/api', routerApi);
 router.get('/error-test', mainController.errorTest);
 router.get('/', mainController.homePage);
 
+router.post('/callback', mainController.callback);
+
 export default router;

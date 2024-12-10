@@ -31,6 +31,22 @@ export default class {
 		}
 	}
 
+	public static callback(req: Request, res: Response, next: NextFunction) {
+		try {
+			console.info(
+				`Message response: ${req.body.botMessageId} => ${JSON.stringify(
+					req.body.graphResponse,
+				)}`,
+			);
+
+			return res.status(200).json({
+				message: 'Callback received.',
+			});
+		} catch (error) {
+			next(error);
+		}
+	}
+
 	public static errorTest(
 		_req: Request,
 		_res: Response,

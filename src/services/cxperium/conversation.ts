@@ -65,20 +65,24 @@ export default class extends ServiceCxperium {
 	}
 
 	async create(contactId: string) {
-		const body = { contactId: contactId };
-		const response = (await fetchRetry(`${this.baseUrl}/api/chat`, {
-			method: 'POST',
-			body: JSON.stringify(body),
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
-			},
-		}).then((response) => response.json())) as any;
+		try {
+			const body = { contactId: contactId };
+			const response = (await fetchRetry(`${this.baseUrl}/api/chat`, {
+				method: 'POST',
+				body: JSON.stringify(body),
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
+			}).then((response) => response.json())) as any;
 
-		await this.serviceContactService.updateContactConversationDateByContactId(
-			contactId,
-		);
+			await this.serviceContactService.updateContactConversationDateByContactId(
+				contactId,
+			);
 
-		return response.data.chat;
+			return response?.data?.chat;
+		} catch (error: unknown) {
+			console.error('Error in cxperium.conversation.create: ', error);
+		}
 	}
 }

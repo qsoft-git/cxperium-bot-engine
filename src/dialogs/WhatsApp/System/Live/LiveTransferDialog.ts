@@ -15,7 +15,7 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 			this.activity.value.id &&
 			this.activity.value.id === 'humantransfer_no'
 		) {
-			this.services.cxperium.contact.updateLiveTransferStatus(
+			await this.services.cxperium.contact.updateLiveTransferStatus(
 				this.contact,
 				false,
 			);
