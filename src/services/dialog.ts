@@ -25,8 +25,6 @@ import { activityToText } from './init-activity';
 
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
-	TEAMS: '3',
-	WEBCHAT: '4',
 };
 
 const ENTRY_INTENT_NAME = 'CXPerium.Dialogs.WhatsApp.Entry';
@@ -114,58 +112,46 @@ export default class {
 			}
 		}
 
-		if (dialog.place == 'WHATSAPP')
-			dialog.contact =
-				await dialog.services.cxperium.contact.getContactByPhone(
-					dialog,
-				);
+		dialog.contact =
+			await dialog.services.cxperium.contact.getContactByPhone(dialog);
 
 		if (prediction.isMatch && prediction.fulfillment) {
-			if (dialog.place == 'WHATSAPP') {
-				try {
-					await this.runMessageEvent(
-						dialog,
-						prediction,
-						EMessageEvent.ON_DIALOGFLOW_MESSAGE,
+			try {
+				await this.runMessageEvent(
+					dialog,
+					prediction,
+					EMessageEvent.ON_DIALOGFLOW_MESSAGE,
+				);
+			} catch (error: any) {
+				if (
+					error.message === 'DIALOGFLOW_EVENT_NOT_IMPLEMENTED_ERROR'
+				) {
+					await dialog.services.whatsapp.message.sendRegularMessage(
+						dialog.contact.phone,
+						prediction.fulfillment,
 					);
-				} catch (error: any) {
-					if (
-						error.message ===
-						'DIALOGFLOW_EVENT_NOT_IMPLEMENTED_ERROR'
-					) {
-						await dialog.services.whatsapp.message.sendRegularMessage(
-							dialog.contact.phone,
-							prediction.fulfillment,
-						);
-					}
 				}
-			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
-				await dialog.context.sendActivity(prediction.fulfillment);
 			}
+
 			return;
 		}
 
 		if (prediction.isMatch && prediction.chatgptMessage) {
-			if (dialog.place == 'WHATSAPP') {
-				try {
-					await this.runMessageEvent(
-						dialog,
-						prediction,
-						EMessageEvent.ON_CHATGPT_MESSAGE,
+			try {
+				await this.runMessageEvent(
+					dialog,
+					prediction,
+					EMessageEvent.ON_CHATGPT_MESSAGE,
+				);
+			} catch (error: any) {
+				if (error.message === 'CHATGPT_EVENT_NOT_IMPLEMENTED_ERROR') {
+					await dialog.services.whatsapp.message.sendRegularMessage(
+						dialog.contact.phone,
+						prediction.chatgptMessage,
 					);
-				} catch (error: any) {
-					if (
-						error.message === 'CHATGPT_EVENT_NOT_IMPLEMENTED_ERROR'
-					) {
-						await dialog.services.whatsapp.message.sendRegularMessage(
-							dialog.contact.phone,
-							prediction.chatgptMessage,
-						);
-					}
 				}
-			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
-				await dialog.context.sendActivity(prediction.chatgptMessage);
 			}
+
 			return;
 		}
 
@@ -199,74 +185,67 @@ export default class {
 
 			await this.run(runParams);
 		} else {
-			if (dialog.place == 'WHATSAPP') {
-				const liveConfig: TCxperiumLiveConfig = (
-					await dialog.services.cxperium.configuration.execute()
-				).cxperiumLiveConfig;
+			const liveConfig: TCxperiumLiveConfig = (
+				await dialog.services.cxperium.configuration.execute()
+			).cxperiumLiveConfig;
 
-				const conversation: BaseConversation = dialog.conversation;
-				const faultCount = conversation.getFaultCount();
-				if (liveConfig.IsActive) {
-					if (faultCount >= liveConfig.TransferFaultCount) {
-						conversation.setFaultCount(1);
-						const buttons: TButton[] = [
-							{
-								id: 'humantransfer_yes',
-								title: await dialog.services.cxperium.language.getLanguageByKey(
-									conversation.conversation.languageId,
-									'yes_humantransfer',
-								),
-							},
-							{
-								id: 'humantransfer_no',
-								title: await dialog.services.cxperium.language.getLanguageByKey(
-									conversation.conversation.languageId,
-									'no_humantransfer',
-								),
-							},
-						];
-
-						await dialog.services.whatsapp.message.sendButtonMessage(
-							dialog.contact.phone,
-							await dialog.services.cxperium.language.getLanguageByKey(
+			const conversation: BaseConversation = dialog.conversation;
+			const faultCount = conversation.getFaultCount();
+			if (liveConfig.IsActive) {
+				if (faultCount >= liveConfig.TransferFaultCount) {
+					conversation.setFaultCount(1);
+					const buttons: TButton[] = [
+						{
+							id: 'humantransfer_yes',
+							title: await dialog.services.cxperium.language.getLanguageByKey(
 								conversation.conversation.languageId,
-								'transfer_representative_title',
+								'yes_humantransfer',
 							),
-							'',
-							await dialog.services.cxperium.language.getLanguageByKey(
+						},
+						{
+							id: 'humantransfer_no',
+							title: await dialog.services.cxperium.language.getLanguageByKey(
 								conversation.conversation.languageId,
-								'transfer_message_to_representative',
+								'no_humantransfer',
 							),
-							buttons,
-						);
+						},
+					];
 
-						return;
-					}
-				}
-				conversation.increaseFaultCount();
-
-				try {
-					await this.runMessageEvent(
-						dialog,
-						prediction,
-						EMessageEvent.ON_DID_NOT_UNDERSTAND,
+					await dialog.services.whatsapp.message.sendButtonMessage(
+						dialog.contact.phone,
+						await dialog.services.cxperium.language.getLanguageByKey(
+							conversation.conversation.languageId,
+							'transfer_representative_title',
+						),
+						'',
+						await dialog.services.cxperium.language.getLanguageByKey(
+							conversation.conversation.languageId,
+							'transfer_message_to_representative',
+						),
+						buttons,
 					);
-				} catch (error: any) {
-					if (
-						error.message ===
-						'DID_NOT_UNDERSTAND_EVENT_NOT_IMPLEMENTED_ERROR'
-					) {
-						await this.runWithIntentName(
-							dialog,
-							'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
-						);
-					}
+
+					return;
 				}
-			} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
-				await this.runWithIntentName(
+			}
+			conversation.increaseFaultCount();
+
+			try {
+				await this.runMessageEvent(
 					dialog,
-					'CXPerium.Dialogs.Teams.System.Unknown.IntentNotFoundDialog',
+					prediction,
+					EMessageEvent.ON_DID_NOT_UNDERSTAND,
 				);
+			} catch (error: any) {
+				if (
+					error.message ===
+					'DID_NOT_UNDERSTAND_EVENT_NOT_IMPLEMENTED_ERROR'
+				) {
+					await this.runWithIntentName(
+						dialog,
+						'CXPerium.Dialogs.WhatsApp.System.Unknown.IntentNotFoundDialog',
+					);
+				}
 			}
 		}
 	}
@@ -390,17 +369,7 @@ export default class {
 
 		const env = await services.cxperium.configuration.execute();
 
-		let activity: any;
-
-		if (dialog.place == 'WHATSAPP') {
-			activity = activityToText(dialog.activity);
-		} else if (dialog.place == 'TEAMS' || dialog.place == 'WEBCHAT') {
-			if (dialog.activity.value)
-				activity = Object.values(dialog.activity.value)[0];
-			else activity = dialog.activity.text;
-		} else {
-			throw new Error('RUN DIALOG: NOT FOUND PLACE!!!');
-		}
+		const activity = activityToText(dialog.activity);
 
 		if (RESET_KEY && RESET_KEY == activity) {
 			console.log('!!! Server shutdown request sent !!!');
@@ -471,7 +440,7 @@ export default class {
 			const chatgptService = new ServiceChatGPT(services);
 			prediction = await chatgptService.enterpriseChatGPTMatch(
 				activity,
-				activity.from,
+				dialog.activity.from,
 				env.enterpriseChatgptConfig,
 			);
 		}
