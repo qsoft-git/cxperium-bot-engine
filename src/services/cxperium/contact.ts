@@ -60,7 +60,7 @@ export default class extends ServiceCxperium {
 				return contact;
 			}
 		} catch (error) {
-			console.error(error);
+			console.error('Error in createContact', error);
 		}
 	}
 
@@ -81,7 +81,10 @@ export default class extends ServiceCxperium {
 				},
 			});
 		} catch (error) {
-			console.error(error);
+			console.error(
+				'Error in updateContactConversationdateByContactId',
+				error,
+			);
 		}
 	}
 
