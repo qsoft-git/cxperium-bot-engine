@@ -120,37 +120,56 @@ export default class {
 		return this.that.activity;
 	}
 
-	public initCxperiumMessage(): void {
+	public async initCxperiumMessage(): Promise<void> {
 		const { data } = this.providerExtractor();
-
 		const type = data.type;
 
 		if (type === 'interactive' || type === 'button') {
-			if (data.interactive?.button_reply || data?.button?.payload) {
-				let msg = '';
-				if (data?.button?.payload) {
-					msg = data.button.payload;
-					this.that.activity.value.id = data.button.payload;
-				} else if (data?.interactive?.button_reply?.id)
-					msg = data.interactive.button_reply.id;
-
-				if (msg.includes('pollbot_') || msg.includes('SID:'))
-					this.that.activity.isCxperiumMessage = true;
-			}
-			if (data?.interactive?.list_reply) {
-				const msg: string = data.interactive.list_reply.id;
-
-				if (msg.includes('SID:'))
-					this.that.activity.isCxperiumMessage = true;
-			}
-			this.that.activity.type = 'interactive';
+			this.handleInteractiveOrButtonType(data);
 		}
 
-		if (
-			this.that.conversation.lastMessage &&
-			this.that.conversation.lastMessage.includes('SID:')
-		)
+		if (this.isLastMessageCxperium()) {
 			this.that.activity.isCxperiumMessage = true;
+		}
+
+		return this.that.activity;
+	}
+
+	private handleInteractiveOrButtonType(data: any): void {
+		if (data.interactive?.button_reply || data?.button?.payload) {
+			this.processButtonPayload(data);
+		}
+
+		if (data?.interactive?.list_reply) {
+			this.processListReply(data.interactive.list_reply.id);
+		}
+
+		this.that.activity.type = 'interactive';
+	}
+
+	private processButtonPayload(data: any): void {
+		let msg = '';
+		if (data?.button?.payload) {
+			msg = data.button.payload;
+			this.that.activity.value.id = data.button.payload;
+		} else if (data?.interactive?.button_reply?.id) {
+			msg = data.interactive.button_reply.id;
+		}
+
+		if (msg.includes('pollbot_') || msg.includes('SID:')) {
+			this.that.activity.isCxperiumMessage = true;
+		}
+	}
+
+	private processListReply(msg: string): void {
+		if (msg.includes('SID:')) {
+			this.that.activity.isCxperiumMessage = true;
+		}
+	}
+
+	private isLastMessageCxperium(): boolean {
+		const lastMessage = this.that.conversation.getLastMessage();
+		return lastMessage ? lastMessage.includes('SID:') : false;
 	}
 
 	public providerExtractor(): any {
