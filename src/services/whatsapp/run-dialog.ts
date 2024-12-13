@@ -54,7 +54,7 @@ export default class {
 		).gdprConfig.IsActive;
 
 		// Init cxperium message properties
-		this.serviceInitActivity.initCxperiumMessage();
+		this.activity = await this.serviceInitActivity.initCxperiumMessage();
 
 		if (this.activity.flow.isFlow) {
 			if (Object.entries(this.activity.flow.responseJson).length == 0) {
