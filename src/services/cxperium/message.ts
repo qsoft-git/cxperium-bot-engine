@@ -63,13 +63,28 @@ export default class extends ServiceCxperium {
 	}
 
 	async redirectWpMessage(message: object) {
-		await fetchRetry(this.callbackUrl, {
-			method: 'POST',
-			headers: {
-				'content-type': 'application/json',
-			},
-			body: JSON.stringify(message),
-		});
+		try {
+			const response = await fetchRetry(this.callbackUrl, {
+				method: 'POST',
+				headers: {
+					'content-type': 'application/json',
+				},
+				body: JSON.stringify(message),
+			});
+
+			const responseText = await response.text();
+
+			if (responseText.toLowerCase() !== 'ok') {
+				throw new Error(
+					'Error in redirecting WP to Cxperium Hook unexpected response text',
+				);
+			}
+		} catch (error) {
+			console.error(
+				'Error redirecting WP to Cxperium Hook message:',
+				error,
+			);
+		}
 	}
 
 	async sendNormalMessage(message: string, contactId: string) {
