@@ -86,7 +86,7 @@ export default class extends ServiceCxperium {
 			},
 		).then((response) => response.json())) as any;
 
-		const result = response.data.data.data;
+		const result = response.data.data;
 		result.WhatsAppConfig = await this.getWhatsappConfig();
 
 		if (!result.ChatGPTConfig) {
@@ -138,12 +138,12 @@ export default class extends ServiceCxperium {
 		}).then((response) => response.json())) as any;
 
 		const whatsappConfig = {
-			shoppingCatalogId: response.data.shoppingCatalogId,
-			key: response.data.key,
-			phone: response.data.phone,
-			wabaUrl: response.data.wabaUrl,
-			namespace: response.data.namespace,
-			platform: response.data.platform,
+			shoppingCatalogId: response?.data?.shoppingCatalogId,
+			key: response?.data?.key,
+			phone: response?.data?.phone,
+			wabaUrl: response?.data?.wabaUrl,
+			namespace: response?.data?.namespace,
+			platform: response?.data?.platform,
 			provider: response?.data?.providers || response?.data?.provider,
 			businessAccountId: response?.data?.businessAccountId,
 			phoneNumberId: response?.data?.phoneNumberId,
