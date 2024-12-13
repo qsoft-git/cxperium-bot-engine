@@ -1,5 +1,5 @@
 // ? Environment.
-const { NODE_ENV, PROD_ENV } = process.env;
+const { NODE_ENV } = process.env;
 
 // ? Services.
 import ServiceCxperium from '.';
