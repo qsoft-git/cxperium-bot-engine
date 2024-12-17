@@ -15,6 +15,7 @@ import ServiceCxperiumConversation from '../cxperium/conversation';
 import ServiceCxperiumLanguage from '../cxperium/language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
 import { TAppLocalsServices } from '../../types/base-dialog';
+import { TConversation } from '../../types/conversation';
 
 // ? Environments.
 const { OUT_TICKET } = process.env;
@@ -143,6 +144,7 @@ export default class extends ServiceCxperium {
 	async isLiveTransfer(dialog: any): Promise<boolean> {
 		const contact: TCxperiumContact = dialog.contact;
 		const activity: TActivity = dialog.activity;
+		const conversation: TConversation = dialog.conversation.conversation;
 		const customAttributes = contact.custom as any;
 		const env = await this.serviceCxperiumConfiguration.execute();
 
@@ -197,7 +199,7 @@ export default class extends ServiceCxperium {
 
 				await this.serviceCxperiumMessage.sendWhatsappMessage(
 					custom.ChatId,
-					activity.text,
+					conversation.lastMessage,
 					contact.phone,
 				);
 			}
