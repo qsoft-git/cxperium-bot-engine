@@ -42,6 +42,7 @@ export const cloudProvider = async (
 
 	const reviveBody = { ...body, messaging_product: 'whatsapp' };
 	delete reviveBody?.recipient_type;
+	delete reviveBody?.interactive?.body?.type;
 
 	const fetchResponse = await fetch(requestUrl, {
 		method: 'POST',
@@ -65,7 +66,9 @@ export const cloudProvider = async (
 	const response = textResponse ? JSON.parse(textResponse) : {};
 
 	console.log(
-		`Message with ${response?.botMessageId} id is sent to Meta! 🚀`,
+		`Message with ${
+			response?.botMessageId || textResponse
+		} id is sent to Meta! 🚀`,
 	);
 
 	return response?.botMessageId;
