@@ -40,7 +40,7 @@ export default class {
 
 	public async execute(): Promise<any> {
 		try {
-			if (process.env.PRIVATE_PEM_KEY) {
+			if (process?.env?.PRIVATE_PEM_KEY) {
 				const request = decryptRequest(
 					this.req.body,
 					process.env.PRIVATE_PEM_KEY,
