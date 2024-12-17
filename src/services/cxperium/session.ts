@@ -8,6 +8,8 @@ import DataGeneral from '../../data/general';
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 import { TConversation } from '../../types/conversation';
 import BaseConversation from '../conversation';
+import { TCxperiumContact } from '../../types/cxperium/contact';
+import { TActivity } from '../../types/whatsapp/activity';
 
 // ? Services.
 import ServiceCxperium from '.';
@@ -16,8 +18,6 @@ import ServiceCxperiumConversation from './conversation';
 import ServiceCxperiumConfiguration from './configuration';
 import ServiceCxperiumLanguage from './language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
-import { TCxperiumContact } from '../../types/cxperium/contact';
-import { activityToText } from '../init-activity';
 
 export default class extends ServiceCxperium {
 	public cache: any;
@@ -70,9 +70,17 @@ export default class extends ServiceCxperium {
 		return response.data.filter((x: any) => x.isActive == true);
 	}
 
+	private async activityToText(activity: TActivity): Promise<string> {
+		if (activity?.text) return activity.text;
+		else if (activity?.value) return activity?.value?.text;
+		else if (activity?.value?.payload) return activity.value.payload;
+
+		throw new Error('Activity problem occurred, text and value is null');
+	}
+
 	async getConversation(dialog: any) {
 		const phone: string = dialog.contact.phone;
-		const message: string = activityToText(dialog.activity);
+		const message: string = await this.activityToText(dialog.activity);
 
 		let conversation: TConversation | undefined = this.cache.get(
 			`CONVERSATION-${phone}`,
