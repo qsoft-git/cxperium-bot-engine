@@ -4,24 +4,26 @@ const { NODE_ENV, RESET_KEY } = process.env;
 // ? Node modules.
 import * as fs from 'fs';
 import * as path from 'path';
+import NodeCache from 'node-cache';
 
 // ? Cache.
 import data from '../data/general';
 
 // ? Types.
 import { TBaseDialogCtor, TAppLocalsServices } from '../types/base-dialog';
-import BaseConversation from './conversation';
 import { TIntentPrediction } from '../types/intent-prediction';
+import { FlowRequest } from '../types/whatsapp/flow-request';
+import { FlowResponse } from '../types/whatsapp/flow-response';
+import { TCxperiumLiveConfig } from '../types/configuration/live';
+import { TButton } from '../types/whatsapp/message';
+import { TChatGPTResponse } from '../types/chatgpt/response';
+import { EMessageEvent } from '../types/message-event';
 
 // ? Services.
 import ServiceDialogflow from './dialogflow/match';
 import ServiceChatGPT from './chatgpt/match';
-import { TCxperiumLiveConfig } from '../types/configuration/live';
-import { TButton } from '../types/whatsapp/message';
-import NodeCache from 'node-cache';
-import { TChatGPTResponse } from '../types/chatgpt/response';
-import { EMessageEvent } from '../types/message-event';
 import { activityToText } from './init-activity';
+import BaseConversation from './conversation';
 
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
@@ -550,9 +552,9 @@ export default class {
 
 	public async runReturnFlowResponse(
 		dialog: any,
-		body: any,
+		body: FlowRequest,
 		intentName: string,
-	): Promise<any> {
+	): Promise<FlowResponse> {
 		const services: TAppLocalsServices = dialog.services;
 
 		let findOneDialog;
