@@ -1,6 +1,3 @@
-// ? Environment.
-const { NODE_ENV } = process.env;
-
 // ? Services.
 import ServiceCxperium from '.';
 
@@ -86,7 +83,7 @@ export default class extends ServiceCxperium {
 			},
 		).then((response) => response.json())) as any;
 
-		const result = response.data.data;
+		const result = response.data.data.data;
 		result.WhatsAppConfig = await this.getWhatsappConfig();
 
 		if (!result.ChatGPTConfig) {
@@ -113,16 +110,6 @@ export default class extends ServiceCxperium {
 			throw new Error(
 				'Dialogflow config is required to continue to run this project',
 			);
-		}
-		if (!result.WhatsAppConfig) {
-			if (NODE_ENV === 'development')
-				throw new Error(
-					'WhatsappDevConfig is required to continue to run this project',
-				);
-			else
-				throw new Error(
-					'WhatsappConfig is required to continue to run this project',
-				);
 		}
 
 		return result;
