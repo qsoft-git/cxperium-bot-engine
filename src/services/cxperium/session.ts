@@ -71,11 +71,10 @@ export default class extends ServiceCxperium {
 	}
 
 	private async activityToText(activity: TActivity): Promise<string> {
-		if (activity?.text) return activity.text;
+		if (activity?.text) return activity?.text;
 		else if (activity?.value) return activity?.value?.text;
-		else if (activity?.value?.payload) return activity.value.payload;
-
-		throw new Error('Activity problem occurred, text and value is null');
+		else if (activity?.value?.payload) return activity?.value?.payload;
+		else return 'flow_received';
 	}
 
 	async getConversation(dialog: any) {
