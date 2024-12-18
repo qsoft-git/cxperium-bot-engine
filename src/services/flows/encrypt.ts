@@ -20,7 +20,7 @@ export const decryptRequest = (
 			padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
 			oaepHash: 'sha256',
 		},
-		Buffer.from(encrypted_aes_key, 'base64'),
+		Buffer.from(encrypted_aes_key, 'base64') as any,
 	);
 
 	// Decrypt the Flow data
@@ -33,13 +33,13 @@ export const decryptRequest = (
 
 	const decipher = crypto.createDecipheriv(
 		'aes-128-gcm',
-		decryptedAesKey,
-		initialVectorBuffer,
+		decryptedAesKey as any,
+		initialVectorBuffer as any,
 	);
-	decipher.setAuthTag(encrypted_flow_data_tag);
+	decipher.setAuthTag(encrypted_flow_data_tag as any);
 
 	const decryptedJSONString = Buffer.concat([
-		decipher.update(encrypted_flow_data_body),
+		decipher.update(encrypted_flow_data_body as any) as any,
 		decipher.final(),
 	]).toString('utf-8');
 
@@ -64,11 +64,11 @@ export const encryptResponse = (
 	// Encrypt the response data
 	const cipher = crypto.createCipheriv(
 		'aes-128-gcm',
-		aesKeyBuffer,
-		flipped_iv,
+		aesKeyBuffer as any,
+		flipped_iv as any,
 	);
 	return Buffer.concat([
-		cipher.update(JSON.stringify(response), 'utf-8'),
+		cipher.update(JSON.stringify(response), 'utf-8') as any,
 		cipher.final(),
 		cipher.getAuthTag(),
 	]).toString('base64');
