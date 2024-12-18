@@ -1,4 +1,4 @@
 export type BaseFlowResponse = {
-    version: string;
-    action: string | null;
+	version: string;
+	action: string | null;
 };
