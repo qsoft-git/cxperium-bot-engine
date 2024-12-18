@@ -15,22 +15,35 @@ import {
 	TInteractiveMessage,
 	TTextMessage,
 } from '../../types/whatsapp/activity';
+import { decryptMedia } from './media';
+
+interface DataExchangeRequest {
+	decryptedBody: DecryptedBody;
+	aesKeyBuffer: Buffer;
+	initialVectorBuffer: Buffer;
+}
+
+interface DecryptedBody {
+	action: 'ping' | 'data_exchange' | 'INIT';
+	data: Record<string, any>;
+	flow_token: string;
+	screen: string;
+	version: string;
+}
 
 export default class {
 	private req!: Request;
-	private contact!: TCxperiumContact;
-	private serviceInitActivity!: ServiceInitActivity;
-	private conversation!: any;
-	private services!: TAppLocalsServices;
-
-	private activity!:
+	private accessor contact!: TCxperiumContact;
+	private accessor serviceInitActivity!: ServiceInitActivity;
+	private accessor conversation!: any;
+	private accessor activity!:
 		| TActivity
 		| TTextMessage
 		| TImage
 		| TDocument
 		| TInteractiveMessage
 		| any;
-	public place = 'WHATSAPP';
+	private services!: TAppLocalsServices;
 
 	constructor(_req: Request) {
 		this.req = _req;
@@ -50,9 +63,9 @@ export default class {
 					case 'ping':
 						return this.ping(request);
 					case 'data_exchange':
-						return await this.dataExchangeResponse(request);
+						return await this.handleDataExchangeResponse(request);
 					case 'INIT':
-						return await this.dataExchangeResponse(request);
+						return await this.handleDataExchangeResponse(request);
 					default:
 						throw new Error(
 							'Error occurred when using flow for types of PING and DATA_EXCHANGE',
@@ -84,25 +97,14 @@ export default class {
 		return encryptedReponse;
 	}
 
-	private async dataExchangeResponse(request: any) {
-		const intent = request.decryptedBody.flow_token.split('&')[0];
-		const phone = request.decryptedBody.flow_token.split('&')[1];
-		this.activity = {
-			flow: {
-				isFlow: true,
-				responseJson: request.decryptedBody.data,
-			},
-			from: phone,
-		};
-		this.contact =
-			await this.services.cxperium.contact.getContactByPhone(this);
-		this.conversation =
-			await this.services.cxperium.session.getConversation(this);
+	private async handleDataExchangeResponse(request: DataExchangeRequest) {
+		const initAttr = await this.initThisAttributes(request);
+		const decryptedBody = await this.generateDecryptedBody(request);
 
 		const res = await this.services.dialog.runReturnFlowResponse(
 			this,
-			request.decryptedBody,
-			intent,
+			decryptedBody,
+			initAttr.intent,
 		);
 
 		const response = encryptResponse(
@@ -112,5 +114,53 @@ export default class {
 		);
 
 		return response;
+	}
+
+	private async generateDecryptedBody(request: DataExchangeRequest) {
+		const mediaFiles = await decryptMedia(
+			request.decryptedBody.data.images ||
+				request.decryptedBody.data.documents,
+		);
+
+		const decryptedBody: DecryptedBody = {
+			action: request.decryptedBody.action,
+			data: {
+				...request.decryptedBody.data,
+				files: mediaFiles,
+			},
+			flow_token: request.decryptedBody.flow_token,
+			screen: request.decryptedBody.screen,
+			version: request.decryptedBody.version,
+		};
+
+		delete decryptedBody?.data?.images;
+		delete decryptedBody?.data?.documents;
+
+		return decryptedBody;
+	}
+
+	private async initThisAttributes(
+		request: any,
+	): Promise<{ intent: string; phone: string }> {
+		const intent = request.decryptedBody.flow_token.split('&')[0];
+		const phone = request.decryptedBody.flow_token.split('&')[1];
+
+		this.activity = {
+			flow: {
+				isFlow: true,
+				responseJson: request.decryptedBody,
+			},
+			from: phone,
+		};
+
+		this.contact =
+			await this.services.cxperium.contact.getContactByPhone(this);
+		this.conversation =
+			await this.services.cxperium.session.getConversation(this);
+
+		return {
+			intent,
+			phone,
+		};
 	}
 }
