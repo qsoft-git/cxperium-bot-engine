@@ -30,3 +30,25 @@ export type TFlowMessage = {
 		};
 	};
 };
+
+export enum ExecutionParameters {
+	REFRESH_ON_BACK = 'refreshOnBack',
+	RECEIVE_FLOW = 'receiveFlow',
+	RETURN_RESPONSE = 'returnResponse',
+	RUN_DIALOG = 'runDialog',
+	ON_FILE_RECEIVED = 'onFileReceived',
+	ON_CHATGPT_MESSAGE = 'onChatGPTMessage',
+	ON_DIALOGFLOW_MESSAGE = 'onDialogflowMessage',
+	ON_DID_NOT_UNDERSTAND = 'onDidNotUnderstand',
+}
+
+export const executionParamsMapping: Record<ExecutionParameters, string> = {
+	[ExecutionParameters.REFRESH_ON_BACK]: 'refreshOnBack',
+	[ExecutionParameters.RECEIVE_FLOW]: 'receiveFlow',
+	[ExecutionParameters.RETURN_RESPONSE]: 'returnResponse',
+	[ExecutionParameters.RUN_DIALOG]: 'runDialog',
+	[ExecutionParameters.ON_FILE_RECEIVED]: 'onFileReceived',
+	[ExecutionParameters.ON_CHATGPT_MESSAGE]: 'onChatGPTMessage',
+	[ExecutionParameters.ON_DIALOGFLOW_MESSAGE]: 'onDialogflowMessage',
+	[ExecutionParameters.ON_DID_NOT_UNDERSTAND]: 'onDidNotUnderstand',
+};

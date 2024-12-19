@@ -16,6 +16,7 @@ import {
 	TTextMessage,
 } from '../../types/whatsapp/activity';
 import { decryptMedia } from './media';
+import { FlowResponse } from '../../types/whatsapp/flow-response';
 
 interface DataExchangeRequest {
 	decryptedBody: DecryptedBody;
@@ -24,7 +25,7 @@ interface DataExchangeRequest {
 }
 
 interface DecryptedBody {
-	action: 'ping' | 'data_exchange' | 'INIT';
+	action: 'ping' | 'data_exchange' | 'INIT' | 'BACK';
 	data: Record<string, any>;
 	flow_token: string;
 	screen: string;
@@ -33,10 +34,10 @@ interface DecryptedBody {
 
 export default class {
 	private req!: Request;
-	private accessor contact!: TCxperiumContact;
-	private accessor serviceInitActivity!: ServiceInitActivity;
-	private accessor conversation!: any;
-	private accessor activity!:
+	private contact!: TCxperiumContact;
+	private serviceInitActivity!: ServiceInitActivity;
+	private conversation!: any;
+	private activity!:
 		| TActivity
 		| TTextMessage
 		| TImage
@@ -66,6 +67,8 @@ export default class {
 						return await this.handleDataExchangeResponse(request);
 					case 'INIT':
 						return await this.handleDataExchangeResponse(request);
+					case 'BACK':
+						return await this.handleRefreshOnBack(request);
 					default:
 						throw new Error(
 							'Error occurred when using flow for types of PING and DATA_EXCHANGE',
@@ -97,23 +100,44 @@ export default class {
 		return encryptedReponse;
 	}
 
-	private async handleDataExchangeResponse(request: DataExchangeRequest) {
+	private async handleRefreshOnBack(request: DataExchangeRequest) {
 		const initAttr = await this.initThisAttributes(request);
 		const decryptedBody = await this.generateDecryptedBody(request);
-
-		const res = await this.services.dialog.runReturnFlowResponse(
+		const refreshOnBack = await this.services.dialog.createRefreshOnBack();
+		const response = await refreshOnBack.execute(
 			this,
 			decryptedBody,
 			initAttr.intent,
 		);
 
-		const response = encryptResponse(
-			res,
+		return this.returnResponse(request, response);
+	}
+
+	private async handleDataExchangeResponse(request: DataExchangeRequest) {
+		const initAttr = await this.initThisAttributes(request);
+		const decryptedBody = await this.generateDecryptedBody(request);
+
+		const returnResponse =
+			await this.services.dialog.createReturnResponse();
+
+		const response = await returnResponse.execute(
+			this,
+			decryptedBody,
+			initAttr.intent,
+		);
+
+		return this.returnResponse(request, response);
+	}
+
+	private async returnResponse(
+		request: DataExchangeRequest,
+		response: FlowResponse,
+	) {
+		encryptResponse(
+			response,
 			request.aesKeyBuffer,
 			request.initialVectorBuffer,
 		);
-
-		return response;
 	}
 
 	private async generateDecryptedBody(request: DataExchangeRequest) {
