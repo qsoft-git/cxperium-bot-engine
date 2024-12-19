@@ -24,6 +24,11 @@ import ServiceDialogflow from './dialogflow/match';
 import ServiceChatGPT from './chatgpt/match';
 import { activityToText } from './init-activity';
 import BaseConversation from './conversation';
+import { ExecuteFlow } from '../interfaces/flow';
+import {
+	ExecutionParameters,
+	executionParamsMapping,
+} from '../types/whatsapp/flow';
 
 const CHANNELS: Record<string, any> = {
 	WHATSAPP: '1',
@@ -54,39 +59,22 @@ export default class {
 
 		if (!conversation.isWaitAny()) return false;
 
-		let findOneDialog;
+		const runParams = await this.prepareRunParams(
+			dialog,
+			conversation.conversation.waitData.className,
+			ExecutionParameters.RUN_DIALOG,
+		);
 
-		try {
-			findOneDialog = this.getListAll.find(
-				(item: any) =>
-					conversation.conversation.waitData.className === item?.name,
-			) as any;
-		} catch (error) {
-			console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
-			throw error;
-		}
-
-		if (!findOneDialog) throw new Error('RUN DIALOG: NOT FOUND DIALOG');
-
-		const runParams: TBaseDialogCtor = {
-			contact: dialog.contact,
-			activity: dialog.activity,
-			conversation: dialog.conversation,
-			dialogFileParams: {
-				name: findOneDialog.name,
-				path: findOneDialog.path,
-				place: 'RUN_WITH_CONVERSATION_WAIT_ACTION',
-			},
-			services: dialog.services,
-		};
-
-		await this.run(runParams);
+		await this.runDynamicImport(
+			runParams,
+			undefined,
+			ExecutionParameters.RUN_DIALOG,
+		);
 
 		return true;
 	}
 
 	public async runWithMatch(dialog: any): Promise<void> {
-		const services: TAppLocalsServices = dialog.services;
 		const prediction: TIntentPrediction =
 			await this.intentPrediction(dialog);
 
@@ -158,34 +146,17 @@ export default class {
 		}
 
 		if (prediction.isMatch && prediction.intent) {
-			let findOneDialog;
+			const runParams = await this.prepareRunParams(
+				dialog,
+				prediction.intent,
+				ExecutionParameters.RUN_DIALOG,
+			);
 
-			try {
-				findOneDialog = this.getListAll.find(
-					(item: any) => prediction.intent === item?.name,
-				) as any;
-			} catch (error) {
-				console.error(
-					`RUN DIALOG: NOT FOUND ${prediction.intent} DIALOG FILE!!!`,
-				);
-				throw error;
-			}
-
-			if (!findOneDialog) throw new Error('RUN DIALOG: NOT FOUND DIALOG');
-
-			const runParams: TBaseDialogCtor = {
-				contact: dialog.contact,
-				activity: dialog.activity,
-				conversation: dialog.conversation,
-				dialogFileParams: {
-					name: findOneDialog.name,
-					path: findOneDialog.path,
-					place: 'RUN_WITH_MATCH',
-				},
-				services,
-			};
-
-			await this.run(runParams);
+			await this.runDynamicImport(
+				runParams,
+				undefined,
+				ExecutionParameters.RUN_DIALOG,
+			);
 		} else {
 			const liveConfig: TCxperiumLiveConfig = (
 				await dialog.services.cxperium.configuration.execute()
@@ -463,34 +434,17 @@ export default class {
 		dialog: any,
 		intentName: string,
 	): Promise<void> {
-		const services: TAppLocalsServices = dialog.services;
+		const runParams = await this.prepareRunParams(
+			dialog,
+			intentName,
+			ExecutionParameters.RUN_DIALOG,
+		);
 
-		let findOneDialog;
-
-		try {
-			findOneDialog = this.getListAll.find((item: any) => {
-				return item.name == intentName;
-			}) as any;
-		} catch (error) {
-			console.error('RUN DIALOG: NOT FOUND DIALOG FILE!!!');
-			throw error;
-		}
-
-		if (!findOneDialog) throw new Error('RUN DIALOG: NOT FOUND DIALOG');
-
-		const runParams: TBaseDialogCtor = {
-			contact: dialog.contact,
-			activity: dialog.activity,
-			conversation: dialog.conversation,
-			dialogFileParams: {
-				name: findOneDialog.name,
-				path: findOneDialog.path,
-				place: 'RUN_WITH_INTENT_NAME',
-			},
-			services,
-		};
-
-		await this.run(runParams);
+		await this.runDynamicImport(
+			runParams,
+			undefined,
+			ExecutionParameters.RUN_DIALOG,
+		);
 	}
 
 	public async runMessageEvent(
@@ -550,96 +504,247 @@ export default class {
 		}
 	}
 
-	public async runReturnFlowResponse(
-		dialog: any,
-		body: FlowRequest,
-		intentName: string,
-	): Promise<FlowResponse> {
-		const services: TAppLocalsServices = dialog.services;
+	public async createReturnResponse(): Promise<ExecuteFlow> {
+		return {
+			execute: async (
+				dialog: any,
+				request: FlowRequest,
+				intentName: string,
+			): Promise<FlowResponse> => {
+				console.log(dialog, request, intentName);
 
-		let findOneDialog;
+				const RETURN_RESPONSE = ExecutionParameters.RETURN_RESPONSE;
 
-		try {
-			findOneDialog = this.getListAll.find((item: any) => {
-				return item.name == intentName;
-			}) as any;
-		} catch (error) {
-			console.error('RUN FLOW: NOT FOUND FLOW FILE!!!');
-			throw error;
-		}
+				const runParams = await this.prepareRunParams(
+					dialog,
+					intentName,
+					RETURN_RESPONSE,
+				);
 
-		if (!findOneDialog) throw new Error('RUN FLOW: NOT FOUND FLOW');
-
-		const runParams: TBaseDialogCtor = {
-			contact: dialog.contact,
-			activity: dialog.activity,
-			conversation: dialog.conversation,
-			dialogFileParams: {
-				name: findOneDialog.name,
-				path: findOneDialog.path,
-				place: 'RETURN_FLOW_RESPONSE',
+				return await this.runDynamicImport(
+					runParams,
+					request,
+					RETURN_RESPONSE,
+				);
 			},
-			services,
 		};
-
-		return await this.returnFlowResponse(runParams, body);
 	}
 
-	public async runWithFlow(dialog: any, intentName: string): Promise<void> {
-		const services: TAppLocalsServices = dialog.services;
+	public async createRefreshOnBack(): Promise<ExecuteFlow> {
+		return {
+			execute: async (
+				dialog: any,
+				request: FlowRequest,
+				intentName: string,
+			): Promise<FlowResponse> => {
+				console.log(dialog, request, intentName);
 
-		let findOneDialog;
+				const REFRESH_ON_BACK = ExecutionParameters.REFRESH_ON_BACK;
 
-		try {
-			findOneDialog = this.getListAll.find((item: any) => {
-				return item.name == intentName;
-			}) as any;
-		} catch (error) {
-			console.error('RUN FLOW: NOT FOUND FLOW FILE!!!');
-			throw error;
-		}
+				const runParams = await this.prepareRunParams(
+					dialog,
+					intentName,
+					REFRESH_ON_BACK,
+				);
 
-		if (!findOneDialog) throw new Error('RUN FLOW: NOT FOUND FLOW');
-
-		const runParams: TBaseDialogCtor = {
-			contact: dialog.contact,
-			activity: dialog.activity,
-			conversation: dialog.conversation,
-			dialogFileParams: {
-				name: findOneDialog.name,
-				path: findOneDialog.path,
-				place: 'RUN_WITH_FLOW',
+				return await this.runDynamicImport(
+					runParams,
+					request,
+					REFRESH_ON_BACK,
+				);
 			},
-			services,
 		};
-
-		await this.runFlow(runParams);
 	}
 
-	public async returnFlowResponse(
+	public async createReceiveFlow(): Promise<ExecuteFlow> {
+		return {
+			execute: async (
+				dialog: any,
+				request: FlowRequest | undefined,
+				intentName: string,
+			): Promise<FlowResponse> => {
+				const RECEIVE_FLOW = ExecutionParameters.RECEIVE_FLOW;
+
+				const runParams = await this.prepareRunParams(
+					dialog,
+					intentName,
+					RECEIVE_FLOW,
+				);
+
+				return await this.runDynamicImport(
+					runParams,
+					request,
+					RECEIVE_FLOW,
+				);
+			},
+		};
+	}
+
+	public async createRunDialog(): Promise<ExecuteFlow> {
+		return {
+			execute: async (
+				dialog: any,
+				request: FlowRequest | undefined,
+				intentName: string,
+			): Promise<FlowResponse> => {
+				const RUN_DIALOG = ExecutionParameters.RUN_DIALOG;
+
+				const runParams = await this.prepareRunParams(
+					dialog,
+					intentName,
+					RUN_DIALOG,
+				);
+
+				return await this.runDynamicImport(
+					runParams,
+					request,
+					RUN_DIALOG,
+				);
+			},
+		};
+	}
+
+	private async runDynamicImport(
 		data: TBaseDialogCtor,
-		body: any,
+		body: FlowRequest | undefined,
+		executionParam: ExecutionParameters,
+	): Promise<FlowResponse> {
+		console.info(
+			`EXECUTING INTENT: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
+		);
+
+		const func = executionParamsMapping[executionParam];
+
+		data.conversation.dialogFileParams = data.dialogFileParams;
+		const dialogImport = await import(data.dialogFileParams.path);
+		const dialog = new dialogImport.default(data);
+		return await dialog[func](body);
+	}
+
+	private async findDialog(
+		intentName: string,
+		executionParam: ExecutionParameters,
 	): Promise<any> {
-		console.info(
-			`RETURNING FLOW RESPONSE: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
-		);
+		let dialog;
 
-		data.conversation.dialogFileParams = data.dialogFileParams;
-		const dialogImport = await import(data.dialogFileParams.path);
-		const dialog = new dialogImport.default(data);
-		return await dialog.returnResponse(body);
+		try {
+			dialog = this.getListAll.find((item: any) => {
+				return item.name == intentName;
+			}) as any;
+		} catch (error) {
+			console.error(
+				`RUNNING ${executionParam}: Failed to execute ${intentName}!`,
+			);
+			throw error;
+		}
+
+		if (!dialog)
+			throw new Error(
+				`RUNNING ${executionParam}: Intent ${intentName} not found!`,
+			);
+
+		return dialog;
 	}
 
-	public async runFlow(data: TBaseDialogCtor): Promise<void> {
-		console.info(
-			`RUN FLOW: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
-		);
+	private async prepareRunParams(
+		dialog: any,
+		intentName: string,
+		executionParam: ExecutionParameters,
+	): Promise<TBaseDialogCtor> {
+		const services: TAppLocalsServices = dialog.services;
+		const intent = await this.findDialog(intentName, executionParam);
 
-		data.conversation.dialogFileParams = data.dialogFileParams;
-		const dialogImport = await import(data.dialogFileParams.path);
-		const dialog = new dialogImport.default(data);
-		await dialog.recieveFlow();
+		const runParams: TBaseDialogCtor = {
+			contact: dialog.contact,
+			activity: dialog.activity,
+			conversation: dialog.conversation,
+			dialogFileParams: {
+				name: intent.name,
+				path: intent.path,
+				place: executionParam,
+			},
+			services,
+		};
+
+		return runParams;
 	}
+
+	// public async runReturnFlowResponse(
+	// 	dialog: any,
+	// 	body: FlowRequest,
+	// 	intentName: string,
+	// ): Promise<FlowResponse> {
+	// 	const services: TAppLocalsServices = dialog.services;
+
+	// 	let findOneDialog;
+
+	// 	try {
+	// 		findOneDialog = this.getListAll.find((item: any) => {
+	// 			return item.name == intentName;
+	// 		}) as any;
+	// 	} catch (error) {
+	// 		console.error('RUN FLOW: NOT FOUND FLOW FILE!!!');
+	// 		throw error;
+	// 	}
+
+	// 	if (!findOneDialog) throw new Error('RUN FLOW: NOT FOUND FLOW');
+
+	// 	const runParams: TBaseDialogCtor = {
+	// 		contact: dialog.contact,
+	// 		activity: dialog.activity,
+	// 		conversation: dialog.conversation,
+	// 		dialogFileParams: {
+	// 			name: findOneDialog.name,
+	// 			path: findOneDialog.path,
+	// 			place: 'RETURN_FLOW_RESPONSE',
+	// 		},
+	// 		services,
+	// 	};
+
+	// 	return await this.returnFlowResponse(runParams, body);
+	// }
+
+	// public async runReceiveFlow(
+	// 	dialog: any,
+	// 	intentName: string,
+	// ): Promise<void> {
+	// 	const runParams = await this.prepareRunParams(
+	// 		dialog,
+	// 		intentName,
+	// 		ExecutionParameters.RECEIVE_FLOW,
+	// 	);
+
+	// 	await this.runDynamicImport(
+	// 		runParams,
+	// 		null,
+	// 		ExecutionParameters.RECEIVE_FLOW,
+	// 	);
+	// }
+
+	// public async returnFlowResponse(
+	// 	data: TBaseDialogCtor,
+	// 	body: any,
+	// ): Promise<any> {
+	// 	console.info(
+	// 		`RETURNING FLOW RESPONSE: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
+	// 	);
+
+	// 	data.conversation.dialogFileParams = data.dialogFileParams;
+	// 	const dialogImport = await import(data.dialogFileParams.path);
+	// 	const dialog = new dialogImport.default(data);
+	// 	return await dialog.returnResponse(body);
+	// }
+
+	// public async runFlow(data: TBaseDialogCtor): Promise<void> {
+	// 	console.info(
+	// 		`RUN FLOW: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
+	// 	);
+
+	// 	data.conversation.dialogFileParams = data.dialogFileParams;
+	// 	const dialogImport = await import(data.dialogFileParams.path);
+	// 	const dialog = new dialogImport.default(data);
+	// 	await dialog.receiveFlow();
+	// }
 
 	public async runOnDidNotUnderstand(
 		data: TBaseDialogCtor,
@@ -719,16 +824,16 @@ export default class {
 		}
 	}
 
-	public async run(data: TBaseDialogCtor): Promise<void> {
-		console.info(
-			`RUN DIALOG: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
-		);
+	// public async run(data: TBaseDialogCtor): Promise<void> {
+	// 	console.info(
+	// 		`RUN DIALOG: ${data.dialogFileParams.name} - ${data.dialogFileParams.place}`,
+	// 	);
 
-		data.conversation.dialogFileParams = data.dialogFileParams;
-		const dialogImport = await import(data.dialogFileParams.path);
-		const dialog = new dialogImport.default(data);
-		await dialog.runDialog();
-	}
+	// 	data.conversation.dialogFileParams = data.dialogFileParams;
+	// 	const dialogImport = await import(data.dialogFileParams.path);
+	// 	const dialog = new dialogImport.default(data);
+	// 	await dialog.runDialog();
+	// }
 
 	public initList(folderPath: string, type: string): void {
 		let data: any;
