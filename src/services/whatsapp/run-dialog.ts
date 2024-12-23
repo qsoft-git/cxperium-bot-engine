@@ -3,25 +3,14 @@ import { Request } from 'express';
 
 // ? Types.
 import { TAppLocalsServices } from '../../types/base-dialog';
-import {
-	TActivity,
-	TTextMessage,
-	TImage,
-	TDocument,
-	TInteractiveMessage,
-} from '../../types/whatsapp/activity';
+import { TActivity } from '../../types/whatsapp/activity';
 import initEntryPoint from './init-entry-point';
 import ServiceInitActivity from '../init-activity';
+import { Dialog } from '../../types/dialog';
 
 export default class {
 	private services!: TAppLocalsServices;
-	private activity!:
-		| TActivity
-		| TTextMessage
-		| TImage
-		| TDocument
-		| TInteractiveMessage
-		| any;
+	private activity!: TActivity;
 	private conversation!: any;
 	private contact!: any;
 	public place = 'WHATSAPP';
@@ -36,66 +25,76 @@ export default class {
 		// Init activity.
 		await this.serviceInitActivity.initActivity();
 
-		// Init contact.
-		this.contact =
-			await this.services.cxperium.contact.getContactByPhone(this);
+		const dialog: Dialog = {
+			contact: this.contact,
+			activity: this.activity,
+			conversation: this.conversation,
+			services: this.services,
+		};
 
-		const customAttributes = this.contact.custom as any;
+		// Init contact.
+		dialog.contact =
+			await this.services.cxperium.contact.getContactByPhone(dialog);
+
+		const customAttributes = dialog.contact.custom as any;
 
 		// Update last message time.
-		await this.services.cxperium.session.updateLastMessageTime(this);
+		await this.services.cxperium.session.updateLastMessageTime(dialog);
 
 		// Init conversation.
-		this.conversation =
-			await this.services.cxperium.session.getConversation(this);
+		dialog.conversation =
+			await this.services.cxperium.session.getConversation(dialog);
+		this.conversation = dialog.conversation;
 
 		const isGdprActive = (
 			await this.services.cxperium.configuration.execute()
 		).gdprConfig.IsActive;
 
 		// Init cxperium message properties
-		this.activity = await this.serviceInitActivity.initCxperiumMessage();
+		dialog.activity = await this.serviceInitActivity.initCxperiumMessage();
 
-		if (this.activity.flow.isFlow) {
-			if (Object.entries(this.activity.flow.responseJson).length == 0) {
+		if (dialog.activity.flow.isFlow) {
+			if (
+				Object.entries(dialog.activity.flow.responseJson!).length == 0
+			) {
 				await this.services.whatsapp.message.sendRegularMessage(
-					this.activity.from,
+					dialog.activity.from,
 					'İşleminiz tamamlanmıştır.',
 				);
 				return;
 			}
 
 			const flow_token = this.services.dialog.cache.get(
-				`${this.contact.phone}-flow_token`,
+				`${dialog.contact.phone}-flow_token`,
 			);
 
 			const receiveFlow = await this.services.dialog.createReceiveFlow();
 
 			if (flow_token) {
 				await receiveFlow.execute(
-					this,
+					dialog,
 					undefined,
 					flow_token.toString().split('&')[0],
 				);
 				return;
 			}
 
+			const responseJson = dialog.activity?.flow?.responseJson as any;
+
 			await receiveFlow.execute(
-				this,
+				dialog,
 				undefined,
-				this.activity.flow?.responseJson?.flow_token?.includes('&')
-					? this.activity.flow?.responseJson?.flow_token?.split(
-							'&',
-						)[0]
-					: this.activity.flow?.responseJson?.flow_token,
+				responseJson.flow_token?.includes('&')
+					? responseJson?.flow_token?.split('&')[0]
+					: responseJson?.flow_token,
 			);
 			return;
 		}
 
-		if (await this.services.cxperium.transfer.isSurveyTransfer(this)) {
+		if (await this.services.cxperium.transfer.isSurveyTransfer(dialog)) {
 			if (!customAttributes?.IsKvkkApproved) {
 				await this.services.cxperium.contact.updateGdprApprovalStatus(
-					this.contact,
+					dialog.contact,
 					true,
 				);
 			}
@@ -104,13 +103,13 @@ export default class {
 
 		if (!customAttributes?.IsKvkkApproved && isGdprActive) {
 			await this.services.dialog.runWithIntentName(
-				this,
+				dialog,
 				'CXPerium.Dialogs.WhatsApp.System.Gdpr.KvkkDialog',
 			);
 			return;
 		}
 
-		if (await this.services.cxperium.transfer.isLiveTransfer(this)) {
+		if (await this.services.cxperium.transfer.isLiveTransfer(dialog)) {
 			return;
 		}
 
@@ -127,14 +126,14 @@ export default class {
 				process.exit(137);
 			}
 
-			await initEntryPoint(this);
+			await initEntryPoint(dialog);
 		} catch (error: any) {
 			if (error?.message === 'end') return;
 		}
 
 		const conversationCheck: boolean =
-			await this.services.dialog.runWithConversationWaitAction(this);
+			await this.services.dialog.runWithConversationWaitAction(dialog);
 
-		!conversationCheck && (await this.services.dialog.runWithMatch(this));
+		!conversationCheck && (await this.services.dialog.runWithMatch(dialog));
 	}
 }
