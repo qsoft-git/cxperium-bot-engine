@@ -1,11 +1,8 @@
-// ? Types.
-import { TIntentPrediction } from '../types/intent-prediction';
-
 interface IMessageEvent {
-	onFileReceived?(messageObject: any): void;
-	onChatGPTMessage?(messageObject: TIntentPrediction): void;
-	onDialogflowMessage?(messageObject: TIntentPrediction): void;
-	onDidNotUnderstand?(): void;
+	onFileReceived?(): void;
+	onChatGPTMessage?(messageObject: unknown): void;
+	onDialogflowMessage?(messageObject: unknown): void;
+	onDidNotUnderstand?(messageObject: unknown): void;
 	onSessionTimeout?(): void;
 	onClosingOfLiveChat?(): void;
 }
