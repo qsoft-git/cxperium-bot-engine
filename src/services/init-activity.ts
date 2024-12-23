@@ -120,7 +120,7 @@ export default class {
 		return this.that.activity;
 	}
 
-	public async initCxperiumMessage(): Promise<void> {
+	public async initCxperiumMessage(): Promise<TActivity> {
 		const { data } = this.providerExtractor();
 		const type = data.type;
 
