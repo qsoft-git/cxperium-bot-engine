@@ -6,10 +6,17 @@ import { TCxperiumContact } from '../types/cxperium/contact';
 import { TAppLocalsServices, TBaseDialogCtor } from '../types/base-dialog';
 import { TConversation } from '../types/conversation';
 
+// ? Interfaces.
+import { IHandler } from './event-handler/IHandler';
+
 // ? Services.
 import BaseConversation from './conversation';
 import { TActivity } from '../types/whatsapp/activity';
 import { EMessageEvent } from '../types/message-event';
+import { DynamicHandler } from './event-handler/DynamicHandler';
+import { ConcreteHandler } from './event-handler/ConcreteAbstractions';
+
+const ENTRY_INTENT_NAME = 'CXPerium.Dialogs.WhatsApp.Entry';
 
 export default class {
 	req!: Request;
@@ -107,7 +114,7 @@ export default class {
 	private getDialogRunParams(event: EMessageEvent): TBaseDialogCtor {
 		const findOneDialog = this.services.dialog.getListAll.find(
 			(item: any) => {
-				return item.name == 'CXPerium.Dialogs.WhatsApp.Entry';
+				return item.name == ENTRY_INTENT_NAME;
 			},
 		) as any;
 
@@ -181,22 +188,14 @@ export default class {
 
 	private async eventHandler(event: EMessageEvent) {
 		try {
-			const mapping: Record<EMessageEvent, string> = {
-				ON_FILE_RECEIVED: 'NOT_AVAILABLE',
-				ON_CHATGPT_MESSAGE: 'NOT_AVAILABLE',
-				ON_DIALOGFLOW_MESSAGE: 'NOT_AVAILABLE',
-				ON_DID_NOT_UNDERSTAND: 'NOT_AVAILABLE',
-				ON_SESSION_TIMEOUT: 'onSessionTimeout',
-				ON_CLOSING_OF_LIVE_CHAT: 'onClosingOfLiveChat',
-			};
+			const runParams: TBaseDialogCtor = this.getDialogRunParams(event);
 
-			const data: TBaseDialogCtor = this.getDialogRunParams(event);
-			const eventFunc: string = mapping[event];
-			const dialogImport = await import(data.dialogFileParams.path);
-			const dialog = new dialogImport.default(data);
-			await dialog[eventFunc]();
+			const handler: IHandler = new DynamicHandler();
+			const concrete = new ConcreteHandler(handler);
+
+			await concrete.handle(event, runParams, undefined);
 		} catch (error) {
-			throw new Error(`${event} not implemented error!`);
+			console.warn(`${event} not implemented error!`);
 		}
 	}
 
@@ -241,8 +240,6 @@ export default class {
 			this.contact,
 			false,
 		);
-
-		this.services.cxperium.session.closeActiveSessions();
 	}
 
 	private outsideBusinessHours(): void {
