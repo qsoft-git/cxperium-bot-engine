@@ -10,6 +10,7 @@ import { TConversation } from '../../types/conversation';
 import BaseConversation from '../conversation';
 import { TCxperiumContact } from '../../types/cxperium/contact';
 import { TActivity } from '../../types/whatsapp/activity';
+import { Dialog } from '../../types/dialog';
 
 // ? Services.
 import ServiceCxperium from '.';
@@ -43,11 +44,11 @@ export default class extends ServiceCxperium {
 		);
 	}
 
-	async updateLastMessageTime(dialog: any) {
+	async updateLastMessageTime(dialog: Dialog) {
 		await this.updateConversationSessionTime(dialog);
 	}
 
-	async updateConversationSessionTime(dialog: any) {
+	async updateConversationSessionTime(dialog: Dialog) {
 		const contact = dialog.contact as TCxperiumContact;
 
 		await this.serviceCxperiumContact.updateContactConversationDateByContactId(
@@ -116,40 +117,5 @@ export default class extends ServiceCxperium {
 		}
 
 		return new BaseConversation(dialog, conversation);
-	}
-
-	private async closeSession(
-		phone: string,
-		language: string,
-		message: string,
-	): Promise<void> {
-		const body = {
-			language,
-			phone,
-			data: [
-				{
-					message: message,
-					isLast: true,
-				},
-			],
-			isActive: false,
-		};
-
-		await fetchRetry(`${this.baseUrl}/api/assistant/session`, {
-			method: 'POST',
-			body: JSON.stringify(body),
-			headers: {
-				'content-type': 'application/json',
-				apikey: this.apiKey,
-			},
-		});
-	}
-
-	async closeActiveSessions() {
-		const sessions = await this.getAllActiveSessions();
-
-		sessions.forEach(async (session: any) => {
-			await this.closeSession(session.phone, session.language, '');
-		});
 	}
 }
