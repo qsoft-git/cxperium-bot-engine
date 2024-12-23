@@ -4,10 +4,10 @@ import { Request } from 'express';
 // ? Types.
 import { TCxperiumContact } from '../../types/cxperium/contact';
 import { TAppLocalsServices } from '../../types/base-dialog';
+import { Dialog } from '../../types/dialog';
 
 // ? Services.
 import { decryptRequest, encryptResponse } from '../flows/encrypt';
-import ServiceInitActivity from '../init-activity';
 import {
 	TActivity,
 	TDocument,
@@ -35,7 +35,6 @@ interface DecryptedBody {
 export default class {
 	private req!: Request;
 	private contact!: TCxperiumContact;
-	private serviceInitActivity!: ServiceInitActivity;
 	private conversation!: any;
 	private activity!:
 		| TActivity
@@ -45,11 +44,11 @@ export default class {
 		| TInteractiveMessage
 		| any;
 	private services!: TAppLocalsServices;
+	private dialog!: Dialog;
 
 	constructor(_req: Request) {
 		this.req = _req;
 		this.services = this.req.app.locals.service;
-		this.serviceInitActivity = new ServiceInitActivity(this);
 	}
 
 	public async execute(): Promise<any> {
@@ -105,7 +104,7 @@ export default class {
 		const decryptedBody = await this.generateDecryptedBody(request);
 		const refreshOnBack = await this.services.dialog.createRefreshOnBack();
 		const response = await refreshOnBack.execute(
-			this,
+			this.dialog,
 			decryptedBody,
 			initAttr.intent,
 		);
@@ -121,19 +120,19 @@ export default class {
 			await this.services.dialog.createReturnResponse();
 
 		const response = await returnResponse.execute(
-			this,
+			this.dialog,
 			decryptedBody,
 			initAttr.intent,
 		);
 
-		return this.returnResponse(request, response);
+		return await this.returnResponse(request, response);
 	}
 
 	private async returnResponse(
 		request: DataExchangeRequest,
 		response: FlowResponse,
 	) {
-		encryptResponse(
+		return encryptResponse(
 			response,
 			request.aesKeyBuffer,
 			request.initialVectorBuffer,
@@ -181,6 +180,13 @@ export default class {
 			await this.services.cxperium.contact.getContactByPhone(this);
 		this.conversation =
 			await this.services.cxperium.session.getConversation(this);
+
+		this.dialog = {
+			contact: this.contact,
+			activity: this.activity,
+			conversation: this.conversation,
+			services: this.services,
+		};
 
 		return {
 			intent,
