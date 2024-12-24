@@ -247,9 +247,7 @@ export default class {
 		await dialog.services.cxperium.report.sendAssistantReport(
 			dialog.activity.from,
 			prediction.intent ? prediction.intent : 'NOT FOUND',
-			dialog.activity.text.length > 1
-				? dialog.activity.text
-				: dialog.activity.value.id,
+			activity,
 			prediction.type ? prediction.type : 'NOT FOUND',
 		);
 
