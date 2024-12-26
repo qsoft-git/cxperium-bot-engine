@@ -64,6 +64,75 @@ export default class extends ServiceCxperium {
 		}
 	}
 
+	private async updateContact(
+		contact: TCxperiumContact,
+		attributes: Partial<Record<keyof TCxperiumContact, unknown>>,
+	): Promise<TCxperiumContact> {
+		const body = { ...attributes };
+
+		const response = (await fetchRetry(
+			`${this.baseUrl}/api/contacts/${contact._id}`,
+			{
+				method: 'PUT',
+				body: JSON.stringify(body),
+				headers: {
+					'content-type': 'application/json',
+					apikey: this.apiKey,
+				},
+			},
+		).then((response) => response.json())) as any;
+
+		if (!response?.success) {
+			throw new Error(`Error in updateContact: ${response.message}`);
+		}
+
+		return response?.data as TCxperiumContact;
+	}
+
+	async assignTagToContact(
+		contact: TCxperiumContact,
+		tagId: string,
+	): Promise<TCxperiumContact | undefined> {
+		const tag = contact.tags.some((t) => t.id === tagId);
+
+		if (tag) {
+			console.warn(`Tag ${tagId} is already assigned to contact.`);
+			return contact;
+		}
+
+		const tags = [...contact.tags.map((tag) => tag.id), tagId];
+
+		try {
+			return await this.updateContact(contact, {
+				tags,
+			});
+		} catch (error) {
+			console.error('Error in assignTagToContact', error);
+			return undefined;
+		}
+	}
+
+	async unAssignTagFromContact(contact: TCxperiumContact, tagId: string) {
+		const tag = contact.tags.some((t) => t.id === tagId);
+
+		if (!tag) {
+			throw new Error(`Tag ${tagId} is not assigned to contact.`);
+		}
+
+		const tags = contact.tags
+			.map((tag) => tag.id)
+			.filter((t) => t !== tagId);
+
+		try {
+			return await this.updateContact(contact, {
+				tags,
+			});
+		} catch (error) {
+			console.error('Error in assignTagToContact', error);
+			return undefined;
+		}
+	}
+
 	async updateContactConversationDateByContactId(contactId: string) {
 		try {
 			const date = new Date();

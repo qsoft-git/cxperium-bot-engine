@@ -9,9 +9,9 @@ export type TCxperiumContact = {
 	_id: string;
 	delete: boolean;
 	phone: string;
-	user_id: string;
+	user_id?: string;
 	email: string;
-	tags: TCxperiumTag[];
+	tags: TContactTag[];
 	userProfileName: string;
 	custom: object;
 	createdAt: Date;
@@ -19,16 +19,10 @@ export type TCxperiumContact = {
 	language?: string;
 };
 
-type TCxperiumData = {
-	data: TCxperiumContact[];
+export type TContactTag = {
+	id: string;
 };
 
-type TCxperiumTag = {
-	_id: string;
-	user_id: string;
-	name: string;
-	color: string;
-	delete: boolean;
-	createdAt: Date;
-	updatedAt: Date;
+type TCxperiumData = {
+	data: TCxperiumContact[];
 };
