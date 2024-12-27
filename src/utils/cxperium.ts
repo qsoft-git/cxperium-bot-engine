@@ -16,7 +16,7 @@ import ServiceCxperiumIntent from '../services/cxperium/intent';
 import ServiceCxperiumReport from '../services/cxperium/report';
 import ServiceCxperiumTicket from '../services/cxperium/ticket';
 import ServiceCxperiumSession from '../services/cxperium/session';
-import ServiceCxperiumConversation from '../services/cxperium/conversation';
+import ServiceCxperiumChat from '../services/cxperium/chat';
 import ServiceCxperiumLanguage from '../services/cxperium/language';
 import ServiceCxperiumMessage from '../services/cxperium/message';
 import ServiceCxperiumConfiguration from '../services/cxperium/configuration';
@@ -34,7 +34,7 @@ export class UtilCxperium implements IUtilsCxperium {
 	serviceCxperiumReport!: ServiceCxperiumReport;
 	serviceCxperiumTicket!: ServiceCxperiumTicket;
 	serviceCxperiumSession!: ServiceCxperiumSession;
-	serviceCxperiumConversation!: ServiceCxperiumConversation;
+	serviceCxperiumChat!: ServiceCxperiumChat;
 	serviceCxperiumLanguage!: ServiceCxperiumLanguage;
 	serviceCxperiumMessage!: ServiceCxperiumMessage;
 	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
@@ -67,9 +67,7 @@ export class UtilCxperium implements IUtilsCxperium {
 		this.serviceCxperiumReport = new ServiceCxperiumReport(params);
 		this.serviceCxperiumTicket = new ServiceCxperiumTicket(params);
 		this.serviceCxperiumSession = new ServiceCxperiumSession(params);
-		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
-			params,
-		);
+		this.serviceCxperiumChat = new ServiceCxperiumChat(params);
 		this.serviceCxperiumLanguage = new ServiceCxperiumLanguage(params);
 		this.serviceCxperiumMessage = new ServiceCxperiumMessage(params);
 		this.serviceCxperiumConfiguration = new ServiceCxperiumConfiguration(

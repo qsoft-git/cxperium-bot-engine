@@ -31,7 +31,7 @@ import ServiceCxperiumIntent from '../services/cxperium/intent';
 import ServiceCxperiumReport from '../services/cxperium/report';
 import ServiceCxperiumTicket from '../services/cxperium/ticket';
 import ServiceCxperiumSession from '../services/cxperium/session';
-import ServiceCxperiumConversation from '../services/cxperium/conversation';
+import ServiceCxperiumConversation from '../services/cxperium/chat';
 import ServiceCxperiumLanguage from '../services/cxperium/language';
 import ServiceCxperiumMessage from '../services/cxperium/message';
 import ServiceCxperiumConfiguration from '../services/cxperium/configuration';

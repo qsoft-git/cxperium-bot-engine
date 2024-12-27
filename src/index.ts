@@ -83,7 +83,7 @@ export class Engine {
 			this.serviceCxperiumReport,
 			this.serviceCxperiumTicket,
 			this.serviceCxperiumSession,
-			this.serviceCxperiumConversation,
+			this.serviceCxperiumChat,
 			this.serviceCxperiumLanguage,
 			this.serviceCxperiumMessage,
 			this.serviceCxperiumConfiguration,

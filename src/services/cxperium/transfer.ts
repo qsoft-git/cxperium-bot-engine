@@ -11,7 +11,7 @@ import BaseConversation from '../conversation';
 import ServiceCxperiumContact from '../cxperium/contact';
 import ServiceCxperiumConfiguration from '../cxperium/configuration';
 import ServiceCxperiumMessage from '../cxperium/message';
-import ServiceCxperiumConversation from '../cxperium/conversation';
+import ServiceCxperiumChat from './chat';
 import ServiceCxperiumLanguage from '../cxperium/language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
 import { TAppLocalsServices } from '../../types/base-dialog';
@@ -24,7 +24,7 @@ export default class extends ServiceCxperium {
 	serviceCxperiumContact!: ServiceCxperiumContact;
 	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
 	serviceCxperiumMessage!: ServiceCxperiumMessage;
-	serviceCxperiumConversation!: ServiceCxperiumConversation;
+	serviceCxperiumChat!: ServiceCxperiumChat;
 	serviceCxperiumLanguage!: ServiceCxperiumLanguage;
 	serviceWhatsAppMessage!: ServiceWhatsAppMessage;
 
@@ -42,9 +42,7 @@ export default class extends ServiceCxperium {
 		this.serviceWhatsAppMessage = new ServiceWhatsAppMessage(
 			this.serviceCxperiumConfiguration,
 		);
-		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
-			data,
-		);
+		this.serviceCxperiumChat = new ServiceCxperiumChat(data);
 	}
 
 	async isSurveyTransfer(dialog: any): Promise<boolean> {
@@ -186,13 +184,12 @@ export default class extends ServiceCxperium {
 					activity.image.mimeType!,
 				);
 			} else {
-				const chatExists =
-					await this.serviceCxperiumConversation.chatExists(
-						contact._id,
-					);
+				const chatExists = await this.serviceCxperiumChat.chatExists(
+					contact._id,
+				);
 
 				if (!chatExists) {
-					this.serviceCxperiumConversation.create(contact._id);
+					this.serviceCxperiumChat.create(contact._id);
 				}
 
 				const custom: any = contact.custom;
@@ -272,7 +269,7 @@ export default class extends ServiceCxperium {
 		contact: TCxperiumContact,
 	): Promise<string> {
 		try {
-			return await this.serviceCxperiumConversation.create(contact._id);
+			return await this.serviceCxperiumChat.create(contact._id);
 		} catch (error) {
 			console.error('Error creating conversation:', error);
 			throw error;
@@ -354,7 +351,7 @@ export default class extends ServiceCxperium {
 			return true;
 		}
 
-		const id = await this.serviceCxperiumConversation.create(contact._id);
+		const id = await this.serviceCxperiumChat.create(contact._id);
 
 		await this.serviceCxperiumContact.updateContactByCustomFields(contact, {
 			ChatId: id,

@@ -4,7 +4,6 @@ import fetchRetry from '../fetch';
 // ? Services.
 import ServiceCxperium from '.';
 import ServiceCxperiumContact from './contact';
-import ServiceCxperiumConversation from './conversation';
 
 // ? Types.
 import { TCxperiumLanguage } from '../../types/cxperium/language';
@@ -15,16 +14,12 @@ import DataGeneral from '../../data/general';
 
 export default class extends ServiceCxperium {
 	serviceCxperiumContact!: ServiceCxperiumContact;
-	serviceCxperiumConversation!: ServiceCxperiumConversation;
 
 	public cache = DataGeneral.cache;
 
 	constructor(data: TCxperiumServiceParams) {
 		super(data);
 		this.serviceCxperiumContact = new ServiceCxperiumContact(data);
-		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
-			data,
-		);
 	}
 
 	async getAllLanguage(): Promise<TCxperiumLanguage[]> {

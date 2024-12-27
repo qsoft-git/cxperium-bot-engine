@@ -15,7 +15,6 @@ import { Dialog } from '../../types/dialog';
 // ? Services.
 import ServiceCxperium from '.';
 import ServiceCxperiumContact from './contact';
-import ServiceCxperiumConversation from './conversation';
 import ServiceCxperiumConfiguration from './configuration';
 import ServiceCxperiumLanguage from './language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
@@ -23,7 +22,6 @@ import ServiceWhatsAppMessage from '../whatsapp/message';
 export default class extends ServiceCxperium {
 	public cache: any;
 	serviceCxperiumContact!: ServiceCxperiumContact;
-	serviceCxperiumConversation!: ServiceCxperiumConversation;
 	serviceCxperiumConfiguration!: ServiceCxperiumConfiguration;
 	serviceCxperiumLanguage!: ServiceCxperiumLanguage;
 	serviceWhatsAppMessage!: ServiceWhatsAppMessage;
@@ -32,9 +30,6 @@ export default class extends ServiceCxperium {
 		super(data);
 		this.cache = DataGeneral.cache;
 		this.serviceCxperiumContact = new ServiceCxperiumContact(data);
-		this.serviceCxperiumConversation = new ServiceCxperiumConversation(
-			data,
-		);
 		this.serviceCxperiumConfiguration = new ServiceCxperiumConfiguration(
 			data,
 		);
