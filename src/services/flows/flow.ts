@@ -109,7 +109,7 @@ export default class {
 			initAttr.intent,
 		);
 
-		return this.returnResponse(request, response);
+		return await this.returnResponse(request, response);
 	}
 
 	private async handleDataExchangeResponse(request: DataExchangeRequest) {
