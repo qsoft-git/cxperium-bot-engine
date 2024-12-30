@@ -140,10 +140,16 @@ export default class {
 	}
 
 	private async generateDecryptedBody(request: DataExchangeRequest) {
-		const mediaFiles = await decryptMedia(
-			request.decryptedBody.data.images ||
-				request.decryptedBody.data.documents,
-		);
+		let mediaFiles;
+		if (
+			request?.decryptedBody?.data?.images ||
+			request?.decryptedBody?.data?.documents
+		) {
+			mediaFiles = await decryptMedia(
+				request.decryptedBody.data.images ||
+					request.decryptedBody.data.documents,
+			);
+		}
 
 		const decryptedBody: DecryptedBody = {
 			action: request.decryptedBody.action,
