@@ -36,7 +36,7 @@ export default class {
 		dialog.contact =
 			await this.services.cxperium.contact.getContactByPhone(dialog);
 
-		const customAttributes = dialog.contact.custom as any;
+		const customAttributes = dialog.contact?.custom as any;
 
 		// Update last message time.
 		await this.services.cxperium.session.updateLastMessageTime(dialog);
