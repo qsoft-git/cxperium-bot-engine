@@ -6,6 +6,9 @@ import { TCxperiumContact } from '../../types/cxperium/contact';
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
 import { TActivity } from '../../types/whatsapp/activity';
 import BaseConversation from '../conversation';
+import { TAppLocalsServices } from '../../types/base-dialog';
+import { TConversation } from '../../types/conversation';
+import { Dialog } from '../../types/dialog';
 
 // ? Services.
 import ServiceCxperiumContact from '../cxperium/contact';
@@ -14,8 +17,6 @@ import ServiceCxperiumMessage from '../cxperium/message';
 import ServiceCxperiumChat from './chat';
 import ServiceCxperiumLanguage from '../cxperium/language';
 import ServiceWhatsAppMessage from '../whatsapp/message';
-import { TAppLocalsServices } from '../../types/base-dialog';
-import { TConversation } from '../../types/conversation';
 
 // ? Environments.
 const { OUT_TICKET } = process.env;
@@ -113,7 +114,7 @@ export default class extends ServiceCxperium {
 	async startSurvey(
 		surveyId: string,
 		contact: TCxperiumContact,
-		dialog: any,
+		dialog: Dialog,
 	) {
 		if (surveyId.includes('pollbot')) surveyId = surveyId.split('_')[1];
 		if (!surveyId.includes('SID')) surveyId = `SID: ${surveyId}`;
@@ -124,14 +125,19 @@ export default class extends ServiceCxperium {
 		);
 
 		const messages = {
-			contacts: dialog.activity.message.contacts,
+			contacts: [
+				{
+					profile: { name: dialog.activity.userProfileName },
+					wa_id: dialog.activity.from,
+				},
+			],
 			messages: [
 				{
-					from: dialog.activity.message.messages[0].from,
-					id: dialog.activity.message.messages[0].id,
+					from: dialog.activity.from,
+					id: dialog.activity.from,
 					text: { body: surveyId },
-					timestamp: dialog.activity.message.messages[0].timestamp,
-					type: dialog.activity.message.messages[0].type,
+					timestamp: Date.now(),
+					type: dialog.activity.type,
 				},
 			],
 		};
