@@ -157,8 +157,12 @@ export default class extends ServiceCxperium {
 		}
 
 		if (JSON.parse(customAttributes?.IsCxLiveTransfer || false)) {
-			if (activity.type === 'document') {
-				const byteContent = activity.document.byteContent as
+			if (
+				activity.type === 'document' ||
+				activity.type === 'image' ||
+				activity.type === 'video'
+			) {
+				const byteContent = activity[activity.type].byteContent as
 					| Uint8Array
 					| Buffer;
 
@@ -171,23 +175,7 @@ export default class extends ServiceCxperium {
 					activity.text,
 					contact.phone,
 					base64string,
-					activity.document.mimeType!,
-				);
-			} else if (activity.type === 'image') {
-				const byteContent = activity.image.byteContent as
-					| Uint8Array
-					| Buffer;
-
-				const base64string = Buffer.isBuffer(byteContent)
-					? byteContent.toString('base64')
-					: Buffer.from(byteContent).toString('base64');
-
-				await this.serviceCxperiumMessage.sendWhatsappMessageWithFile(
-					customAttributes.ChatId,
-					activity.text,
-					contact.phone,
-					base64string,
-					activity.image.mimeType!,
+					activity[activity.type].mimeType!,
 				);
 			} else {
 				const chatExists = await this.serviceCxperiumChat.chatExists(
