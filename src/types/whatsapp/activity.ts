@@ -30,7 +30,7 @@ export type TDocument = {
 
 export type TVideo = {
 	id: string | null;
-	mime_type: string | null;
+	mimeType: string | null;
 	sha256: string | null;
 	status: string | null;
 	byteContent: Buffer | null;

@@ -132,7 +132,7 @@ export default class {
 			},
 			video: {
 				id: null,
-				mime_type: null,
+				mimeType: null,
 				sha256: null,
 				status: null,
 				byteContent: Buffer.from(''),

@@ -26,7 +26,7 @@ export default class {
 			},
 			video: {
 				id: null,
-				mime_type: null,
+				mimeType: null,
 				sha256: null,
 				status: null,
 				byteContent: Buffer.from(''),
@@ -105,7 +105,7 @@ export default class {
 		} else if (type == 'video') {
 			schemaActivity.type = 'video';
 			schemaActivity.video.id = data.video.id;
-			schemaActivity.video.mime_type = data.video.mime_type;
+			schemaActivity.video.mimeType = data.video.mime_type;
 			schemaActivity.video.sha256 = data.video.sha256;
 			schemaActivity.video.status = data.video.status;
 			schemaActivity.video.byteContent =
