@@ -46,13 +46,13 @@ export default class extends ServiceCxperium {
 		throw new Error('Problem occurred during creating ticket.');
 	}
 
-	async comment(ticketId: string, comment: string) {
+	async comment(ticketId: string, phone: string, comment: string) {
 		const body = {
 			message: comment,
 		};
 
-		return await fetchRetry(
-			`${this.baseUrl}/api/ticket/${ticketId}/wa/comments`,
+		const result = await fetchRetry(
+			`${this.baseUrl}/api/ticket/${ticketId}/wa/${phone}/comments`,
 			{
 				method: 'POST',
 				body: JSON.stringify(body),
@@ -62,6 +62,8 @@ export default class extends ServiceCxperium {
 				},
 			},
 		).then((response) => response.json());
+
+		return result;
 	}
 
 	async getSubs() {
