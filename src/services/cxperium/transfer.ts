@@ -76,12 +76,12 @@ export default class extends ServiceCxperium {
 						//! TİCKET HATASI BURADA
 
 						if (OUT_TICKET === 'true') {
-							dialog.services.dialog.runWithIntentName(
+							await dialog.services.dialog.runWithIntentName(
 								dialog,
 								'CXPerium.Dialogs.WhatsApp.Ticket.TicketResponseDialog',
 							);
 						} else {
-							dialog.services.dialog.runWithIntentName(
+							await dialog.services.dialog.runWithIntentName(
 								dialog,
 								'CXPerium.Dialogs.WhatsApp.System.Ticket.TicketResponseDialog',
 							);
