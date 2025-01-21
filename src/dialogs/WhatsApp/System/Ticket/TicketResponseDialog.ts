@@ -21,19 +21,29 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 			const message: string = this.activity.text;
 			const ticketId: any = this.conversation.getCache('ticketId');
 
-			await this.services.cxperium.ticket.comment(ticketId, message);
-			await this.services.whatsapp.message.sendRegularMessage(
-				this.contact.phone,
-				await this.services.cxperium.language.getLanguageByKey(
-					this.conversation.conversation.languageId,
-					'successfuly_ticket_response',
-				),
-			);
+			this.conversation.clearCache();
+			this.conversation.resetConversation();
 
-			return this.conversation.resetConversation();
+			try {
+				await this.services.cxperium.ticket.comment(
+					ticketId,
+					this.activity.from,
+					message,
+				);
+				await this.services.whatsapp.message.sendRegularMessage(
+					this.contact.phone,
+					await this.services.cxperium.language.getLanguageByKey(
+						this.conversation.conversation.languageId,
+						'successfuly_ticket_response',
+					),
+				);
+			} catch (error) {
+				console.warn('Error while sending comment to ticket: ', error);
+			}
+			return;
 		}
 
-		this.sendMessage('✍️ Lütfen cevabınızı giriniz...');
+		await this.sendMessage('✍️ Lütfen cevabınızı giriniz...');
 
 		this.conversation.addWaitAction(
 			`TicketResponse-${this.WAIT_TICKET_RESPONSE}`,
