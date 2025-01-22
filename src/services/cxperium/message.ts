@@ -127,7 +127,11 @@ export default class extends ServiceCxperium {
 		});
 	}
 
-	async sendWhatsappMessage(chatId: string, message: string, phone: string) {
+	async sendMessageToCxperiumApi(
+		chatId: string,
+		message: string,
+		phone: string,
+	) {
 		const body = {
 			phone: phone,
 			message: {

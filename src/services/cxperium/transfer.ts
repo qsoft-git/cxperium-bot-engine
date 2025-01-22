@@ -188,7 +188,7 @@ export default class extends ServiceCxperium {
 
 				const custom: any = contact.custom;
 
-				await this.serviceCxperiumMessage.sendWhatsappMessage(
+				await this.serviceCxperiumMessage.sendMessageToCxperiumApi(
 					custom.ChatId,
 					conversation.lastMessage,
 					contact.phone,
@@ -214,14 +214,14 @@ export default class extends ServiceCxperium {
 				return true;
 			}
 
-			const id = await this.createConversation(contact);
+			const chatId = await this.createChat(contact);
 
-			await this.updateContactWithChatId(contact, id);
+			await this.updateContactWithChatId(contact, chatId);
 
 			const lastMessage = conversation.getLastMessage();
 
 			await this.sendLastMessageToWhatsapp(
-				id,
+				chatId,
 				lastMessage,
 				contact.phone,
 			);
@@ -259,9 +259,7 @@ export default class extends ServiceCxperium {
 		}
 	}
 
-	private async createConversation(
-		contact: TCxperiumContact,
-	): Promise<string> {
+	private async createChat(contact: TCxperiumContact): Promise<string> {
 		try {
 			return await this.serviceCxperiumChat.create(contact._id);
 		} catch (error) {
@@ -293,7 +291,7 @@ export default class extends ServiceCxperium {
 		phone: string,
 	): Promise<void> {
 		try {
-			await this.serviceCxperiumMessage.sendWhatsappMessage(
+			await this.serviceCxperiumMessage.sendMessageToCxperiumApi(
 				chatId,
 				lastMessage,
 				phone,
@@ -353,7 +351,7 @@ export default class extends ServiceCxperium {
 
 		const lastMessage = conversation.getLastMessage();
 
-		await this.serviceCxperiumMessage.sendWhatsappMessage(
+		await this.serviceCxperiumMessage.sendMessageToCxperiumApi(
 			id,
 			lastMessage,
 			contact.phone,
