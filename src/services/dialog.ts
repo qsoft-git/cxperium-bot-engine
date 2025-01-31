@@ -98,6 +98,7 @@ export default class {
 		const concrete = new ConcreteHandler(handler);
 
 		await concrete.handle(event, runParams, prediction);
+
 	}
 
 	public async runWithMatch(dialog: Dialog): Promise<void> {

@@ -12,9 +12,7 @@ class FileReceivedStrategy implements IMessageStrategy {
 				EMessageEvent.ON_FILE_RECEIVED,
 			);
 		} catch (error: any) {
-			console.info(
-				'You may want to add onFileReceived event on your Entry.ts file!',
-			);
+			// ? Proceed to main logic.
 		}
 	}
 }
