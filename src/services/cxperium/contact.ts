@@ -53,7 +53,7 @@ export default class extends ServiceCxperium {
 					updatedAt: response?.data?.updatedAt,
 					user_id: response?.data?.user_id,
 					custom: response?.data?.custom,
-					tags: response?.data?.tags,
+					tags: response?.data?.tags || [],
 					delete: response?.data?.delete,
 				};
 
