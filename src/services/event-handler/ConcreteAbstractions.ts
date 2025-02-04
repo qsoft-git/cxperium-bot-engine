@@ -15,7 +15,7 @@ class ConcreteHandler extends MessageEventHandler {
 		runParams: TBaseDialogCtor,
 		prediction: TIntentPrediction | undefined,
 	): Promise<void> {
-		this.messageEventHandler.handle(event, runParams, prediction);
+		await this.messageEventHandler.handle(event, runParams, prediction);
 	}
 }
 

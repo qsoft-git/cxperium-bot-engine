@@ -27,16 +27,17 @@ class DynamicHandler implements IHandler {
 			prediction,
 		};
 
-		console.info(`EXECUTING EVENT: ${EMessageEvent[event]}`);
-		try {
-			const dialogImport = await import(runParams.dialogFileParams.path);
-			const dialog = new dialogImport.default(runParams);
-			await dialog[func](thisObj);
-		} catch (error) {
-			console.info(
-				`${EMessageEvent[event]} is not implemented. You may want to implement IMessageEvent interface to your Entry.ts file if you require to customize the response! (NOT REQUIRED!)`,
-			);
+		const dialogImport = await import(runParams.dialogFileParams.path);
+		const dialogInstance = new dialogImport.default(runParams);
+		const isFuncImplemented = dialogInstance[func];
+
+		if (!isFuncImplemented) {
+			throw new Error(`${func} is not implemented!`);
 		}
+
+		console.info(`EXECUTING EVENT: ${EMessageEvent[event]}`);
+
+		await dialogInstance[func](thisObj);
 	}
 }
 
