@@ -166,12 +166,10 @@ export default class {
 		);
 	}
 
-	public async getLocalizationText(key: string) {
+	public async getLocalizationText(key: string, languageId?: number) {
+		const langId = languageId ?? this.conversation.conversation.languageId;
 		const localization =
-			await this.services.cxperium.language.getLanguageByKey(
-				this.conversation.conversation.languageId,
-				key,
-			);
+			await this.services.cxperium.language.getLanguageByKey(langId, key);
 
 		return localization;
 	}
