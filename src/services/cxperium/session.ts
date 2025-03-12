@@ -83,7 +83,7 @@ export default class extends ServiceCxperium {
 
 		if (!conversation) {
 			conversation = {
-				languageId: 1,
+				languageId: this.resolveLanguageId(dialog?.contact),
 				conversationData: [],
 				waitData: {
 					className: '',
@@ -98,12 +98,12 @@ export default class extends ServiceCxperium {
 			this.cache.set(`CONVERSATION-${phone}`, conversation);
 		} else {
 			conversation = {
-				languageId: 1,
+				languageId: this.resolveLanguageId(dialog?.contact),
 				conversationData: conversation.conversationData,
 				waitData: conversation.waitData,
 				sessionData: [],
 				lastMessage: message,
-				cultureCode: 'TR',
+				cultureCode: conversation.cultureCode,
 				cache: conversation.cache,
 			};
 
@@ -112,5 +112,34 @@ export default class extends ServiceCxperium {
 		}
 
 		return new BaseConversation(dialog, conversation);
+	}
+
+	private resolveLanguageId(contact: TCxperiumContact): number {
+		if (!contact.language) {
+			return 1;
+		}
+
+		if (
+			Number.isInteger(contact.language) ||
+			!isNaN(parseFloat(contact.language))
+		) {
+			return Number(contact.language);
+		} else {
+			const languageMapping = {
+				TR: 1,
+				EN: 2,
+				AR: 3,
+				GER: 4,
+				RU: 5,
+			};
+
+			return languageMapping[
+				contact.language as keyof typeof languageMapping
+			]
+				? languageMapping[
+						contact.language as keyof typeof languageMapping
+					]
+				: 1;
+		}
 	}
 }
