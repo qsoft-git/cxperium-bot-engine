@@ -18,37 +18,44 @@ export class DidNotUnderstandStrategy implements IMessageStrategy {
 			liveConfig.IsActive &&
 			faultCount >= liveConfig.TransferFaultCount
 		) {
-			conversation.setFaultCount(1);
-			const buttons: TButton[] = [
-				{
-					id: 'humantransfer_yes',
-					title: await dialog.services.cxperium.language.getLanguageByKey(
-						conversation.conversation.languageId,
-						'yes_humantransfer',
-					),
-				},
-				{
-					id: 'humantransfer_no',
-					title: await dialog.services.cxperium.language.getLanguageByKey(
-						conversation.conversation.languageId,
-						'no_humantransfer',
-					),
-				},
-			];
+			conversation.setFaultCount(0);
 
-			await dialog.services.whatsapp.message.sendButtonMessage(
-				dialog.contact.phone,
-				await dialog.services.cxperium.language.getLanguageByKey(
-					conversation.conversation.languageId,
-					'transfer_representative_title',
-				),
-				'',
-				await dialog.services.cxperium.language.getLanguageByKey(
-					conversation.conversation.languageId,
-					'transfer_message_to_representative',
-				),
-				buttons,
+			const isAutomaticTransferMessageEnabled = JSON.parse(
+				process.env.TRANSFER_MESSAGE_ENABLED || 'true',
 			);
+
+			if (isAutomaticTransferMessageEnabled) {
+				const buttons: TButton[] = [
+					{
+						id: 'humantransfer_yes',
+						title: await dialog.services.cxperium.language.getLanguageByKey(
+							conversation.conversation.languageId,
+							'yes_humantransfer',
+						),
+					},
+					{
+						id: 'humantransfer_no',
+						title: await dialog.services.cxperium.language.getLanguageByKey(
+							conversation.conversation.languageId,
+							'no_humantransfer',
+						),
+					},
+				];
+
+				await dialog.services.whatsapp.message.sendButtonMessage(
+					dialog.contact.phone,
+					await dialog.services.cxperium.language.getLanguageByKey(
+						conversation.conversation.languageId,
+						'transfer_representative_title',
+					),
+					'',
+					await dialog.services.cxperium.language.getLanguageByKey(
+						conversation.conversation.languageId,
+						'transfer_message_to_representative',
+					),
+					buttons,
+				);
+			}
 		} else {
 			conversation.increaseFaultCount();
 			try {
