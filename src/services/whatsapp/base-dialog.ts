@@ -57,7 +57,15 @@ export default class {
 		return msg;
 	}
 
-	public async transferToLiveRepresentative() {
+	public async transferToLiveRepresentative(teamId?: string) {
+		if (teamId && teamId.length > 10) {
+			return await this.services.cxperium.transfer.transferToRepresentatives(
+				this.contact,
+				this.conversation,
+				teamId,
+			);
+		}
+
 		await this.services.cxperium.transfer.transferToRepresentative(
 			this.contact,
 			this.conversation,
