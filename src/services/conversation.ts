@@ -60,7 +60,7 @@ export default class BaseConversation {
 		const faultCount = this.getCache('faultCount');
 
 		if (faultCount) return faultCount;
-		else return 1;
+		else return 0;
 	}
 
 	public getCache(key: string): any {
