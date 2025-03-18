@@ -29,6 +29,7 @@ export default class extends ServiceWhatsappBaseDialog implements IDialog {
 					ticketId,
 					this.activity.from,
 					message,
+					[],
 				);
 				await this.services.whatsapp.message.sendRegularMessage(
 					this.contact.phone,
