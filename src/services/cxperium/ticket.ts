@@ -8,6 +8,7 @@ import ServiceCxperium from '.';
 
 // ? Types.
 import { TCxperiumServiceParams } from '../../types/cxperium/service';
+import { Medianame, TicketCx } from '../../interfaces/ticket/ticketcx';
 
 export default class extends ServiceCxperium {
 	constructor(data: TCxperiumServiceParams) {
@@ -219,5 +220,341 @@ export default class extends ServiceCxperium {
 
 		console.error('Operation has a problem with ticket assignment.');
 		throw new Error('Problem occurred during with ticket assignment.');
+	}
+	async getTicketsWithContactId(
+		contactId: string,
+	): Promise<TicketCx[] | null> {
+		try {
+			const url = `${this.baseUrl}/api/ticket`;
+			const filter = { contactId };
+			const queryParams = new URLSearchParams({
+				filter: JSON.stringify(filter),
+			});
+
+			const response = await fetch(`${url}?${queryParams.toString()}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					apikey: this.apiKey,
+				},
+			});
+
+			if (response.status === 202) {
+				const jsonData: any = await response.json();
+				const dataArray = jsonData?.data?.data;
+
+				if (!Array.isArray(dataArray)) {
+					return null;
+				}
+
+				const tickets: TicketCx[] = dataArray.map((item: any) => {
+					const mediaNameData = item.mediaName;
+					let mediaName: Medianame[] = [];
+
+					if (mediaNameData) {
+						if (Array.isArray(mediaNameData)) {
+							mediaName = mediaNameData.map((media) => ({
+								link: media.link || '',
+								format: media.format || '',
+							}));
+						} else if (typeof mediaNameData === 'object') {
+							mediaName = [
+								{
+									link: mediaNameData.link || '',
+									format: mediaNameData.format || '',
+								},
+							];
+						}
+					}
+
+					return {
+						id: item['_id'],
+						userId: item['userId'],
+						taskId: item['taskId'],
+						status: item['status'],
+						subject: item['subject'],
+						mediaName: mediaName,
+						contactId: item['contactId'],
+						priorty: item['priorty'],
+						delete: item['delete'] || false,
+						message: item['message'],
+						audit: item['audit'] || [],
+						comments: item['comments'] || [],
+						tags: item['tags'] || [],
+						createdAt: item['createdAt']
+							? new Date(item['createdAt'])
+							: undefined,
+						updatedAt: item['updatedAt']
+							? new Date(item['updatedAt'])
+							: undefined,
+					};
+				});
+
+				return tickets;
+			} else {
+				return null;
+			}
+		} catch (error) {
+			console.error('API Error:', error);
+			return null;
+		}
+	}
+	async getTicketsByContactIdAndDate(
+		contactId: string,
+		startDate: Date,
+		endDate: Date,
+	): Promise<TicketCx[] | null> {
+		try {
+			const url = `${this.baseUrl}/api/ticket`;
+			const filter = {
+				contactId,
+				createdAt: {
+					start: startDate.toISOString().split('T')[0],
+					end: endDate.toISOString().split('T')[0],
+				},
+			};
+			const queryParams = new URLSearchParams({
+				filter: JSON.stringify(filter),
+			});
+			const response = await fetch(`${url}?${queryParams.toString()}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					apikey: this.apiKey,
+				},
+			});
+
+			if (response.status === 202) {
+				const jsonData: any = await response.json();
+				const dataArray = jsonData?.data?.data;
+
+				if (!Array.isArray(dataArray)) {
+					return null;
+				}
+
+				const tickets: TicketCx[] = dataArray.map((item: any) => {
+					const mediaNameData = item.mediaName;
+					let mediaName: Medianame[] = [];
+
+					if (mediaNameData) {
+						if (Array.isArray(mediaNameData)) {
+							mediaName = mediaNameData.map((media) => ({
+								link: media.link || '',
+								format: media.format || '',
+							}));
+						} else if (typeof mediaNameData === 'object') {
+							mediaName = [
+								{
+									link: mediaNameData.link || '',
+									format: mediaNameData.format || '',
+								},
+							];
+						}
+					}
+
+					return {
+						id: item['_id'],
+						userId: item['userId'],
+						taskId: item['taskId'],
+						status: item['status'],
+						subject: item['subject'],
+						mediaName: mediaName,
+						contactId: item['contactId'],
+						priorty: item['priorty'],
+						delete: item['delete'] || false,
+						message: item['message'],
+						audit: item['audit'] || [],
+						comments: item['comments'] || [],
+						tags: item['tags'] || [],
+						createdAt: item['createdAt']
+							? new Date(item['createdAt'])
+							: undefined,
+						updatedAt: item['updatedAt']
+							? new Date(item['updatedAt'])
+							: undefined,
+					};
+				});
+
+				return tickets;
+			} else {
+				return null;
+			}
+		} catch (error) {
+			console.error('Tickets API Error:');
+			return null;
+		}
+	}
+	async getTicketsWithAssigneeId(
+		assigneeId: string,
+	): Promise<TicketCx[] | null> {
+		try {
+			const url = `${this.baseUrl}/api/ticket`;
+			const filter = { assigneeId };
+			const queryParams = new URLSearchParams({
+				filter: JSON.stringify(filter),
+			});
+
+			const response = await fetch(`${url}?${queryParams.toString()}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					apikey: this.apiKey,
+				},
+			});
+
+			if (response.status === 202) {
+				const jsonData: any = await response.json();
+				const dataArray = jsonData?.data?.data;
+
+				if (!Array.isArray(dataArray)) {
+					return null;
+				}
+
+				const tickets: TicketCx[] = dataArray.map((item: any) => {
+					const mediaNameData = item.mediaName;
+					let mediaName: Medianame[] = [];
+
+					if (mediaNameData) {
+						if (Array.isArray(mediaNameData)) {
+							mediaName = mediaNameData.map((media) => ({
+								link: media.link || '',
+								format: media.format || '',
+							}));
+						} else if (typeof mediaNameData === 'object') {
+							mediaName = [
+								{
+									link: mediaNameData.link || '',
+									format: mediaNameData.format || '',
+								},
+							];
+						}
+					}
+
+					return {
+						id: item['_id'],
+						userId: item['userId'],
+						taskId: item['taskId'],
+						status: item['status'],
+						subject: item['subject'],
+						mediaName: mediaName,
+						contactId: item['contactId'],
+						priorty: item['priorty'],
+						delete: item['delete'] || false,
+						message: item['message'],
+						audit: item['audit'] || [],
+						comments: item['comments'] || [],
+						tags: item['tags'] || [],
+						createdAt: item['createdAt']
+							? new Date(item['createdAt'])
+							: undefined,
+						updatedAt: item['updatedAt']
+							? new Date(item['updatedAt'])
+							: undefined,
+					};
+				});
+
+				return tickets;
+			} else {
+				return null;
+			}
+		} catch (error) {
+			console.error(error);
+			return null;
+		}
+	}
+	async getTicketsByAssigneeIdAndDate(
+		assigneeId: string,
+		startDate: Date,
+		endDate: Date,
+	): Promise<TicketCx[] | null> {
+		try {
+			const url = `${this.baseUrl}/api/ticket`;
+			const filter = {
+				assigneeId,
+				createdAt: {
+					start: startDate.toISOString().split('T')[0],
+					end: endDate.toISOString().split('T')[0],
+				},
+			};
+			const queryParams = new URLSearchParams({
+				filter: JSON.stringify(filter),
+			});
+
+			const response = await fetch(`${url}?${queryParams.toString()}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					apikey: this.apiKey,
+				},
+			});
+
+			if (response.status === 202) {
+				const jsonData: any = await response.json();
+				const dataArray = jsonData?.data?.data;
+
+				if (!Array.isArray(dataArray)) {
+					return null;
+				}
+
+				const tickets: TicketCx[] = dataArray.map((item: any) => {
+					const mediaNameData = item.mediaName;
+					let mediaName: Medianame[] = [];
+
+					if (mediaNameData) {
+						if (Array.isArray(mediaNameData)) {
+							mediaName = mediaNameData.map((media) => ({
+								link: media.link || '',
+								format: media.format || '',
+							}));
+						} else if (typeof mediaNameData === 'object') {
+							mediaName = [
+								{
+									link: mediaNameData.link || '',
+									format: mediaNameData.format || '',
+								},
+							];
+						}
+					}
+
+					return {
+						id: item['_id'],
+						userId: item['userId'],
+						taskId: item['taskId'],
+						status: item['status'],
+						subject: item['subject'],
+						mediaName: mediaName,
+						contactId: item['contactId'],
+						priorty: item['priorty'],
+						delete: item['delete'] || false,
+						message: item['message'],
+						audit: item['audit'] || [],
+						comments: item['comments'] || [],
+						tags: item['tags'] || [],
+						createdAt: item['createdAt']
+							? new Date(item['createdAt'])
+							: undefined,
+						updatedAt: item['updatedAt']
+							? new Date(item['updatedAt'])
+							: undefined,
+					};
+				});
+
+				return tickets;
+			} else {
+				return null;
+			}
+		} catch (error) {
+			console.error(error);
+			return null;
+		}
+	}
+	async getTags() {
+		return await fetchRetry(`${this.baseUrl}/api/ticket/tags`, {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json',
+				apikey: this.apiKey,
+			},
+		}).then((response) => response.json());
 	}
 }
