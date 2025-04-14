@@ -1,6 +1,6 @@
 type TFrom = {
 	from: string;
-	type: 'text' | 'location' | 'document' | 'interactive' | 'video' | 'image';
+	type: 'text' | 'location' | 'document' | 'interactive' | 'video' | 'image' | 'reaction' | 'reply';
 };
 
 export type TTextMessage = {
@@ -66,5 +66,14 @@ export type TActivity = TFrom & {
 		isFlow: boolean | null;
 		responseJson: object | null;
 	};
+	reaction: {
+		message_id: string;
+		emoji: string;
+	}
+	reply: {
+		message_id: string,
+		text: string
+	}
+
 	isCxperiumMessage: boolean;
 };
