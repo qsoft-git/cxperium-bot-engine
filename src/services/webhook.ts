@@ -152,6 +152,14 @@ export default class {
 				payload: '',
 				text: '',
 			},
+			reaction: {
+				message_id: "",
+				emoji: ""
+			},
+			reply: {
+				message_id: "",
+				text: ""
+			},
 			flow: {
 				isFlow: null,
 				responseJson: null,

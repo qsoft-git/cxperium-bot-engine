@@ -129,14 +129,20 @@ export default class extends ServiceCxperium {
 
 	async sendMessageToCxperiumApi(
 		chatId: string,
-		message: string,
 		phone: string,
+		message: string,
+		contextId?: string,
+		type?: string,
+		waid?: string
 	) {
 		const body = {
 			phone: phone,
 			message: {
 				text: message,
 			},
+			type: type,
+			contextId: contextId,
+			waid: waid,
 		};
 		await fetchRetry(
 			`${this.baseUrl}/api/chat/send-message/phone/${chatId}`,
@@ -157,6 +163,7 @@ export default class extends ServiceCxperium {
 		phone: string,
 		base64Content: string,
 		type: string,
+		waid: string,
 	) {
 		const body = {
 			message: {
@@ -169,6 +176,7 @@ export default class extends ServiceCxperium {
 					type: type,
 				},
 			},
+			waid: waid,
 		};
 
 		return await fetchRetry(

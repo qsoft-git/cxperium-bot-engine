@@ -68,14 +68,23 @@ export default class extends ServiceCxperium {
 
 	private async activityToText(activity: TActivity): Promise<string> {
 		if (activity?.text) return activity?.text;
+		else if (activity?.reaction?.emoji.length > 0) return activity?.reaction?.emoji;
+		else if (activity?.reply?.text.length > 0) return activity?.reply?.text;
 		else if (activity?.value) return activity?.value?.text;
 		else if (activity?.value?.payload) return activity?.value?.payload;
 		else return 'flow_received';
 	}
 
+	private async getReactionContextId(activity: TActivity): Promise<string> {
+		if (activity?.reaction?.message_id) return activity?.reaction?.message_id;
+		else if (activity?.reply?.message_id.length > 0) return activity?.reply?.message_id;
+		else return '';
+	}
+
 	async getConversation(dialog: any) {
 		const phone: string = dialog.contact.phone;
 		const message: string = await this.activityToText(dialog.activity);
+		const contextId: string = await this.getReactionContextId(dialog.activity);
 
 		let conversation: TConversation | undefined = this.cache.get(
 			`CONVERSATION-${phone}`,
@@ -89,7 +98,9 @@ export default class extends ServiceCxperium {
 					className: '',
 					functionName: '',
 				},
+				messageType: dialog.activity.type,
 				sessionData: [],
+				contextId: contextId,
 				lastMessage: message,
 				cultureCode: 'TR',
 				cache: {},
@@ -103,6 +114,8 @@ export default class extends ServiceCxperium {
 				waitData: conversation.waitData,
 				sessionData: [],
 				lastMessage: message,
+				contextId: contextId,
+				messageType: dialog.activity.type,
 				cultureCode: conversation.cultureCode,
 				cache: conversation.cache,
 			};
@@ -137,8 +150,8 @@ export default class extends ServiceCxperium {
 				contact.language as keyof typeof languageMapping
 			]
 				? languageMapping[
-						contact.language as keyof typeof languageMapping
-					]
+				contact.language as keyof typeof languageMapping
+				]
 				: 1;
 		}
 	}

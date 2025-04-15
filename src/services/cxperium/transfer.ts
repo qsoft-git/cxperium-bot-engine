@@ -176,6 +176,7 @@ export default class extends ServiceCxperium {
 					contact.phone,
 					base64string,
 					activity[activity.type].mimeType!,
+					activity.message.messages[0].id,
 				);
 			} else {
 				const chatExists = await this.serviceCxperiumChat.chatExists(
@@ -190,8 +191,11 @@ export default class extends ServiceCxperium {
 
 				await this.serviceCxperiumMessage.sendMessageToCxperiumApi(
 					custom.ChatId,
-					conversation.lastMessage,
 					contact.phone,
+					conversation.lastMessage,
+					conversation.contextId,
+					conversation.messageType,
+					activity.message.messages[0].id,
 				);
 			}
 
@@ -222,8 +226,8 @@ export default class extends ServiceCxperium {
 
 			await this.sendLastMessageToWhatsapp(
 				chatId,
-				lastMessage,
 				contact.phone,
+				lastMessage,
 			);
 
 			await this.sendTransferMessage(contact, conversation);
@@ -287,14 +291,14 @@ export default class extends ServiceCxperium {
 
 	private async sendLastMessageToWhatsapp(
 		chatId: string,
-		lastMessage: string,
 		phone: string,
+		lastMessage: string,
 	): Promise<void> {
 		try {
 			await this.serviceCxperiumMessage.sendMessageToCxperiumApi(
 				chatId,
-				lastMessage,
 				phone,
+				lastMessage,
 			);
 		} catch (error) {
 			console.error('Error sending last message to WhatsApp:', error);

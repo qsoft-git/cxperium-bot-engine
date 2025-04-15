@@ -7,6 +7,8 @@ export type TConversation = {
 	languageId: 1 | number;
 	sessionData: Record<string, unknown>[];
 	lastMessage: string;
+	contextId: string,
+	messageType: string;
 	cultureCode: 'TR' | string;
 	cache: Record<string, unknown>;
 };

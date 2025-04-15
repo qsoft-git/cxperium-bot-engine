@@ -51,11 +51,19 @@ export default class {
 				responseJson: null,
 			},
 			isCxperiumMessage: false,
+			reaction: {
+				message_id: '',
+				emoji: ''
+			},
+			reply: {
+				message_id: '',
+				text: ''
+			}
 		};
 
 		schemaActivity.userProfileName = body.contacts[0].profile.name;
 
-		if (type == 'text') {
+		if (type == 'text' && !data.context) {
 			schemaActivity.text = data.text.body;
 			schemaActivity.type = 'text';
 		} else if (type == 'interactive') {
@@ -113,6 +121,14 @@ export default class {
 					data.video.id,
 					data.video.mime_type,
 				);
+		} else if (type == 'text' && data.context) {
+			schemaActivity.type = 'reply';
+			schemaActivity.reply.message_id = data.context.id;
+			schemaActivity.reply.text = data.text.body;
+		} else if (type == 'reaction') {
+			schemaActivity.type = 'reaction';
+			schemaActivity.reaction.message_id = data.reaction.message_id;
+			schemaActivity.reaction.emoji = data.reaction.emoji;
 		}
 
 		this.that.activity = schemaActivity;
