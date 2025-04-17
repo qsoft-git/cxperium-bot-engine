@@ -1,4 +1,5 @@
 import { isValidNumber, checkAccessToken } from '../utils/provider';
+import axios from 'axios';
 
 export const dialog360Provider = async (
 	body: any,
@@ -35,46 +36,50 @@ export const cloudProvider = async (
 			'Access token is invalid. Check it under the Cxperium/Whatsapp Configuration menu!',
 		);
 	}
-
-	const requestUrl = `${process.env.PROVIDER_BASE_URL || 'https://provider.cxperium.com'
+	try {
+		const requestUrl = `${
+			process.env.PROVIDER_BASE_URL || 'https://provider.cxperium.com'
 		}/${process.env.VERSION || 'v21.0'}/${phoneNumberId}/messages`;
 
-	const reviveBody = { ...body, messaging_product: 'whatsapp' };
-	delete reviveBody?.recipient_type;
-	delete reviveBody?.interactive?.body?.type;
+		const reviveBody = { ...body, messaging_product: 'whatsapp' };
+		delete reviveBody?.recipient_type;
+		delete reviveBody?.interactive?.body?.type;
 
-	try {
-		const fetchResponse = await fetch(requestUrl, {
-			method: 'POST',
+		const axiosResponse = await axios.post(requestUrl, reviveBody, {
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: 'Bearer ' + config.key,
 				'X-Forwarded-for': 'CXPERIUM_BOT',
 			},
-			body: JSON.stringify(reviveBody),
+			timeout: 50000,
+			responseType: 'text',
 		});
 
-		if (!fetchResponse.ok) {
-			if (fetchResponse.status == 404) {
-				throw new Error('Provider is not reachable!');
-			}
-
-			throw new Error(`HTTP error! status: ${fetchResponse.status}`);
-		}
-
-		const textResponse = await fetchResponse.text();
+		const textResponse = axiosResponse.data;
 		const response = textResponse ? JSON.parse(textResponse) : {};
 
 		console.log(
-			`Message with ${response?.botMessageId || textResponse
+			`Message with ${
+				response?.botMessageId || textResponse
 			} id is sent to Meta! 🚀`,
 		);
 
 		return response?.botMessageId;
-
 	} catch (error: any) {
-		console.error('Error in provider:', error);
-		throw new Error('Error in provider: ' + error.message);
-	}
+		if (error.response) {
+			if (error.response.status === 404) {
+				console.error('Provider is not reachable! (404)');
+				throw new Error('Provider is not reachable!');
+			}
 
+			console.error(`HTTP error! status: ${error.response.status}`);
+			throw new Error(`HTTP error! status: ${error.response.status}`);
+		} else if (error.code === 'ECONNABORTED') {
+			console.error('Request timed out!');
+			throw new Error('Request timed out!');
+		} else {
+			console.error('Error in provider:', error.message);
+			throw new Error('Error in provider: ' + error.message);
+		}
+	}
 };

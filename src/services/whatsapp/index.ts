@@ -112,13 +112,17 @@ export default class {
 			return await providerFunction(body, endpoint, env.whatsappConfig);
 		} catch (error: unknown) {
 			if (error instanceof Error) {
+				console.error('Error Detail in wpRequest :', error);
 				console.error('Error in wpRequest:', error.message);
 				console.log("Your message couldn't be sent to Meta! 🚫");
 			} else {
 				console.error('Unknown error in wpRequest:', error);
 			}
 
-			return '360DIALOG response id is not implemented!';
+			return (
+				'I encountered an error while sending a message. Error message :' +
+				error
+			);
 		}
 	}
 }
