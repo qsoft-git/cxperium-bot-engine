@@ -1,5 +1,6 @@
 import { isValidNumber, checkAccessToken } from '../utils/provider';
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 
 export const dialog360Provider = async (
 	body: any,
@@ -36,6 +37,56 @@ export const cloudProvider = async (
 			'Access token is invalid. Check it under the Cxperium/Whatsapp Configuration menu!',
 		);
 	}
+	axiosRetry(axios, {
+		retries: 3,
+		retryDelay: (retryCount) => {
+			console.log(`⏳ Retry attempt: ${retryCount}`);
+			return retryCount * 1000; // 1s, 2s, 3s
+		},
+		retryCondition: (error) => {
+			const isTimeout =
+				error.code === 'ECONNABORTED' ||
+				error.code === 'UND_ERR_CONNECT_TIMEOUT';
+
+			return axiosRetry.isRetryableError(error) || isTimeout;
+		},
+	});
+
+	// Request interceptor
+	axios.interceptors.request.use(
+		(config) => {
+			console.log('📤 Axios request is about to be sent:', {
+				url: config.url,
+				method: config.method,
+				timeout: config.timeout,
+			});
+			return config;
+		},
+		(error) => {
+			console.error('❌ Request Error BEFORE sending:', error);
+			return Promise.reject(error);
+		},
+	);
+
+	//  Response interceptor
+	axios.interceptors.response.use(
+		(response) => {
+			console.log('Response received:', {
+				status: response.status,
+				url: response.config.url,
+			});
+			return response;
+		},
+		(error) => {
+			console.error('❌ Response error AFTER request sent:', {
+				code: error.code,
+				message: error.message,
+				url: error.config?.url,
+			});
+			return Promise.reject(error);
+		},
+	);
+
 	try {
 		const requestUrl = `${
 			process.env.PROVIDER_BASE_URL || 'https://provider.cxperium.com'
@@ -69,17 +120,38 @@ export const cloudProvider = async (
 		if (error.response) {
 			if (error.response.status === 404) {
 				console.error('Provider is not reachable! (404)');
-				throw new Error('Provider is not reachable!');
 			}
-
 			console.error(`HTTP error! status: ${error.response.status}`);
-			throw new Error(`HTTP error! status: ${error.response.status}`);
-		} else if (error.code === 'ECONNABORTED') {
-			console.error('Request timed out!');
-			throw new Error('Request timed out!');
+
+			console.error('🔴 Full Error Detail:', {
+				message: error.message,
+				stack: error.stack,
+				name: error.name,
+				responseStatus: error.response.status,
+				responseData: error.response.data,
+				responseHeaders: error.response.headers,
+				config: error.config,
+			});
+		} else if (
+			error.code === 'ECONNABORTED' ||
+			error.code === 'UND_ERR_CONNECT_TIMEOUT'
+		) {
+			console.error('Request timed out!:', {
+				message: error.message,
+				stack: error.stack,
+				name: error.name,
+				code: error.code,
+			});
 		} else {
 			console.error('Error in provider:', error.message);
-			throw new Error('Error in provider: ' + error.message);
+
+			console.error('🔴 Full Error Detail (non-response):', {
+				message: error.message,
+				stack: error.stack,
+				name: error.name,
+				code: error.code,
+			});
 		}
+		return 'Error :' + error.message;
 	}
 };
