@@ -102,7 +102,8 @@ export const cloudProvider = async (
 				Authorization: 'Bearer ' + config.key,
 				'X-Forwarded-for': 'CXPERIUM_BOT',
 			},
-			timeout: 50000,
+			timeout: 10000,
+			family: 4, // Force IPv4
 			responseType: 'text',
 		});
 
