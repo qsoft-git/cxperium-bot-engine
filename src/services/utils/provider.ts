@@ -18,4 +18,4 @@ const checkAccessToken = async (token: string): Promise<boolean> => {
 	return true;
 };
 
-export { isValidNumber, checkAccessToken };
+export { isValidNumber /*, checkAccessToken*/ };

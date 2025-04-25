@@ -1,6 +1,5 @@
-import { isValidNumber, checkAccessToken } from '../utils/provider';
+import { isValidNumber /*, checkAccessToken */ } from '../utils/provider';
 import axios from 'axios';
-import axiosRetry from 'axios-retry';
 
 export const dialog360Provider = async (
 	body: any,
@@ -32,60 +31,11 @@ export const cloudProvider = async (
 		);
 	}
 
-	if (!config.key || !(await checkAccessToken(config.key))) {
-		throw new Error(
-			'Access token is invalid. Check it under the Cxperium/Whatsapp Configuration menu!',
-		);
-	}
-	axiosRetry(axios, {
-		retries: 3,
-		retryDelay: (retryCount) => {
-			console.log(`⏳ Retry attempt: ${retryCount}`);
-			return retryCount * 1000; // 1s, 2s, 3s
-		},
-		retryCondition: (error) => {
-			const isTimeout =
-				error.code === 'ECONNABORTED' ||
-				error.code === 'UND_ERR_CONNECT_TIMEOUT';
-
-			return axiosRetry.isRetryableError(error) || isTimeout;
-		},
-	});
-
-	// Request interceptor
-	axios.interceptors.request.use(
-		(config) => {
-			console.log('📤 Axios request is about to be sent:', {
-				url: config.url,
-				method: config.method,
-				timeout: config.timeout,
-			});
-			return config;
-		},
-		(error) => {
-			console.error('❌ Request Error BEFORE sending:', error);
-			return Promise.reject(error);
-		},
-	);
-
-	//  Response interceptor
-	axios.interceptors.response.use(
-		(response) => {
-			console.log('Response received:', {
-				status: response.status,
-				url: response.config.url,
-			});
-			return response;
-		},
-		(error) => {
-			console.error('❌ Response error AFTER request sent:', {
-				code: error.code,
-				message: error.message,
-				url: error.config?.url,
-			});
-			return Promise.reject(error);
-		},
-	);
+	// if (!config.key || !(await checkAccessToken(config.key))) {
+	// 	throw new Error(
+	// 		'Access token is invalid. Check it under the Cxperium/Whatsapp Configuration menu!',
+	// 	);
+	// }
 
 	try {
 		const requestUrl = `${
